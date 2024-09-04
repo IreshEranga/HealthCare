@@ -1,24 +1,24 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './app/index'; 
-import LogIn from './app/LogIn'; 
+import HomeScreen from './app/HomeScreen'; // Adjust the path as necessary
+import LogIn from './app/LogIn'; // Adjust the path as necessary
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
-        <Stack.Screen 
-          name="HomeScreen" 
-          component={HomeScreen} 
-          options={{ title: 'Home' }} // Optionally, you can set the screen title here
+      <Stack.Navigator>
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+          options={{ title: 'Home' }}
         />
-        <Stack.Screen 
-          name="LogIn" 
-          component={LogIn} 
-          options={{ title: 'LogIn' }} // Optionally, set the screen title here
+        <Stack.Screen
+          name="LogIn"
+          component={LogIn}
+          options={{ title: 'Login' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
