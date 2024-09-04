@@ -65,7 +65,7 @@ const SignUp = () => {
      
 
       {/* Submit Button */}
-      <Button title="Sign Up" onPress={() => { /* Handle Sign Up */ }} />
+      <Button title="Sign Up" style={styles.button} onPress={() => { /* Handle Sign Up */ }}  />
     </View>
   );
 };
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+    borderRadius:10,
   },
   picker: {
     height: 50,
@@ -99,7 +100,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 30,
     marginBottom: 80,
-  }
+  },
+  button:{
+    borderRadius:20
+  },
 });
 
 export default SignUp;
