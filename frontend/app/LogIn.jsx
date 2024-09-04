@@ -1,13 +1,23 @@
 import { Text, StyleSheet, View, Image, TouchableOpacity, Button } from 'react-native';
 import React, { Component } from 'react';
 import medication from '../assets/images/medi.png';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
-export default class LogIn extends Component {
+export default function LogIn() {
+  const navigation = useNavigation();
+
   handleLogin = () => {
     // Handle login logic here
   };
 
-  render() {
+  handleSignUp = () => {
+    // Navigate to the LogIn screen after 5 seconds
+    
+    navigation.navigate('SignUp');
+    
+  };
+
+  
     return (
       <View >
         <Image source={medication} style={styles.image} />
@@ -24,7 +34,7 @@ export default class LogIn extends Component {
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -57,6 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     fontStyle:'bold',
+    fontWeight:'bold'
   },
   signup: {
     textAlign: 'center',
