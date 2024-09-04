@@ -11,7 +11,7 @@ export default function HomeScreen() {
     // Navigate to the LogIn screen after 5 seconds
     const timer = setTimeout(() => {
       navigation.navigate('LogIn');
-    }, 5000);
+    }, 3000);
 
     // Clear the timer if the component unmounts before 5 seconds
     return () => clearTimeout(timer);
