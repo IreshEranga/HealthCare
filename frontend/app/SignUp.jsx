@@ -3,12 +3,12 @@ import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaV
 import { Picker } from '@react-native-picker/picker'; // Ensure this is imported correctly
 import bg2 from '../assets/images/bg2.jpg'
 const SignUp = () => {
-  // Sample data for Picker
+  
   const data = [
     { key: '1', value: 'Male' },
     { key: '2', value: 'Female' },
     { key: '3', value: 'Other' },
-    // Add more options as needed
+    
   ];
 
   const [selectedValue, setSelectedValue] = useState("");
@@ -17,7 +17,7 @@ const SignUp = () => {
     <SafeAreaView style={styles.container}>
       {/* Background Image */}
       <Image
-        source={bg2} // Replace with your image URL
+        source={bg2} 
         style={styles.backgroundImage}
       />
 
