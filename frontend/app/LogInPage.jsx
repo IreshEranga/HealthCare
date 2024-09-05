@@ -1,11 +1,17 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
-import bg2 from '../assets/images/bg2.jpg'
+import bg2 from '../assets/images/bgsignup.jpg'
 
 export default function LogInPage() {
 
-    const navigate = useNavigation();
+    const navigation = useNavigation();
+
+    handleLogIn = () => {
+        navigation.navigate('Home/Welcome'); 
+    };
+    
+    
 
     return (
         <SafeAreaView style={styles.container}>
@@ -30,7 +36,7 @@ export default function LogInPage() {
                 />
 
                 {/* Submit Button */}
-                <TouchableOpacity style={styles.logbtn} onPress={() => { /* Handle Sign Up */ }}>
+                <TouchableOpacity style={styles.logbtn} onPress={handleLogIn}>
                     <Text style={styles.btnText}>Log In</Text>
                 </TouchableOpacity>
             </View>
