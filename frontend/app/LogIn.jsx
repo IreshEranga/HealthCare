@@ -7,7 +7,7 @@ export default function LogIn() {
   const navigation = useNavigation();
 
   handleLogin = () => {
-    // Handle login logic here
+    navigation.navigate('LogInPage');
   };
 
   handleSignUp = () => {
