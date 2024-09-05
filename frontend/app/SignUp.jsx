@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Ensure this is imported correctly
-import bg2 from '../assets/images/bg2.jpg'
+import bg2 from '../assets/images/bgsignup.jpg'
 const SignUp = () => {
   
   const data = [
