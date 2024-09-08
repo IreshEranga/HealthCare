@@ -1,6 +1,6 @@
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity,ScrollView } from 'react-native';
 import React from 'react';
-import bgnight from '../../assets/images/homenight.jpg';
+//import bgnight from '../../assets/images/homenight.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import vector from '../../assets/images/Vector.png'
 import rightArrow from '../../assets/images/rightArrow.png'
@@ -10,7 +10,7 @@ export default function Welcome() {
   const currentHour = new Date().getHours();
 
   const date = new Date().getDate();
-  const month = new Date().getMonth() + 1; // Months are 0-indexed, so we add 1
+  const month = new Date().getMonth() + 1; 
   const year = new Date().getFullYear();
 
   let greetingMessage = '';
@@ -25,7 +25,7 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={bgnight} style={styles.backgroundImage} />
+      {/*<Image source={bgnight} style={styles.backgroundImage} />*/}
       <View>
         {/* <Text style={styles.hometext}>Home</Text> */}
         <Text style={styles.greeting}>{greetingMessage}</Text>
@@ -34,13 +34,15 @@ export default function Welcome() {
         </View>
 
         <View style={styles.daydate}>
-          <Text style={styles.topic1}>Routing Plan</Text>
+          
           <Text style={styles.date}>
             {date}/{month}/{year}
           </Text>
         </View>
 
         {/* Card Component for Tasks */}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <Text style={styles.topic1}>Routing Plan</Text>
         <View style={styles.card}>
           <Image source={vector} style={styles.vector}/>
           <Text style={styles.cardTitle}>
@@ -54,6 +56,54 @@ export default function Welcome() {
         </TouchableOpacity>
 
         </View>
+
+        <Text style={styles.topic1}>Personalize Mental Fitness  Plan</Text>
+
+        <View style={styles.card}>
+        
+          <Image source={vector} style={styles.vector}/>
+          <Text style={styles.cardTitle}>
+            Personalize your Goals.
+          </Text>
+          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+
+          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <Text style={styles.buttonText}>Take Task {' '} <Image 
+            source={rightArrow}/></Text>
+          </TouchableOpacity>
+
+        </View>
+
+        <Text style={styles.topic1}>Personalize Diet Plan</Text>
+        <View style={styles.card}>
+          <Image source={vector} style={styles.vector}/>
+          <Text style={styles.cardTitle}>
+            Personalize your Goals.
+          </Text>
+          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+
+          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <Text style={styles.buttonText}>Take Task {' '} <Image 
+            source={rightArrow}/></Text>
+          </TouchableOpacity>
+
+        </View>
+
+        <Text style={styles.topic1}>Personalize Fitness Plan</Text>
+        <View style={styles.card}>
+          <Image source={vector} style={styles.vector}/>
+          <Text style={styles.cardTitle}>
+            Personalize your Goals.
+          </Text>
+          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+
+          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <Text style={styles.buttonText}>Take Task {' '} <Image 
+            source={rightArrow}/></Text>
+          </TouchableOpacity>
+
+        </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -61,8 +111,11 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#0e1138',
     marginBottom: 100,
+  },
+  scrollContainer: {
+    paddingBottom: 200,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
@@ -99,8 +152,9 @@ const styles = StyleSheet.create({
   date: {
     color: 'white',
     fontSize: 18,
-    marginTop: 18,
-    marginLeft: 130,
+    marginTop: -5,
+    marginLeft: 280,
+    position:'sticky'
   },
   daydate: {
     display: 'flex',
