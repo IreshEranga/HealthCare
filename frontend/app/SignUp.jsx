@@ -1,26 +1,96 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Ensure this is imported correctly
-import bg2 from '../assets/images/bgsignup.jpg'
+import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaView, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import axios from 'axios';  // Import axios
+import bg2 from '../assets/images/bgsignup.jpg';
+
 const SignUp = () => {
-  
   const data = [
     { key: '1', value: 'Male' },
     { key: '2', value: 'Female' },
     { key: '3', value: 'Other' },
-    
   ];
 
-  const [selectedValue, setSelectedValue] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [profession, setProfession] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
+  const [password, setPassword] = useState('');
+  const [retypePassword, setRetypePassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // const handleSignUp = async () => {
+  //   if (password !== retypePassword) {
+  //     setErrorMessage('Passwords do not match!');
+  //   } else {
+  //     setErrorMessage('');
+
+  //     try {
+  //       const response = await axios.post('http://localhost:8000/users/signUp', {
+  //         first_name: firstName,
+  //         last_name: lastName,
+  //         email: email,
+  //         mobile: mobile,
+  //         profession: profession,
+  //         gender: selectedValue,
+  //         password: password,
+  //       });
+
+  //       if (response.status === 201) {
+  //         Alert.alert('Success', 'Sign Up Successful!');
+  //       } else {
+  //         Alert.alert('Error', 'Something went wrong. Please try again.');
+  //       }
+  //     } catch (error) {
+  //       Alert.alert('Error', error.response?.data?.message || 'Sign Up Failed');
+  //       console.log(error);
+  //     }
+  //   }
+  // };
+
+
+  const handleSignUp = async () => {
+
+    if (password !== retypePassword) {
+      setErrorMessage('Passwords do not match!');
+    }else {
+      setErrorMessage('');
+      console.log("Password Match");
+
+    try {
+      const response = await axios.post('http://192.168.34.63:8000/users/signUp', {
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        mobile: mobile,
+        profession: profession,
+        gender: selectedValue,
+        password: password
+      });
+  
+      if (response.status === 200) {
+        Alert.alert("Success", "Sign Up Successful!");
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.log("Error Response:", error.response.data);
+        Alert.alert("Error", error.response.data.message || "Sign Up Failed");
+      } else if (error.request) {
+        // Request was made, but no response received
+        console.log("No Response:", error.request);
+      } else {
+        console.log("Error:", error.message);
+      }
+    }}
+  };
+  
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Background Image */}
-      <Image
-        source={bg2} 
-        style={styles.backgroundImage}
-      />
-
+      <Image source={bg2} style={styles.backgroundImage} />
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.formContainer}>
           <Text style={styles.signuptxt}>Sign Up</Text>
@@ -29,23 +99,33 @@ const SignUp = () => {
           <TextInput
             style={styles.input}
             placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
           />
           <TextInput
             style={styles.input}
             placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
           />
           <TextInput
             style={styles.input}
             placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput
             style={styles.input}
             placeholder="Mobile"
+            value={mobile}
             keyboardType="phone-pad"
+            onChangeText={setMobile}
           />
           <TextInput
             style={styles.input}
             placeholder="Profession"
+            value={profession}
+            onChangeText={setProfession}
           />
           {/* Gender Picker */}
           <Text style={styles.label}>Gender</Text>
@@ -63,15 +143,21 @@ const SignUp = () => {
             style={styles.input}
             placeholder="Password"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
           <TextInput
             style={styles.input1}
             placeholder="Re-type Password"
             secureTextEntry
+            value={retypePassword}
+            onChangeText={setRetypePassword}
           />
+          {/* Error Message */}
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
           {/* Submit Button */}
-          <Button title="Sign Up" onPress={() => { /* Handle Sign Up */ }}/>
+          <Button title="Sign Up" onPress={handleSignUp} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -79,9 +165,9 @@ const SignUp = () => {
 };
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     backgroundColor: '#fff',
-    marginBottom:100,
+    marginBottom: 100,
   },
   backgroundImage: {
     ...StyleSheet.absoluteFillObject,
@@ -97,7 +183,7 @@ container: {
     padding: 16,
   },
   formContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slightly transparent white background
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 10,
     padding: 16,
     marginTop: 50,
@@ -133,6 +219,11 @@ container: {
     textAlign: 'center',
     fontSize: 30,
     marginBottom: 20,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 12,
+    textAlign: 'center',
   },
 });
 
