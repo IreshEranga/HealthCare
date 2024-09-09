@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import axios from 'axios';  // Import axios
+import axios from 'axios';
+import Toast from 'react-native-toast-message';  // Import the toast message
 import bg2 from '../assets/images/bgsignup.jpg';
 
 const SignUp = () => {
@@ -20,73 +21,48 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  // const handleSignUp = async () => {
-  //   if (password !== retypePassword) {
-  //     setErrorMessage('Passwords do not match!');
-  //   } else {
-  //     setErrorMessage('');
-
-  //     try {
-  //       const response = await axios.post('http://localhost:8000/users/signUp', {
-  //         first_name: firstName,
-  //         last_name: lastName,
-  //         email: email,
-  //         mobile: mobile,
-  //         profession: profession,
-  //         gender: selectedValue,
-  //         password: password,
-  //       });
-
-  //       if (response.status === 201) {
-  //         Alert.alert('Success', 'Sign Up Successful!');
-  //       } else {
-  //         Alert.alert('Error', 'Something went wrong. Please try again.');
-  //       }
-  //     } catch (error) {
-  //       Alert.alert('Error', error.response?.data?.message || 'Sign Up Failed');
-  //       console.log(error);
-  //     }
-  //   }
-  // };
-
+  const [signUp, setSignUp] = useState([]);
 
   const handleSignUp = async () => {
-
     if (password !== retypePassword) {
       setErrorMessage('Passwords do not match!');
-    }else {
+    } else {
       setErrorMessage('');
       console.log("Password Match");
 
-    try {
-      const response = await axios.post('http://192.168.34.63:8000/users/signUp', {
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        mobile: mobile,
-        profession: profession,
-        gender: selectedValue,
-        password: password
-      });
-  
-      if (response.status === 200) {
-        Alert.alert("Success", "Sign Up Successful!");
+      try {
+        const response = await axios.post('http://192.168.34.63:8000/users/signUp', {
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          mobile: mobile,
+          profession: profession,
+          gender: selectedValue,
+          password: password
+        });
+
+        setSignUp(response.data);
+        console.log(response.data);
+
+        // Show success toast
+        Toast.show({
+          type: 'success',
+          text1: 'Sign Up Successful!',
+          text2: 'You have been signed up successfully.'
+        });
+        
+      } catch (error) {
+        if (error.response) {
+          console.log("Error Response:", error.response.data);
+          Alert.alert("Error", error.response.data.message || "Sign Up Failed");
+        } else if (error.request) {
+          console.log("No Response:", error.request);
+        } else {
+          console.log("Error:", error.message);
+        }
       }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        console.log("Error Response:", error.response.data);
-        Alert.alert("Error", error.response.data.message || "Sign Up Failed");
-      } else if (error.request) {
-        // Request was made, but no response received
-        console.log("No Response:", error.request);
-      } else {
-        console.log("Error:", error.message);
-      }
-    }}
+    }
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,7 +71,6 @@ const SignUp = () => {
         <View style={styles.formContainer}>
           <Text style={styles.signuptxt}>Sign Up</Text>
 
-          {/* Form Fields */}
           <TextInput
             style={styles.input}
             placeholder="First Name"
@@ -127,7 +102,6 @@ const SignUp = () => {
             value={profession}
             onChangeText={setProfession}
           />
-          {/* Gender Picker */}
           <Text style={styles.label}>Gender</Text>
           <Picker
             selectedValue={selectedValue}
@@ -153,13 +127,14 @@ const SignUp = () => {
             value={retypePassword}
             onChangeText={setRetypePassword}
           />
-          {/* Error Message */}
           {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
-          {/* Submit Button */}
           <Button title="Sign Up" onPress={handleSignUp} />
         </View>
       </ScrollView>
+
+      {/* Toast Message */}
+      <Toast />
     </SafeAreaView>
   );
 };
