@@ -6,7 +6,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 
 // Routes
-
+const userRoutes = require("./routes/userRoutes");
 
 // express app
 const app = express();
@@ -24,7 +24,7 @@ app.use(cors());
 
 // Routes
 
-
+app.use("/users", userRoutes);
 
 // connect to db
 mongoose
