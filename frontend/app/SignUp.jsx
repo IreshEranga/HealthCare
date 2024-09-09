@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
-import Toast from 'react-native-toast-message';  // Import the toast message
+import Toast from 'react-native-toast-message';
+import { useNavigation } from '@react-navigation/native'; // Import navigation hook
 import bg2 from '../assets/images/bgsignup.jpg';
 
 const SignUp = () => {
@@ -22,6 +23,8 @@ const SignUp = () => {
   const [retypePassword, setRetypePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [signUp, setSignUp] = useState([]);
+
+  const navigation = useNavigation(); // Use navigation hook
 
   const handleSignUp = async () => {
     if (password !== retypePassword) {
@@ -50,6 +53,21 @@ const SignUp = () => {
           text1: 'Sign Up Successful!',
           text2: 'You have been signed up successfully.'
         });
+
+        // Clear the form
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setMobile('');
+        setProfession('');
+        setSelectedValue('');
+        setPassword('');
+        setRetypePassword('');
+
+        // Navigate to login page after 2 seconds (or immediately)
+        setTimeout(() => {
+          navigation.navigate('LogInPage'); // Navigate to Login screen
+        }, 2000);
         
       } catch (error) {
         if (error.response) {
