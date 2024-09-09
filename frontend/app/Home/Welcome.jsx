@@ -4,7 +4,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import vector from '../../assets/images/Vector.png'
 import rightArrow from '../../assets/images/rightArrow.png'
-
+import mental from '../../assets/images/mentalFit2.png';
 
 export default function Welcome() {
   const currentHour = new Date().getHours();
@@ -57,11 +57,11 @@ export default function Welcome() {
 
         </View>
 
-        <Text style={styles.topic1}>Personalize Mental Fitness  Plan</Text>
+        <Text style={styles.topic1}>Mental Fitness  Plan</Text>
 
         <View style={styles.card}>
         
-          <Image source={vector} style={styles.vector}/>
+          <Image source={mental} style={styles.mental}/>
           <Text style={styles.cardTitle}>
             Personalize your Goals.
           </Text>
@@ -189,6 +189,9 @@ const styles = StyleSheet.create({
   },
   vector:{
     marginLeft:135
+  },
+  mental:{
+    marginLeft:110
   },
   button: {
     backgroundColor: '#3A63F4', // Button background color
