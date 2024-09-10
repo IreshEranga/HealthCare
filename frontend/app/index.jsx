@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation
-
 import relaximg from '../assets/images/relax.jpg';
 
 export default function HomeScreen() {
