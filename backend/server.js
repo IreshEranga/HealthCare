@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 
 // Routes
 const userRoutes = require("./routes/userRoutes");
+const logInRoutes = require("./routes/logInRoutes");
 
 // express app
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors());
 // Routes
 
 app.use("/users", userRoutes);
+app.use("/users", logInRoutes);
 
 // connect to db
 mongoose
