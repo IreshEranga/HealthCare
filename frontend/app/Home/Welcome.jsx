@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 1, // Ensure the container takes full height
   },
   scrollContainer: {
-    paddingBottom: 300, // Adjust based on your NavBar height
+    paddingBottom: 200, // Adjust based on your NavBar height
   },
   greeting: {
     textAlign: 'left',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   navigation : {
-    marginTop:-150
+    marginTop:-150,
   },
   test : {
     marginTop:-120
