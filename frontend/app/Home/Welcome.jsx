@@ -1,10 +1,11 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import vector from '../../assets/images/Vector.png';
 import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
+import NavBar from '../../components/NavBar'; // Import the NavBar component
 
 export default function Welcome() {
   const [greetingMessage, setGreetingMessage] = useState('');
@@ -13,7 +14,6 @@ export default function Welcome() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // Retrieve the logged-in user data from AsyncStorage
         const storedUser = await AsyncStorage.getItem('loggedInUser');
         const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
@@ -47,7 +47,6 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Image source={bgnight} style={styles.backgroundImage} /> */}
       <View>
         <Text style={styles.greeting}>
           {greetingMessage}, {userName ? userName : 'Guest'}
@@ -62,7 +61,6 @@ export default function Welcome() {
           </Text>
         </View>
 
-        {/* Card Component for Tasks */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.topic1}>Routing Plan</Text>
           <View style={styles.card}>
@@ -70,7 +68,7 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Routines.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
@@ -78,13 +76,12 @@ export default function Welcome() {
           </View>
 
           <Text style={styles.topic1}>Mental Fitness Plan</Text>
-
           <View style={styles.card}>
             <Image source={mental} style={styles.mental} />
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
@@ -97,7 +94,7 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
@@ -110,13 +107,17 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
+    
+        {/* Add NavBar after ScrollView */}
+        <Text style={styles.test}>Hi</Text>
+        <NavBar  style={styles.navigation}/>
       </View>
     </SafeAreaView>
   );
@@ -125,24 +126,10 @@ export default function Welcome() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#0e1138',
-    marginBottom: 100,
+    flex: 1, // Ensure the container takes full height
   },
   scrollContainer: {
-    paddingBottom: 200,
-  },
-  backgroundImage: {
-    ...StyleSheet.absoluteFillObject,
-    resizeMode: 'cover',
-    height: 800,
-    width: 'auto',
-    position: 'absolute',
-  },
-  hometext: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 30,
-    marginTop: 20,
-    color: 'white',
+    paddingBottom: 300, // Adjust based on your NavBar height
   },
   greeting: {
     textAlign: 'left',
@@ -167,14 +154,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: -5,
     marginLeft: 280,
-    position: 'sticky',
   },
   daydate: {
     display: 'flex',
     flexDirection: 'row',
     marginTop: 20,
   },
-  // Card Component Styles
   card: {
     backgroundColor: '#d9d9d9',
     borderRadius: 10,
@@ -207,7 +192,7 @@ const styles = StyleSheet.create({
     marginLeft: 110,
   },
   button: {
-    backgroundColor: '#3A63F4', // Button background color
+    backgroundColor: '#3A63F4',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
@@ -216,10 +201,16 @@ const styles = StyleSheet.create({
     marginLeft: 80,
   },
   buttonText: {
-    color: '#fff', // Button text color
+    color: '#fff',
     fontSize: 20,
     textAlign: 'center',
-    fontStyle: 'bold',
     fontWeight: 'bold',
   },
+  navigation : {
+    marginTop:-150
+  },
+  test : {
+    marginTop:-120
+  }
+  
 });
