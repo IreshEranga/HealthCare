@@ -1,40 +1,62 @@
-import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity,ScrollView } from 'react-native';
-import React from 'react';
-//import bgnight from '../../assets/images/homenight.jpg';
+import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import Icon from 'react-native-vector-icons/FontAwesome';
-import vector from '../../assets/images/Vector.png'
-import rightArrow from '../../assets/images/rightArrow.png'
+import vector from '../../assets/images/Vector.png';
+import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
 
 export default function Welcome() {
-  const currentHour = new Date().getHours();
+  const [greetingMessage, setGreetingMessage] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Retrieve the logged-in user data from AsyncStorage
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        if (parsedUser && parsedUser.first_name) {
+          setUserName(parsedUser.first_name);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+
+    const currentHour = new Date().getHours();
+    let message = '';
+
+    if (currentHour < 12) {
+      message = 'Good Morning ';
+    } else if (currentHour < 18) {
+      message = 'Good Afternoon ';
+    } else {
+      message = 'Good Night ';
+    }
+
+    setGreetingMessage(message);
+  }, []);
 
   const date = new Date().getDate();
-  const month = new Date().getMonth() + 1; 
+  const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
-
-  let greetingMessage = '';
-
-  if (currentHour < 12) {
-    greetingMessage = 'Good Morning';
-  } else if (currentHour < 18) {
-    greetingMessage = 'Good Afternoon';
-  } else {
-    greetingMessage = 'Good Night';
-  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/*<Image source={bgnight} style={styles.backgroundImage} />*/}
+      {/* <Image source={bgnight} style={styles.backgroundImage} /> */}
       <View>
-        {/* <Text style={styles.hometext}>Home</Text> */}
-        <Text style={styles.greeting}>{greetingMessage}</Text>
+        <Text style={styles.greeting}>
+          {greetingMessage}, {userName ? userName : 'Guest'}
+        </Text>
         <View>
           <Icon style={styles.usericon} name="user" size={34} color="white" />
         </View>
 
         <View style={styles.daydate}>
-          
           <Text style={styles.date}>
             {date}/{month}/{year}
           </Text>
@@ -42,67 +64,58 @@ export default function Welcome() {
 
         {/* Card Component for Tasks */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.topic1}>Routing Plan</Text>
-        <View style={styles.card}>
-          <Image source={vector} style={styles.vector}/>
-          <Text style={styles.cardTitle}>
-            Personalize your Routines.
-          </Text>
-          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+          <Text style={styles.topic1}>Routing Plan</Text>
+          <View style={styles.card}>
+            <Image source={vector} style={styles.vector} />
+            <Text style={styles.cardTitle}>Personalize your Routines.</Text>
+            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
-            <Text style={styles.buttonText}>Take Task {' '} <Image 
-            source={rightArrow}/></Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+              <Text style={styles.buttonText}>
+                Take Task <Image source={rightArrow} />
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        </View>
+          <Text style={styles.topic1}>Mental Fitness Plan</Text>
 
-        <Text style={styles.topic1}>Mental Fitness  Plan</Text>
+          <View style={styles.card}>
+            <Image source={mental} style={styles.mental} />
+            <Text style={styles.cardTitle}>Personalize your Goals.</Text>
+            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-        <View style={styles.card}>
-        
-          <Image source={mental} style={styles.mental}/>
-          <Text style={styles.cardTitle}>
-            Personalize your Goals.
-          </Text>
-          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+              <Text style={styles.buttonText}>
+                Take Task <Image source={rightArrow} />
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
-            <Text style={styles.buttonText}>Take Task {' '} <Image 
-            source={rightArrow}/></Text>
-          </TouchableOpacity>
+          <Text style={styles.topic1}>Personalize Diet Plan</Text>
+          <View style={styles.card}>
+            <Image source={vector} style={styles.vector} />
+            <Text style={styles.cardTitle}>Personalize your Goals.</Text>
+            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-        </View>
+            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+              <Text style={styles.buttonText}>
+                Take Task <Image source={rightArrow} />
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        <Text style={styles.topic1}>Personalize Diet Plan</Text>
-        <View style={styles.card}>
-          <Image source={vector} style={styles.vector}/>
-          <Text style={styles.cardTitle}>
-            Personalize your Goals.
-          </Text>
-          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+          <Text style={styles.topic1}>Personalize Fitness Plan</Text>
+          <View style={styles.card}>
+            <Image source={vector} style={styles.vector} />
+            <Text style={styles.cardTitle}>Personalize your Goals.</Text>
+            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
-            <Text style={styles.buttonText}>Take Task {' '} <Image 
-            source={rightArrow}/></Text>
-          </TouchableOpacity>
-
-        </View>
-
-        <Text style={styles.topic1}>Personalize Fitness Plan</Text>
-        <View style={styles.card}>
-          <Image source={vector} style={styles.vector}/>
-          <Text style={styles.cardTitle}>
-            Personalize your Goals.
-          </Text>
-          <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
-
-          <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
-            <Text style={styles.buttonText}>Take Task {' '} <Image 
-            source={rightArrow}/></Text>
-          </TouchableOpacity>
-
-        </View>
+            <TouchableOpacity style={styles.button} onPress={this.handleTakeTask}>
+              <Text style={styles.buttonText}>
+                Take Task <Image source={rightArrow} />
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -154,7 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: -5,
     marginLeft: 280,
-    position:'sticky'
+    position: 'sticky',
   },
   daydate: {
     display: 'flex',
@@ -172,26 +185,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 5,
-    marginTop:40,
-    opacity:0.8
+    marginTop: 40,
+    opacity: 0.8,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     margin: 20,
-    textAlign:'center',
+    textAlign: 'center',
   },
   cardDetails: {
     fontSize: 16,
     color: '#000000',
-    textAlign:'center',
-    marginTop:5,
+    textAlign: 'center',
+    marginTop: 5,
   },
-  vector:{
-    marginLeft:135
+  vector: {
+    marginLeft: 135,
   },
-  mental:{
-    marginLeft:110
+  mental: {
+    marginLeft: 110,
   },
   button: {
     backgroundColor: '#3A63F4', // Button background color
@@ -199,14 +212,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 13,
-    width:160,
-    marginLeft:80,
+    width: 160,
+    marginLeft: 80,
   },
   buttonText: {
     color: '#fff', // Button text color
     fontSize: 20,
     textAlign: 'center',
-    fontStyle:'bold',
-    fontWeight:'bold'
+    fontStyle: 'bold',
+    fontWeight: 'bold',
   },
 });
