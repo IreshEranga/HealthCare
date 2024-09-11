@@ -38,7 +38,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    elevation: 5, // For Android shadow effect
+    elevation: 5,
+    borderTopWidth: 2, // Border width for the top of the NavBar
+    borderTopColor: '#8090d2',
   },
   navButton: {
     alignItems: 'center',
