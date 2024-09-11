@@ -70,7 +70,7 @@ export default function Welcome() {
 
             <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
-                Take Task <Image source={rightArrow} />
+                Take Task   <Image source={rightArrow} />
               </Text>
             </TouchableOpacity>
           </View>
@@ -83,7 +83,7 @@ export default function Welcome() {
 
             <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
               <Text style={styles.buttonText}>
-                Take Task <Image source={rightArrow} />
+                Setup          <Image source={rightArrow} />
               </Text>
             </TouchableOpacity>
           </View>
@@ -153,7 +153,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     marginTop: -5,
-    marginLeft: 280,
+    marginLeft:25,
+    paddingBottom:10
   },
   daydate: {
     display: 'flex',
