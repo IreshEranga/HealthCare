@@ -45,9 +45,7 @@ export default function App() {
           options={{ title: 'Welcome' }}
         />
       </Stack.Navigator>
-      <Stack.Navigator>
-        
-      </Stack.Navigator>
+      
     </NavigationContainer>
   );
 }

@@ -5,10 +5,13 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hook
 import bg2 from '../assets/images/bgsignup.jpg';
-import { BACKEND_URL } from '@env';
+
 
 
 const SignUp = () => {
+
+  const apiUrl = process.env.BACKEND_URL;
+
   const data = [
     { key: '1', value: 'Male' },
     { key: '2', value: 'Female' },
@@ -36,7 +39,7 @@ const SignUp = () => {
       console.log("Password Match");
 
       try {
-        const response = await axios.post(/*'http://192.168.34.63:8000/users/signUp'*/`${BACKEND_URL}/users/signUp`, {
+        const response = await axios.post('http://192.168.203.63:8000/users/signUp'/*`${apiUrl}/users/signUp`*/, {
           first_name: firstName,
           last_name: lastName,
           email: email,

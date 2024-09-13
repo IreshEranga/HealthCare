@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import bg2 from '../assets/images/bgsignup.jpg';
-import { BACKEND_URL } from '@env'; // Ensure this is correctly set in your environment
+//import { BACKEND_URL } from '@env'; // Ensure this is correctly set in your environment
 
 export default function LogInPage() {
   const navigation = useNavigation();
@@ -16,7 +16,7 @@ export default function LogInPage() {
       console.log("Username and password typed");
       try {
         // Make a POST request to the backend
-        const response = await fetch(`${BACKEND_URL}/users/logIn`, {
+        const response = await fetch(/*`${BACKEND_URL}/users/logIn`*/'http://192.168.203.63:8000/users/logIn', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
