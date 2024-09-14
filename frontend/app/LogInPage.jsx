@@ -10,13 +10,15 @@ export default function LogInPage() {
   const [username, setUsername] = useState(''); // Add state for username
   const [password, setPassword] = useState(''); // Add state for password
 
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  console.log(apiUrl);
   // React Native LogInPage Component
   const handleLogIn = async () => {
     if (username && password) {
       console.log("Username and password typed");
       try {
         // Make a POST request to the backend
-        const response = await fetch(/*`${BACKEND_URL}/users/logIn`*/'http://192.168.203.63:8000/users/logIn', {
+        const response = await fetch(`${apiUrl}/users/logIn`/*'http://192.168.203.63:8000/users/logIn'*/, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
