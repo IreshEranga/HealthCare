@@ -10,7 +10,7 @@ import bg2 from '../assets/images/bgsignup.jpg';
 
 const SignUp = () => {
 
-  const apiUrl = process.env.BACKEND_URL;
+  
 
   const data = [
     { key: '1', value: 'Male' },
@@ -32,6 +32,9 @@ const SignUp = () => {
   const navigation = useNavigation(); // Use navigation hook
 
   const handleSignUp = async () => {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  console.log(apiUrl);
+  
     if (password !== retypePassword) {
       setErrorMessage('Passwords do not match!');
     } else {
@@ -39,7 +42,7 @@ const SignUp = () => {
       console.log("Password Match");
 
       try {
-        const response = await axios.post('http://192.168.203.63:8000/users/signUp'/*`${apiUrl}/users/signUp`*/, {
+        const response = await axios.post(/*'http://192.168.203.63:8000/users/signUp'*/`${apiUrl}/users/signUp`, {
           first_name: firstName,
           last_name: lastName,
           email: email,
