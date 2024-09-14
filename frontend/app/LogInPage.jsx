@@ -10,10 +10,12 @@ export default function LogInPage() {
   const [username, setUsername] = useState(''); // Add state for username
   const [password, setPassword] = useState(''); // Add state for password
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  console.log(apiUrl);
+  
   // React Native LogInPage Component
   const handleLogIn = async () => {
+
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  console.log(apiUrl);
     if (username && password) {
       console.log("Username and password typed");
       try {
