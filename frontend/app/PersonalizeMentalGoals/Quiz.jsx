@@ -1,7 +1,8 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View, ScrollView } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+//import { ScrollView } from 'react-native-gesture-handler';
 
 export default function Quiz() {
   return (
@@ -17,6 +18,20 @@ export default function Quiz() {
         <View>
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
+
+        <View>
+          <Text style={styles.details}>
+          First fill the form to get and idea about your mental condition. Then we will suggest set of goals for you.
+          </Text>
+        </View>
+
+        <ScrollView>
+
+        </ScrollView>
+
+
+
+
         </LinearGradient>
 
     </SafeAreaView>
@@ -47,4 +62,11 @@ const styles = StyleSheet.create({
         textAlign:'center',
         fontSize:20,
       },
+    details:{
+      color:'black',
+      fontSize:18,
+      padding:20,
+      textAlign:'center',
+      marginTop:20
+    }
 })
