@@ -14,6 +14,13 @@ import MoodTrackingPage from './app/Journey/MoodCheckIn/MoodTrackingPage';
 import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
 
 
+
+
+
+
+import Quiz from './app/PersonalizeMentalGoals/Quiz';
+
+
 const Stack = createStackNavigator();
 
 
