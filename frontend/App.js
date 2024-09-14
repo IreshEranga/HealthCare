@@ -1,14 +1,21 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './app/HomeScreen'; // Adjust the path as necessary
-import LogIn from './app/LogIn'; // Adjust the path as necessary
+import HomeScreen from './app/HomeScreen'; 
+import LogIn from './app/LogIn'; 
 import SignUp from './app/SignUp';
 import LogInPage from './app/LogInPage';
 import HomePage from './app/Home/HomePage';
 import Welcome from './app/Home/Welcome';
+import JourneyPage from './app/Journey/JourneyPage';
+import DailyRoutinePage from './app/Journey/DailyRoutine/DailyRoutinePage';
+import JournalingPage from './app/Journey/Journaling/JournalingPage';
+import MoodTrackingPage from './app/Journey/MoodCheckIn/MoodTrackingPage';
+import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
+
 
 const Stack = createStackNavigator();
+
 
 export default function App() {
   return (
@@ -43,6 +50,31 @@ export default function App() {
           name="Welcome"
           component={Welcome}
           options={{ title: 'Welcome' }}
+        />
+        <Stack.Screen
+          name="JourneyPage"
+          component={JourneyPage}
+          options={{ title: 'JourneyPage' }}
+        />
+        <Stack.Screen
+          name="DailyRoutinePage"
+          component={DailyRoutinePage}
+          options={{ title: 'DailyRoutinePage' }}
+        />
+        <Stack.Screen
+          name="JournalingPage"
+          component={JournalingPage}
+          options={{ title: 'JournalingPage' }}
+        />
+        <Stack.Screen
+          name="MoodTrackingPage"
+          component={MoodTrackingPage}
+          options={{ title: 'MoodTrackingPage' }}
+        />
+        <Stack.Screen
+          name="AddMoodCheckInPage"
+          component={AddMoodCheckInPage}
+          options={{ title: 'AddMoodCheckInPage' }}
         />
       </Stack.Navigator>
       
