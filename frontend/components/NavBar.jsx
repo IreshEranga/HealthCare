@@ -1,11 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Or another icon set
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const NavBar = () => {
+  const navigation = useNavigation();
+  
   return (
     <View style={styles.navBar}>
-      <TouchableOpacity style={styles.navButton}>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Home/Welcome')}>
         <Icon name="home-outline" size={24} color="white" />
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>

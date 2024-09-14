@@ -1,15 +1,18 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import vector from '../../assets/images/Vector.png';
 import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
-import NavBar from '../../components/NavBar'; // Import the NavBar component
+import NavBar from '../../components/NavBar';
+
 
 export default function Welcome() {
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -68,7 +71,10 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Routines.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => navigation.navigate('Journey/JourneyPage')}
+            >
               <Text style={styles.buttonText}>
                 Take Task   <Image source={rightArrow} />
               </Text>
@@ -123,13 +129,14 @@ export default function Welcome() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#0e1138',
-    flex: 1, // Ensure the container takes full height
+    flex: 1,
   },
   scrollContainer: {
-    paddingBottom: 200, // Adjust based on your NavBar height
+    paddingBottom: 200,
   },
   greeting: {
     textAlign: 'left',

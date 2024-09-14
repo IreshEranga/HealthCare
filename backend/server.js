@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 // Routes
 const userRoutes = require("./routes/userRoutes");
 const logInRoutes = require("./routes/logInRoutes");
+const MoodCheckInRoutes = require('./routes/MoodCheckInRoutes');
 
 // express app
 const app = express();
@@ -27,6 +28,7 @@ app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/users", logInRoutes);
+app.use('/mood-checks', MoodCheckInRoutes);
 
 // connect to db
 mongoose
