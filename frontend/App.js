@@ -46,7 +46,7 @@ export default function App() {
           component={HomePage}
           options={{ title: 'HomePage' }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Welcome"
           component={Welcome}
           options={{ title: 'Welcome' }}
@@ -75,6 +75,10 @@ export default function App() {
           name="AddMoodCheckInPage"
           component={AddMoodCheckInPage}
           options={{ title: 'AddMoodCheckInPage' }}
+        />
+        <Stack.Screen  name="Quiz"
+          component={Quiz}
+          options={{ title: 'Quiz' }}
         />
       </Stack.Navigator>
       

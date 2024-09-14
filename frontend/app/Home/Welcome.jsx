@@ -8,8 +8,9 @@ import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
 import NavBar from '../../components/NavBar';
 
-
 export default function Welcome() {
+  
+
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
   const navigation = useNavigation();
@@ -48,6 +49,10 @@ export default function Welcome() {
   const month = new Date().getMonth() + 1;
   const year = new Date().getFullYear();
 
+
+  const handleMentalGoalSetup =async() => {
+    navigation.navigate('PersonalizeMentalGoals/Quiz');
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -87,7 +92,7 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
+            <TouchableOpacity style={styles.button} onPress={handleMentalGoalSetup}>
               <Text style={styles.buttonText}>
                 Setup          <Image source={rightArrow} />
               </Text>
