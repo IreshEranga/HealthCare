@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 const MoodTrackingPage = () => {
   const [selectedMood, setSelectedMood] = useState(null);
+
+  const [userID, setUserID] = useState('');
   const navigation = useNavigation();
+
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser /*&& parsedUser.first_name*/ && parsedUser.userID) {
+        //setUserName(parsedUser.first_name);
+        setUserID(parsedUser.userID);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  fetchUserData();
 
   const moodIcons = [
     { id: 1, emoji: '😭', color: '#e74c3c' }, // Very Sad
@@ -31,7 +52,7 @@ const MoodTrackingPage = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" type="ionicon" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Mood Stats</Text>
+        <Text style={styles.headerText}>Mood Stats {userID}</Text>
         <TouchableOpacity>
           <Icon name="person" type="ionicon" color="black" size={30} />
         </TouchableOpacity>
