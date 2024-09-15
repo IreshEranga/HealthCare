@@ -10,10 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MoodTrackingPage = () => {
   const [selectedMood, setSelectedMood] = useState(null);
-
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
-
 
   const fetchUserData = async () => {
     try {
