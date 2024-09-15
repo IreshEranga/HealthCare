@@ -19,6 +19,8 @@ import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
 
 
 import Quiz from './app/PersonalizeMentalGoals/Quiz';
+import Loading from './app/PersonalizeMentalGoals/Loading';
+import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 
 
 const Stack = createStackNavigator();
@@ -86,6 +88,14 @@ export default function App() {
         <Stack.Screen  name="Quiz"
           component={Quiz}
           options={{ title: 'Quiz' }}
+        />
+        <Stack.Screen  name="Loading"
+          component={Loading}
+          options={{ title: 'Loading' }}
+        />
+        <Stack.Screen  name="Suggestions"
+          component={Suggestions}
+          options={{ title: 'Suggestions' }}
         />
       </Stack.Navigator>
       
