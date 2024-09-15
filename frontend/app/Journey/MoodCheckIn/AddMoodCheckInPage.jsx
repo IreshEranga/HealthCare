@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AddMoodCheckInPage = () => {
@@ -16,6 +17,23 @@ const AddMoodCheckInPage = () => {
   const [currentDate, setCurrentDate] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const navigation = useNavigation();
+  const [userID, setUserID] = useState('');
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser /*&& parsedUser.first_name */&& parsedUser.userID) {
+        //setUserName(parsedUser.first_name);
+        setUserID(parsedUser.userID);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  fetchUserData();
 
   // Fetch current date and format it
   useEffect(() => {
@@ -107,7 +125,7 @@ const AddMoodCheckInPage = () => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" type="ionicon" color="black" size={30} />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Mood Check-In</Text>
+          <Text style={styles.headerText}>Mood Check-In {userID}</Text>
           <TouchableOpacity>
             <Icon name="user" type="font-awesome" color="black" size={30} />
           </TouchableOpacity>
