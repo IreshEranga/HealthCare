@@ -8,9 +8,8 @@ import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
 import NavBar from '../../components/NavBar';
 
-export default function Welcome() {
-  
 
+export default function Welcome() {
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
   const navigation = useNavigation();
@@ -39,7 +38,7 @@ export default function Welcome() {
     } else if (currentHour < 18) {
       message = 'Good Afternoon ';
     } else {
-      message = 'Good Night ';
+      message = 'Good Evening ';
     }
 
     setGreetingMessage(message);
@@ -70,7 +69,7 @@ export default function Welcome() {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.topic1}>Routing Plan</Text>
+          <Text style={styles.topic1}>Routine Plan</Text>
           <View style={styles.card}>
             <Image source={vector} style={styles.vector} />
             <Text style={styles.cardTitle}>Personalize your Routines.</Text>
