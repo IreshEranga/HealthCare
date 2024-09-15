@@ -2,6 +2,8 @@ import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity, But
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
+import NavBar from '../../components/NavBar';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Quiz() {
   // Sample questions
@@ -15,24 +17,49 @@ export default function Quiz() {
       answers: ["Rarely", "Sometimes", "Often", "Always"]
     },
     {
-      question: "Do you exercise regularly?",
-      answers: ["Yes", "No", "Occasionally"]
-    }
+      question: "How well do you sleep at night?",
+      answers: ["Very well", "Well", "Not great", "Terribly"]
+    },
+    {
+      question: "How often do you take time to relax?",
+      answers: ["Daily", "A few times a week", "Rarely", "Never"]
+    },
+    {
+      question: "How satisfied are you with your work-life balance?",
+      answers: ["Very satisfied", "Satisfied", "Neutral", "Not satisfied"]
+    },
+    {
+      question: "How often do you feel anxious or overwhelmed?",
+      answers: ["Rarely", "Sometimes", "Often", "Always"]
+    },
+    {
+      question: "Do you practice mindfulness or meditation?",
+      answers: ["Yes, regularly", "Sometimes", "Rarely", "Never"]
+    },
   ];
 
   const [currentQuestion, setCurrentQuestion] = useState(0); // Track current question index
   const [selectedAnswer, setSelectedAnswer] = useState(null); // Track selected answer
+  const [error, setError] = useState(''); // Track if an error needs to be shown
+
+  const navigation = useNavigation();
 
   // Function to handle answer selection
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
+    setError(''); // Clear error if an answer is selected
   };
 
   // Function to handle "Next" button
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null); // Reset the selected answer for the next question
+    if (!selectedAnswer) {
+      setError('Please select an answer');
+    } else {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer(null); // Reset the selected answer for the next question
+        setError(''); // Clear error when moving to the next question
+      }
     }
   };
 
@@ -41,13 +68,22 @@ export default function Quiz() {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
       setSelectedAnswer(null); // Reset the selected answer for the previous question
+      setError(''); // Clear error
     }
   };
 
   // Function to handle quiz submission
   const handleSubmit = () => {
-    // Handle form submission logic here (e.g., save responses, show results)
-    alert("Quiz submitted!");
+    if (!selectedAnswer) {
+      setError('Please select an answer');
+    } else {
+      alert("Quiz submitted!");
+      setError('');
+
+      setTimeout(() => {
+        navigation.navigate('PersonalizeMentalGoals/Loading');
+      }, 3000);
+    }
   };
 
   return (
@@ -87,6 +123,9 @@ export default function Quiz() {
             </TouchableOpacity>
           ))}
 
+          {/* Display error message */}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
           <View style={styles.navigationButtons}>
             {/* Back button with icon */}
             {currentQuestion > 0 && (
@@ -101,7 +140,6 @@ export default function Quiz() {
               <TouchableOpacity
                 style={styles.navButton}
                 onPress={handleNext}
-                disabled={!selectedAnswer}
               >
                 <Text style={styles.navButtonText}>Next</Text>
                 <Icon name="arrow-right" size={16} color="white" />
@@ -110,7 +148,6 @@ export default function Quiz() {
               <TouchableOpacity
                 style={styles.navButton}
                 onPress={handleSubmit}
-                disabled={!selectedAnswer}
               >
                 <Text style={styles.navButtonText}>Submit</Text>
                 <Icon name="check" size={16} color="white" />
@@ -118,6 +155,7 @@ export default function Quiz() {
             )}
           </View>
         </ScrollView>
+        <NavBar  style={styles.navigation}/>
       </LinearGradient>
     </SafeAreaView>
   );
@@ -156,18 +194,15 @@ const styles = StyleSheet.create({
   quizContainer: {
     padding: 25,
     alignItems: 'center',
-    backgroundColor:'white',
+    backgroundColor: 'white',
     marginTop: 30,
     marginLeft: 20,
     marginRight: 20,
     borderRadius: 20,
-    // Shadow for iOS
     shadowColor: '#00e9e9',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 3.84,
-    
-    // Shadow for Android
     elevation: 50,
   },
   question: {
@@ -189,6 +224,10 @@ const styles = StyleSheet.create({
   answerText: {
     fontSize: 18,
     color: '#2E4057',
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
   },
   navigationButtons: {
     marginTop: 20,
