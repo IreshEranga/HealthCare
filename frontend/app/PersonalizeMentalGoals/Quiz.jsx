@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
-
 export default function Quiz() {
   // Sample questions
   const questions = [
@@ -90,16 +88,33 @@ export default function Quiz() {
           ))}
 
           <View style={styles.navigationButtons}>
-            {/* Back button */}
+            {/* Back button with icon */}
             {currentQuestion > 0 && (
-              <Button title="Back" onPress={handleBack} />
+              <TouchableOpacity style={styles.navButton} onPress={handleBack}>
+                <Icon name="arrow-left" size={16} color="white" />
+                <Text style={styles.navButtonText}>Back</Text>
+              </TouchableOpacity>
             )}
 
-            {/* Next/Submit button */}
+            {/* Next/Submit button with icon */}
             {currentQuestion < questions.length - 1 ? (
-              <Button title="Next" onPress={handleNext} disabled={!selectedAnswer} />
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={handleNext}
+                disabled={!selectedAnswer}
+              >
+                <Text style={styles.navButtonText}>Next</Text>
+                <Icon name="arrow-right" size={16} color="white" />
+              </TouchableOpacity>
             ) : (
-              <Button title="Submit" onPress={handleSubmit} disabled={!selectedAnswer} />
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={handleSubmit}
+                disabled={!selectedAnswer}
+              >
+                <Text style={styles.navButtonText}>Submit</Text>
+                <Icon name="check" size={16} color="white" />
+              </TouchableOpacity>
             )}
           </View>
         </ScrollView>
@@ -142,18 +157,18 @@ const styles = StyleSheet.create({
     padding: 25,
     alignItems: 'center',
     backgroundColor:'white',
-    marginTop:30,
-    marginLeft:20,
-    marginRight:20,
-    borderRadius:20,
+    marginTop: 30,
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 20,
     // Shadow for iOS
-  shadowColor: '#00e9e9',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.8,
-  shadowRadius: 3.84,
-  
-  // Shadow for Android
-  elevation: 50,
+    shadowColor: '#00e9e9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 3.84,
+    
+    // Shadow for Android
+    elevation: 50,
   },
   question: {
     fontSize: 20,
@@ -180,5 +195,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  navButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2E4057',
+    padding: 10,
+    borderRadius: 10,
+  },
+  navButtonText: {
+    color: 'white',
+    marginHorizontal: 5,
+    fontSize: 16,
   }
 });
