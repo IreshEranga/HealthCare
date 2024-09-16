@@ -27,6 +27,24 @@ import Loading from './app/PersonalizeMentalGoals/Loading';
 import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import NutritionHome from './app/Nutritions/nutritionHome';
+
+
 const Stack = createStackNavigator();
 
 
@@ -130,6 +148,10 @@ export default function App() {
         <Stack.Screen  name="Suggestions"
           component={Suggestions}
           options={{ title: 'Suggestions' }}
+        />
+        <Stack.Screen  name="NutritionHome"
+          component={NutritionHome}
+          options={{ title: 'NutritionHome' }}
         />
       </Stack.Navigator>
       
