@@ -1,6 +1,10 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { useRoute } from '@react-navigation/native';
+import NavBar from '../../components/NavBar';
+import { LinearGradient } from 'expo-linear-gradient';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 export default function GoalActivity() {
   const route = useRoute();
@@ -9,11 +13,28 @@ export default function GoalActivity() {
   // Render the goal details based on existingGoal data
   return (
     <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={['#E0BBE4', '#aec2b6', '#60768d']}
+        style={styles.background}
+      >
+        <View>
+        <Text style={styles.goalName}>{existingGoal.name}</Text>
+        </View>
+
+        <View>
+          <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
+        </View>
+
+        {/* <View style={styles.upborder}>
+          
+          <Text style={styles.goalType}>Goal Type: {existingGoal.type}</Text>
+          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text>
+        </View> */}
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.goalDetails}>
-          <Text style={styles.goalName}>{existingGoal.name}</Text>
+          {/* <Text style={styles.goalName}>{existingGoal.name}</Text>
           <Text style={styles.goalType}>Type: {existingGoal.type}</Text>
-          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text>
+          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text> */}
           {existingGoal.activities.map((activity, index) => (
             <View key={index} style={styles.activityItem}>
               <Text style={styles.activityDay}>Day {activity.day}</Text>
@@ -32,6 +53,8 @@ export default function GoalActivity() {
           ))}
         </View>
       </ScrollView>
+      </LinearGradient>
+      <NavBar/>
     </SafeAreaView>
   );
 }
@@ -45,23 +68,48 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
   },
+  usericon: {
+    marginLeft: 340,
+    marginTop: -30,
+  },
+  topic: {
+    color: '#2E4057',
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: 40,
+    textAlign: 'center',
+  },
   goalDetails: {
     marginBottom: 20,
+    
   },
   goalName: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#2E4057',
+    fontSize: 20,
+    marginTop: 20,
+    textAlign: 'center',
   },
   goalType: {
-    fontSize: 18,
+    fontSize: 16,
     marginVertical: 10,
+    marginLeft:20,
   },
   goalStatus: {
     fontSize: 16,
     marginBottom: 10,
+    marginLeft:20,
+    
+  },
+  upborder:{
+    borderBottomWidth:5,
+    borderBottomColor: '#8090d2',
   },
   activityItem: {
     marginBottom: 20,
+    borderTopWidth: 2, // Border width for the top of the NavBar
+    borderTopColor: '#8090d2',
   },
   activityDay: {
     fontSize: 16,
