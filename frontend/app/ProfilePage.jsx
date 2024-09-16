@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet,ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NavBar from './../components/NavBar';
 import axios from 'axios';
@@ -53,6 +53,7 @@ const ProfilePage = () => {
         <Icon name="edit" size={30} color="black" />
       </View>
 
+    <ScrollView contentContainerStyle={styles.scrollView}>
       {/* Profile Image */}
       <View style={styles.profileImageContainer}>
         <Image
@@ -68,36 +69,44 @@ const ProfilePage = () => {
 
       {/* Profile Fields */}
       <View style={styles.inputContainer}>
+      <Text style={styles.label}>First Name:</Text>
         <TextInput
           style={styles.input}
           value={userData.first_name || ''}
           editable={false}
           placeholder="First Name :"
         />
+        <Text style={styles.label}>Last Name:</Text>
         <TextInput
           style={styles.input}
           value={userData.last_name || ''}
           editable={false}
           placeholder="Last Name :"
         />
+        <Text style={styles.label}>Mobile:</Text>
         <TextInput
           style={styles.input}
           value={userData.mobile || ''}
           editable={false}
           placeholder="Phone No :"
         />
+        <Text style={styles.label}>Email:</Text>
         <TextInput
           style={styles.input}
           value={userData.email || ''}
           editable={false}
           placeholder="Email :"
         />
+
+<Text style={styles.label}>Profession:</Text>
         <TextInput
           style={styles.input}
           value={userData.profession || ''}
           editable={false}
           placeholder="Profession :"
         />
+
+<Text style={styles.label}>Gender:</Text>
         <TextInput
           style={styles.input}
           value={userData.gender || ''}
@@ -105,7 +114,7 @@ const ProfilePage = () => {
           placeholder="Gender :"
         />
       </View>
-
+      </ScrollView>
       {/* Fixed Navigation Bar */}
       <View style={styles.navbarContainer}>
         <NavBar />
@@ -124,6 +133,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+  },scrollView: {
+    flexGrow: 1,
+    paddingBottom:100,
   },
   profileTitle: {
     flex: 1,
@@ -166,6 +178,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+  },
+  label: {
+    fontSize: 16,
+    color: '#34495e',
+    marginBottom: 5,
   },
 });
 
