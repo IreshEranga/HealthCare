@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import HomeScreen from './app/HomeScreen'; 
 import LogIn from './app/LogIn'; 
 import SignUp from './app/SignUp';
@@ -8,18 +9,19 @@ import LogInPage from './app/LogInPage';
 import HomePage from './app/Home/HomePage';
 import Welcome from './app/Home/Welcome';
 import ProfilePage from './app/ProfilePage';
+
 import JourneyPage from './app/Journey/JourneyPage';
 import DailyRoutinePage from './app/Journey/DailyRoutine/DailyRoutinePage';
 import AddDailyRoutinePage from './app/Journey/DailyRoutine/AddDailyRoutinePage';
 import DoneAddDailyRoutinePage from './app/Journey/DailyRoutine/DoneAddDailyRoutinePage';
+import EditDailyRoutinePage from './app/Journey/DailyRoutine/EditDailyRoutinePage';
 import JournalingPage from './app/Journey/Journaling/JournalingPage';
 import AddJournalPage from './app/Journey/Journaling/AddJournalPage';
 import DoneAddJournalPage from './app/Journey/Journaling/DoneAddJournalPage';
+import EditJournalPage from './app/Journey/Journaling/EditJournalPage';
 import MoodTrackingPage from './app/Journey/MoodCheckIn/MoodTrackingPage';
 import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
 import DoneAddMoodCheckInPage from './app/Journey/MoodCheckIn/DoneAddMoodCheckInPage';
-
-
 
 
 import Quiz from './app/PersonalizeMentalGoals/Quiz';
@@ -27,11 +29,6 @@ import Loading from './app/PersonalizeMentalGoals/Loading';
 import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 import GoalSummary from './app/PersonalizeMentalGoals/GoalSummary';
 import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
-
-
-
-
-
 
 
 
@@ -110,6 +107,11 @@ export default function App() {
           options={{ title: 'DoneAddDailyRoutinePage' }}
         />
         <Stack.Screen
+          name="EditDailyRoutinePage"
+          component={EditDailyRoutinePage}
+          options={{ title: 'EditDailyRoutinePage' }}
+        />
+        <Stack.Screen
           name="JournalingPage"
           component={JournalingPage}
           options={{ title: 'JournalingPage' }}
@@ -123,6 +125,11 @@ export default function App() {
           name="DoneAddJournalPage"
           component={DoneAddJournalPage}
           options={{ title: 'DoneAddJournalPage' }}
+        />
+        <Stack.Screen
+          name="EditJournalPage"
+          component={EditJournalPage}
+          options={{ title: 'EditJournalPage' }}
         />
         <Stack.Screen
           name="MoodTrackingPage"

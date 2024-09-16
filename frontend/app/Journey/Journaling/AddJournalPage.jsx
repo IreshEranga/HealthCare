@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { Icon } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import moment from 'moment';
+//import moment from 'moment';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AddJournalPage = () => {
   const [note, setNote] = useState('');
-  const [currentDate, setCurrentDate] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
-
-  // Fetch current date
-  useEffect(() => {
-    const today = moment().format('Do MMMM, YYYY');
-    setCurrentDate(today);
-  }, []);
 
   // Fetch user data from AsyncStorage
   const fetchUserData = async () => {
@@ -47,7 +40,6 @@ const AddJournalPage = () => {
 
     const journalData = {
       userID,
-      date: currentDate,
       note,
     };
 
@@ -73,11 +65,11 @@ const AddJournalPage = () => {
       <View style={styles.header}>
         {/* Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" type="ionicon" color="black" size={30} />
+          <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.title}>Journaling</Text>
+        <Text style={styles.title}>Journaling..</Text>
 
         {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isSaving}>
@@ -86,9 +78,6 @@ const AddJournalPage = () => {
           </Text>
         </TouchableOpacity>
       </View>
-
-      {/* Current date */}
-      <Text style={styles.date}>{currentDate}</Text>
 
       {/* Note input */}
       <View style={styles.noteContainer}>
@@ -117,22 +106,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  backButton: {
-    position: 'absolute',
-    left: 0,
-  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
     flex: 1, 
-  },
-  date: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: 30,
+    marginLeft:-20,
   },
   noteContainer: {
     flex: 1,
@@ -144,6 +124,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
+    marginTop:20,
   },
   noteInput: {
     flex: 1,
@@ -158,6 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     position: 'absolute',
     right: 0,
+    marginTop:20,
   },
   saveButtonText: {
     color: 'white',

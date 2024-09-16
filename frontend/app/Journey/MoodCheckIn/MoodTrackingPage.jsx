@@ -25,7 +25,6 @@ const MoodTrackingPage = () => {
       console.log('Error fetching user data', error);
     }
   };
-
   fetchUserData();
 
   const moodIcons = [
