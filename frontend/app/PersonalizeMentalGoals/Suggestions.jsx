@@ -123,9 +123,9 @@ export default function Suggestions() {
   const navigation = useNavigation();
 
   // Function to handle goal selection
-  const handleGoalSelect = (goal) => {
+  const handleGoalSelect = (goal, goalType) => {
     // Navigate to the GoalSummary screen, passing the selected goal as a parameter
-    navigation.navigate('PersonalizeMentalGoals/GoalSummary', { goal });
+    navigation.navigate('PersonalizeMentalGoals/GoalSummary', { goal, goalType });
   };
 
   return (
@@ -161,7 +161,7 @@ export default function Suggestions() {
                   <Text style={styles.goalName}>{goal.name}</Text>
                   <TouchableOpacity
                     style={styles.rightButton}
-                    onPress={() => handleGoalSelect(goal)}
+                    onPress={() => handleGoalSelect(goal, goalType.type)}
                   >
                     <Text style={styles.buttonText}>Start</Text>
                   </TouchableOpacity>
