@@ -1,68 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { LinearGradient } from 'expo-linear-gradient';
-import man from '../../assets/images/man2.png';
-import NavBar from '../../components/NavBar';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
 export default function GoalActivity() {
+  const route = useRoute();
+  const { existingGoal } = route.params; // Get the goal data from route params
+
+  // Render the goal details based on existingGoal data
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient
-        colors={['#E0BBE4', '#aec2b6', '#60768d']}
-        style={styles.background}
-      >
-
       <ScrollView contentContainerStyle={styles.scrollView}>
-
-          <View>
-            <Text style={styles.topic}>Goal Activity</Text>
-          </View>
-
-          <View>
-            <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
-          </View>
-
-          <TouchableOpacity /*onPress={handleBackPress}*/>
-            <Icon name="arrow-left" size={30} color="#2E4057" marginLeft={20} marginTop={-40} />
-          </TouchableOpacity> 
-
+        <View style={styles.goalDetails}>
+          <Text style={styles.goalName}>{existingGoal.name}</Text>
+          <Text style={styles.goalType}>Type: {existingGoal.type}</Text>
+          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text>
+          {existingGoal.activities.map((activity, index) => (
+            <View key={index} style={styles.activityItem}>
+              <Text style={styles.activityDay}>Day {activity.day}</Text>
+              <Text style={styles.activityInstruction}>{activity.instruction}</Text>
+              {activity.image && <Image source={{ uri: activity.image }} style={styles.activityImage} />}
+              <Text style={styles.activityStatus}>Status: {activity.status}</Text>
+            </View>
+          ))}
+        </View>
       </ScrollView>
-
-      </LinearGradient>
-      
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0e1138',
     flex: 1,
-  },
-  background: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: '100%',
+    backgroundColor: '#fff',
   },
   scrollView: {
     flexGrow: 1,
+    padding: 20,
   },
-  usericon: {
-    marginLeft: 340,
-    marginTop: -30,
+  goalDetails: {
+    marginBottom: 20,
   },
-  topic: {
-    color: '#2E4057',
+  goalName: {
+    fontSize: 24,
     fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 40,
-    textAlign: 'center',
   },
-})
+  goalType: {
+    fontSize: 18,
+    marginVertical: 10,
+  },
+  goalStatus: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  activityItem: {
+    marginBottom: 20,
+  },
+  activityDay: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  activityInstruction: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  activityImage: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
+  },
+  activityStatus: {
+    fontSize: 12,
+    fontStyle: 'italic',
+  },
+});
