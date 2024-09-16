@@ -74,7 +74,7 @@ export default function GoalSummary() {
 };*/
 
 
-
+/*
 const handleStartPress = async () => {
   try {
     console.log('Goal type:', goalType); // Log to check if type is present
@@ -118,6 +118,74 @@ const handleStartPress = async () => {
       console.error('Error message:', error.message); // Log the error message
     }
     console.error('Error config:', error.config); // Log the request config
+  }
+};
+*/
+
+const handleStartPress = async () => {
+  try {
+    console.log('Goal type:', goalType); // Log to check if type is present
+    console.log('Goal name:', goal.name); // Additional check for goal name
+
+    // Fetch existing goals for the current user
+    const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
+
+    // Check for a goal with the same type and name
+    const duplicateGoal = response.data.find(
+      (existingGoal) =>
+        existingGoal.type === goalType && existingGoal.name === goal.name
+    );
+
+    if (duplicateGoal) {
+      // If a duplicate goal is found, show a toast message and exit the function
+      console.log("Goal Duplicated!!");
+      Toast.show({
+        type: 'error',
+        text1: 'Duplicate Goal',
+        text2: `You already have a goal named "${goal.name}" under "${goalType}".`,
+      });
+      return; // Stop further execution if a duplicate is found
+    }
+
+    // If no duplicate is found, proceed with saving the goal
+    const goalData = {
+      user: _id, // The user reference (ObjectId)
+      type: goalType,
+      name: goal.name,
+      activities: goal.activities.map((activity, index) => ({
+        day: index + 1, // Assuming activities are ordered and mapped to days
+        instruction: activity.instruction,
+        status: 'pending', // Default to 'pending'
+      })),
+      goalStatus: 'in progress', // Set initial status of the goal
+    };
+
+    console.log('Sending goal data:', goalData); // Log goalData for debugging
+
+    // Post new goal data to backend
+    const saveResponse = await axios.post(`${apiUrl}/users/goals`, goalData);
+
+    // Show success toast message
+    Toast.show({
+      type: 'success',
+      text1: 'Congratulations!!',
+      text2: `You have started your goal: ${goal.name}.`,
+    });
+
+    // Navigate to the next screen
+    navigation.navigate('PersonalizeMentalGoals/GoalActivity'); // Replace with your desired screen
+  } catch (error) {
+    // Error handling
+    if (error.response) {
+      console.error('Error data:', error.response.data);
+      console.error('Error status:', error.response.status);
+      console.error('Error headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    console.error('Error config:', error.config);
   }
 };
 
@@ -183,6 +251,8 @@ const handleStartPress = async () => {
           
 
         </ScrollView>
+        {/* Toast Message */}
+      <Toast />
         
         <NavBar style={styles.navigation} />
       </LinearGradient>
