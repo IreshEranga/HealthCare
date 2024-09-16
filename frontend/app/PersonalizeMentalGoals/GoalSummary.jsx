@@ -63,6 +63,11 @@ export default function GoalSummary() {
           text1: 'Duplicate Goal',
           text2: `You already started this goal.`,
         });
+
+        //navigation.navigate('PersonalizeMentalGoals/Suggestions');
+        setTimeout(() => {
+          navigation.navigate('PersonalizeMentalGoals/Suggestions');
+        }, 3000);
         return; // Stop further execution if a duplicate is found
       }
 
