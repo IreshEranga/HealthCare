@@ -7,7 +7,7 @@ import man from '../../assets/images/man2.png';
 import NavBar from '../../components/NavBar';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Toast from 'react-native-toast-message';
 
 export default function GoalSummary() {
   const route = useRoute();
@@ -98,6 +98,12 @@ const handleStartPress = async () => {
 
     // Handle the response if needed
     console.log('Goal saved:', response.data);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Congratulations!!',
+      text2: `You have been start your goal ${goal.name}.`
+    });
 
     // Navigate to another screen or show a success message
     navigation.navigate('PersonalizeMentalGoals/GoalActivity'); // Replace with your desired screen
