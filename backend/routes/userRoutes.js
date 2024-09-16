@@ -69,9 +69,9 @@ router.get('/users/:_id/goals', async (req, res) => {
     // Fetch all goals for the user
     const goals = await MentalFitnessGoal.find({ user: _id });
     
-    if (!goals.length) {
+    /*if (!goals.length) {
       return res.status(404).json({ message: 'No goals found for this user.' });
-    }
+    }*/
 
     // Send back the user's goals
     res.json(goals);
