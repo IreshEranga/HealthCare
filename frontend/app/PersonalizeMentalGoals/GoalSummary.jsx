@@ -1,14 +1,123 @@
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
-import React from 'react';
-import { useRoute } from '@react-navigation/native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import React,{useState} from 'react';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import man from '../../assets/images/man2.png';
 import NavBar from '../../components/NavBar';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function GoalSummary() {
   const route = useRoute();
-  const { goal } = route.params; // Get the selected goal from route params
+  const navigation = useNavigation();
+  const { goal, goalType } = route.params; // Get the selected goal from route params
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+
+  const [userName, setUserName] = useState('');
+  const [userID, setUserID] = useState('');
+  const [_id, set_id] = useState('');
+
+  console.log(apiUrl);
+
+  const fetchUserData = async () => {
+    
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser && parsedUser.first_name && parsedUser.userID && parsedUser._id) {
+        setUserName(parsedUser.first_name);
+        setUserID(parsedUser.userID);
+        set_id(parsedUser._id);
+        console.log(_id);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  fetchUserData();
+
+  const handleBackPress = () => {
+    navigation.navigate('PersonalizeMentalGoals/Suggestions'); // Go back to the previous screen
+  };
+
+
+// Add this function inside your GoalSummary component
+/*const handleStartPress = async () => {
+  console.log(`${userID}`);
+  try {
+    const userID = userID; // Replace with the actual user ID or retrieve it from context/state
+    const goalData = {
+      type: goal.type, // Ensure `goal` has all the necessary fields
+      name: goal.name,
+      activities: goal.activities,
+      summary: goal.summary
+    };
+
+    const response = await axios.post(`${apiUrl}/mentalfitness/goal`, {
+      userID,
+      goalData
+    });
+
+    // Handle the response if needed
+    console.log('Goal saved:', response.data);
+    // Navigate to another screen or show a success message
+    navigation.navigate('PersonalizeMentalGoals/GoalActivity'); // Replace with your desired screen
+  } catch (error) {
+    console.error('Error saving goal:', error);
+    // Show an error message or handle the error appropriately
+  }
+};*/
+
+
+
+const handleStartPress = async () => {
+  try {
+    console.log('Goal type:', goalType); // Log to check if type is present
+    console.log('Goal name:', goal.name); // Additional check for goal name
+
+    const goalData = {
+      user: _id, // The user reference (ObjectId)
+      type: goalType, // Ensure `goal` has the 'type' field
+      name: goal.name,
+      activities: goal.activities.map((activity, index) => ({
+        day: index + 1, // Assuming activities are ordered and mapped to days
+        instruction: activity.instruction,
+        status: 'pending', // Default to 'pending'
+      })),
+      goalStatus: 'in progress', // Set initial status of the goal
+    };
+
+    console.log('Sending goal data:', goalData); // Log goalData for debugging
+
+    const response = await axios.post(`${apiUrl}/users/goals`, goalData);
+
+    // Handle the response if needed
+    console.log('Goal saved:', response.data);
+
+    // Navigate to another screen or show a success message
+    navigation.navigate('PersonalizeMentalGoals/GoalActivity'); // Replace with your desired screen
+  } catch (error) {
+    if (error.response) {
+      console.error('Error data:', error.response.data); // Log the response data
+      console.error('Error status:', error.response.status); // Log the response status
+      console.error('Error headers:', error.response.headers); // Log the headers
+    } else if (error.request) {
+      console.error('Error request:', error.request); // Log the request
+    } else {
+      console.error('Error message:', error.message); // Log the error message
+    }
+    console.error('Error config:', error.config); // Log the request config
+  }
+};
+
+
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,6 +134,11 @@ export default function GoalSummary() {
             <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
           </View>
 
+          <TouchableOpacity onPress={handleBackPress}>
+              <Icon name="arrow-left" size={30} color="#2E4057" marginLeft={20} marginTop={-40} />
+            </TouchableOpacity>
+
+          <Text style={styles.sumtopic}>{goalType}</Text>
           <Text style={styles.sumtopic}>Summary:</Text>
 
           {/* Summary and image overlay */}
@@ -32,7 +146,12 @@ export default function GoalSummary() {
             <Image source={man} style={styles.manImage} width={200} height={400} />
             <View style={styles.summaryWrapper}>
               <Text style={styles.summary}>{goal.summary}</Text>
-            </View>
+
+              </View>
+              <TouchableOpacity style={styles.startButton} onPress={handleStartPress}>
+                <Text style={styles.startButtonText}>Start</Text>
+              </TouchableOpacity>
+            
           </View>
 
           {/* Uncomment the section below if you want to display activities */}
@@ -53,7 +172,12 @@ export default function GoalSummary() {
             </View>
           ))} 
           */}
+
+            {/* Start Button */}
+          
+
         </ScrollView>
+        
         <NavBar style={styles.navigation} />
       </LinearGradient>
     </SafeAreaView>
@@ -83,7 +207,7 @@ const styles = StyleSheet.create({
     color: '#2E4057',
     fontWeight: 'bold',
     fontSize: 20,
-    marginTop: 30,
+    marginTop: 40,
     textAlign: 'center',
   },
   sumtopic: {
@@ -147,5 +271,24 @@ const styles = StyleSheet.create({
   activityStatus: {
     fontSize: 12,
     fontStyle: 'italic',
+  },
+  startButton: {
+    backgroundColor: '#2E4057',
+    borderRadius: 20,
+    padding: 15,
+    marginHorizontal: 30,
+    marginTop: 20,
+    alignItems: 'center',
+    top:-150,
+    width:100
+  },
+  startButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop:5,
+    paddingBottom:5,
+    paddingRight:10,
+    paddingLeft:10,
   },
 });
