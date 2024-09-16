@@ -18,7 +18,15 @@ export default function GoalActivity() {
             <View key={index} style={styles.activityItem}>
               <Text style={styles.activityDay}>Day {activity.day}</Text>
               <Text style={styles.activityInstruction}>{activity.instruction}</Text>
-              {activity.image && <Image source={{ uri: activity.image }} style={styles.activityImage} />}
+              {activity.image ? (
+                <Image 
+                  source={{ uri: activity.image }} 
+                  style={styles.activityImage} 
+                  resizeMode='cover' // Adjust this as needed
+                />
+              ) : (
+                <Text style={styles.noImageText}>No image available</Text>
+              )}
               <Text style={styles.activityStatus}>Status: {activity.status}</Text>
             </View>
           ))}
@@ -67,6 +75,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     marginBottom: 10,
+    borderRadius: 10, // Optional: adds rounded corners
+  },
+  noImageText: {
+    fontSize: 14,
+    color: '#000000',
+    textAlign: 'center',
   },
   activityStatus: {
     fontSize: 12,
