@@ -12,7 +12,8 @@ const mentalFitnessGoalSchema = new mongoose.Schema(
     activities: [
       {
         day: { type: Number, required: true }, // Day number (e.g., Day 1, Day 2)
-        instruction: { type: String, required: true }, // Instruction for the day
+        instruction: { type: String, required: true }, 
+        image: { type: String },
         status: { 
           type: String, 
           enum: ['pending', 'completed'], 

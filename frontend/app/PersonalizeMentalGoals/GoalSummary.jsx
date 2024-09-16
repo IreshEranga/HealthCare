@@ -9,6 +9,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
+
+
 export default function GoalSummary() {
   const route = useRoute();
   const navigation = useNavigation();
@@ -79,6 +81,7 @@ export default function GoalSummary() {
         activities: goal.activities.map((activity, index) => ({
           day: index + 1, // Assuming activities are ordered and mapped to days
           instruction: activity.instruction,
+          image:activity.image,
           status: 'pending', // Default to 'pending'
         })),
         goalStatus: 'in progress', // Set initial status of the goal
@@ -96,8 +99,9 @@ export default function GoalSummary() {
         text2: `You have started your goal: ${goal.name}.`,
       });
 
-      // Navigate to the next screen
-      navigation.navigate('PersonalizeMentalGoals/GoalActivity'); // Replace with your desired screen
+      setTimeout(() => {
+        navigation.navigate('PersonalizeMentalGoals/GoalActivity');
+      }, 3000);
     } catch (error) {
       // Error handling
       if (error.response) {
