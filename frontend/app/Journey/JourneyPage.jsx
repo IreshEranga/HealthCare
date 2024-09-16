@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingBottom: 150,  // Adjust for navbar
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#000',
     marginTop: 25,

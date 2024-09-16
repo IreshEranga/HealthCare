@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-
 const MoodTrackingPage = () => {
   const [selectedMood, setSelectedMood] = useState(null);
-
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
-
 
   const fetchUserData = async () => {
     try {
@@ -50,11 +47,11 @@ const MoodTrackingPage = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" type="ionicon" color="black" size={30} />
+          <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Mood Stats {userID}</Text>
         <TouchableOpacity>
-          <Icon name="person" type="ionicon" color="black" size={30} />
+          <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
@@ -96,7 +93,7 @@ const MoodTrackingPage = () => {
 
       {/* Floating Button */}
       <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/MoodCheckIn/AddMoodCheckInPage')}>
-        <Icon name="add" type="ionicon" color="white" size={30} />
+        <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
 
       {/* Nav Bar */}
@@ -169,9 +166,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 20,
-    backgroundColor: '#c0392b', // Red floating button
-    borderRadius: 50,
-    padding: 15,
+    backgroundColor: '#c0392b',
+    borderRadius: 50, 
+    width: 60,       
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',    
     elevation: 5,
   },
   bottomNavigation: {

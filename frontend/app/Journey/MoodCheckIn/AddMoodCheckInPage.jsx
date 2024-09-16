@@ -83,6 +83,9 @@ const AddMoodCheckInPage = () => {
 
   // Save the mood check-in to the backend
   const handleSave = async () => {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+    console.log(apiUrl);
+
     if (!selectedMood || !selectedCompany || !selectedLocation) {
       Alert.alert('Missing Info', 'Please fill in all required sections.');
       return;
@@ -99,7 +102,7 @@ const AddMoodCheckInPage = () => {
     setIsSaving(true);
 
     try {
-      await axios.post('http://172.20.10.4:8000/mood-checks/add', moodData);
+      await axios.post(`${apiUrl}/mood-checks/add`, moodData);
       setIsSaving(false); 
       Alert.alert('Success', 'Mood check-in saved successfully!');
       resetForm();

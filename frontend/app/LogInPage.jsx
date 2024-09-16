@@ -20,7 +20,7 @@ export default function LogInPage() {
       console.log("Username and password typed");
       try {
         // Make a POST request to the backend
-        const response = await fetch(`${apiUrl}/users/logIn`/*'http://192.168.203.63:8000/users/logIn'*/, {
+        const response = await fetch(`${apiUrl}/users/logIn`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ const SignUp = () => {
 
   const handleSignUp = async () => {
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  console.log(apiUrl);
+    console.log(apiUrl);
   
     if (password !== retypePassword) {
       setErrorMessage('Passwords do not match!');
@@ -96,7 +96,6 @@ const SignUp = () => {
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.formContainer}>
           <Text style={styles.signuptxt}>Sign Up</Text>
-
           <TextInput
             style={styles.input}
             placeholder="First Name"

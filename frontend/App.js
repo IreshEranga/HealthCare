@@ -7,13 +7,17 @@ import SignUp from './app/SignUp';
 import LogInPage from './app/LogInPage';
 import HomePage from './app/Home/HomePage';
 import Welcome from './app/Home/Welcome';
+import ProfilePage from './app/ProfilePage';
 import JourneyPage from './app/Journey/JourneyPage';
 import DailyRoutinePage from './app/Journey/DailyRoutine/DailyRoutinePage';
+import AddDailyRoutinePage from './app/Journey/DailyRoutine/AddDailyRoutinePage';
+import DoneAddDailyRoutinePage from './app/Journey/DailyRoutine/DoneAddDailyRoutinePage';
 import JournalingPage from './app/Journey/Journaling/JournalingPage';
+import AddJournalPage from './app/Journey/Journaling/AddJournalPage';
+import DoneAddJournalPage from './app/Journey/Journaling/DoneAddJournalPage';
 import MoodTrackingPage from './app/Journey/MoodCheckIn/MoodTrackingPage';
 import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
-
-
+import DoneAddMoodCheckInPage from './app/Journey/MoodCheckIn/DoneAddMoodCheckInPage';
 
 
 
@@ -79,6 +83,11 @@ export default function App() {
           options={{ title: 'Welcome' }}
         />
         <Stack.Screen
+          name="ProfilePage"
+          component={ProfilePage}
+          options={{ title: 'ProfilePage' }}
+        />
+        <Stack.Screen
           name="JourneyPage"
           component={JourneyPage}
           options={{ title: 'JourneyPage' }}
@@ -89,9 +98,29 @@ export default function App() {
           options={{ title: 'DailyRoutinePage' }}
         />
         <Stack.Screen
+          name="AddDailyRoutinePage"
+          component={AddDailyRoutinePage}
+          options={{ title: 'AddDailyRoutinePage' }}
+        />
+        <Stack.Screen
+          name="DoneAddDailyRoutinePage"
+          component={DoneAddDailyRoutinePage}
+          options={{ title: 'DoneAddDailyRoutinePage' }}
+        />
+        <Stack.Screen
           name="JournalingPage"
           component={JournalingPage}
           options={{ title: 'JournalingPage' }}
+        />
+        <Stack.Screen
+          name="AddJournalPage"
+          component={AddJournalPage}
+          options={{ title: 'AddJournalPage' }}
+        />
+        <Stack.Screen
+          name="DoneAddJournalPage"
+          component={DoneAddJournalPage}
+          options={{ title: 'DoneAddJournalPage' }}
         />
         <Stack.Screen
           name="MoodTrackingPage"
@@ -102,6 +131,11 @@ export default function App() {
           name="AddMoodCheckInPage"
           component={AddMoodCheckInPage}
           options={{ title: 'AddMoodCheckInPage' }}
+        />
+        <Stack.Screen
+          name="DoneAddMoodCheckInPage"
+          component={DoneAddMoodCheckInPage}
+          options={{ title: 'DoneAddMoodCheckInPage' }}
         />
         <Stack.Screen  name="Quiz"
           component={Quiz}
