@@ -22,7 +22,7 @@ const NavBar = () => {
         <Text style={styles.navText}>Notifications</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
-        <Icon name="person-outline" size={24} color="white" />
+        <Icon name="person-outline" size={24} color="white" onPress={() => navigation.navigate('ProfilePage')}/>
         <Text style={styles.navText}>Profile</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>

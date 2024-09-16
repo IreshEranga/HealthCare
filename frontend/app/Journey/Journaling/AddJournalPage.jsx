@@ -54,12 +54,12 @@ const AddJournalPage = () => {
     setIsSaving(true);
 
     try {
-      const apiUrl = process.env.EXPO_PUBLIC_API_URL; // Replace with your actual API URL
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       await axios.post(`${apiUrl}/journals/add`, journalData);
       setIsSaving(false);
       Alert.alert('Success', 'Journal entry saved successfully!');
-      setNote(''); // Clear the input after saving
-      navigation.goBack(); // Go back to the previous screen
+      setNote(''); 
+      navigation.goBack(); 
     } catch (error) {
       setIsSaving(false);
       console.log('Error saving journal entry:', error);
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // This ensures back and save buttons are on opposite sides
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    flex: 1, // Occupy the remaining space between the buttons
+    flex: 1, 
   },
   date: {
     fontSize: 18,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 10,
     position: 'absolute',
-    right: 0, // Aligns the save button to the right
+    right: 0,
   },
   saveButtonText: {
     color: 'white',

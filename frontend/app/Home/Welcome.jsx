@@ -59,7 +59,7 @@ export default function Welcome() {
           {greetingMessage}, {userName ? userName : 'Guest'}
         </Text>
         <View>
-          <Icon style={styles.usericon} name="user" size={34} color="white" />
+          <Icon style={styles.usericon} name="user" size={34} color="white" onPress={() => navigation.navigate('ProfilePage')}/>
         </View>
 
         <View style={styles.daydate}>

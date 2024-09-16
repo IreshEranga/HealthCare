@@ -7,6 +7,7 @@ import SignUp from './app/SignUp';
 import LogInPage from './app/LogInPage';
 import HomePage from './app/Home/HomePage';
 import Welcome from './app/Home/Welcome';
+import ProfilePage from './app/ProfilePage';
 import JourneyPage from './app/Journey/JourneyPage';
 import DailyRoutinePage from './app/Journey/DailyRoutine/DailyRoutinePage';
 import AddDailyRoutinePage from './app/Journey/DailyRoutine/AddDailyRoutinePage';
@@ -62,6 +63,11 @@ export default function App() {
           name="Welcome"
           component={Welcome}
           options={{ title: 'Welcome' }}
+        />
+        <Stack.Screen
+          name="ProfilePage"
+          component={ProfilePage}
+          options={{ title: 'ProfilePage' }}
         />
         <Stack.Screen
           name="JourneyPage"

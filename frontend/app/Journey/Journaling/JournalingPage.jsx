@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
+//import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
@@ -10,7 +11,7 @@ import moment from 'moment';
 
 const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(moment()); // Default is today
+  const [selectedDate, setSelectedDate] = useState(moment()); 
   const [currentDate, setCurrentDate] = useState(moment().format('Do MMMM, YYYY'));
   const navigation = useNavigation();
 
@@ -50,11 +51,11 @@ const JournalingPage = () => {
       {/* Header with back and user icon */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" type="ionicon" color="black" size={30} />
+          <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Journaling</Text>
         <TouchableOpacity>
-          <Icon name="person" type="ionicon" color="black" size={30} />
+          <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
@@ -99,8 +100,8 @@ const JournalingPage = () => {
       </ScrollView>
 
       {/* Floating button to add a new journal entry */}
-      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/Journaling/AddJournalPage')}>
-        <Icon name="add" type="ionicon" color="white" size={30} />
+      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/MoodCheckIn/AddMoodCheckInPage')}>
+        <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
 
       {/* Nav Bar */}
@@ -194,10 +195,13 @@ const styles = StyleSheet.create({
     bottom: 80,
     right: 20,
     backgroundColor: '#c0392b',
-    borderRadius: 50,
-    padding: 15,
+    borderRadius: 50, 
+    width: 60,       
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',    
     elevation: 5,
-  },
+  },  
 });
 
 export default JournalingPage;
