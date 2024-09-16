@@ -48,31 +48,24 @@ export default function GoalSummary() {
     try {
       console.log('Goal type:', goalType); // Log to check if type is present
       console.log('Goal name:', goal.name); // Additional check for goal name
-
+  
       // Fetch existing goals for the current user
       const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
-
+  
       // Check for a goal with the same type and name
       const duplicateGoal = response.data.find(
         (existingGoal) =>
           existingGoal.type === goalType && existingGoal.name === goal.name
       );
-
+  
       if (duplicateGoal) {
-        // If a duplicate goal is found, show a toast message and exit the function
-        Toast.show({
-          type: 'error',
-          text1: 'Duplicate Goal',
-          text2: `You already started this goal.`,
+        // If a duplicate goal is found, navigate to GoalActivity with existing goal data
+        navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
+          existingGoal: duplicateGoal, // Pass the existing goal data
         });
-
-        //navigation.navigate('PersonalizeMentalGoals/Suggestions');
-        setTimeout(() => {
-          navigation.navigate('PersonalizeMentalGoals/Suggestions');
-        }, 3000);
         return; // Stop further execution if a duplicate is found
       }
-
+  
       // If no duplicate is found, proceed with saving the goal
       const goalData = {
         user: _id, // The user reference (ObjectId)
@@ -81,26 +74,28 @@ export default function GoalSummary() {
         activities: goal.activities.map((activity, index) => ({
           day: index + 1, // Assuming activities are ordered and mapped to days
           instruction: activity.instruction,
-          image:activity.image,
+          image: activity.image,
           status: 'pending', // Default to 'pending'
         })),
         goalStatus: 'in progress', // Set initial status of the goal
       };
-
+  
       console.log('Sending goal data:', goalData); // Log goalData for debugging
-
+  
       // Post new goal data to backend
       const saveResponse = await axios.post(`${apiUrl}/users/goals`, goalData);
-
+  
       // Show success toast message
       Toast.show({
         type: 'success',
         text1: 'Congratulations!!',
         text2: `You have started your goal: ${goal.name}.`,
       });
-
+  
       setTimeout(() => {
-        navigation.navigate('PersonalizeMentalGoals/GoalActivity');
+        navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
+          existingGoal: saveResponse.data, // Pass the newly created goal data
+        });
       }, 3000);
     } catch (error) {
       // Error handling
@@ -116,7 +111,7 @@ export default function GoalSummary() {
       console.error('Error config:', error.config);
     }
   };
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
