@@ -69,7 +69,7 @@ const AddJournalPage = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.title}>Add Journal</Text>
+        <Text style={styles.title}>Journaling..</Text>
 
         {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isSaving}>
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     flex: 1, 
+    marginLeft:-20,
   },
   noteContainer: {
     flex: 1,
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
+    marginTop:20,
   },
   noteInput: {
     flex: 1,
@@ -137,6 +139,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     position: 'absolute',
     right: 0,
+    marginTop:20,
   },
   saveButtonText: {
     color: 'white',

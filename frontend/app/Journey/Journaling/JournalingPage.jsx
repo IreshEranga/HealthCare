@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-//import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-
+import axios from 'axios';
 
 const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
@@ -20,107 +19,133 @@ const JournalingPage = () => {
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-
-      if (parsedUser /*&& parsedUser.first_name*/ && parsedUser.userID) {
-        //setUserName(parsedUser.first_name);
+      if (parsedUser && parsedUser.userID) {
         setUserID(parsedUser.userID);
       }
     } catch (error) {
       console.log('Error fetching user data', error);
     }
   };
-  fetchUserData();
 
-  // Fetch user journals from AsyncStorage or API (Simulated here for demo)
-  const fetchJournals = async () => {
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchJournals = async (selectedDate) => {
     try {
-      // Simulate fetching journal data
-      const storedJournals = await AsyncStorage.getItem('userJournals');
-      const parsedJournals = storedJournals ? JSON.parse(storedJournals) : [];
-      setJournals(parsedJournals);
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      const formattedDate = selectedDate.format('YYYY-MM-DD');
+      if (!userID) return;
+
+      const response = await axios.get(`${apiUrl}/journals/${userID}?date=${formattedDate}`);
+      setJournals(response.data);
     } catch (error) {
       console.log('Error fetching journals', error);
+      Alert.alert('Error', 'Failed to fetch journals. Please try again later.');
     }
   };
 
-  // Filter journals by the selected date
-  const filterJournalsByDate = (date) => {
-    return journals.filter(journal => journal.date === date.format('MM/DD/YYYY'));
-  };
+  useEffect(() => {
+    if (userID) {
+      fetchJournals(selectedDate);
+    }
+  }, [userID, selectedDate]);
 
-  // Add new journal (Navigate to the AddJournalPage)
   const addNewJournal = () => {
     navigation.navigate('Journey/Journaling/AddJournalPage');
   };
 
-  // Edit existing journal (Navigate to the EditJournalPage)
-  const editJournal = (journalId) => {
-    navigation.navigate('EditJournalPage', { journalId });
+  const updateJournal = (journal) => {
+    navigation.navigate('Journey/Journaling/EditJournalPage', { journal });
   };
 
-  useEffect(() => {
-    fetchJournals(); // Fetch journals when component mounts
-  }, []);
+  const deleteJournal = async (journalID) => {
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      await axios.delete(`${apiUrl}/journals/${journalID}`);
+      fetchJournals(selectedDate); // Refresh journals after deletion
+      Alert.alert('Success', 'Journal entry deleted successfully.');
+    } catch (error) {
+      console.log('Error deleting journal:', error);
+      Alert.alert('Error', 'Failed to delete journal. Please try again later.');
+    }
+  };
+
+  const renderDateButtons = () => {
+    const today = moment();
+    const lastYear = moment().subtract(1, 'year');
+
+    const dates = [];
+    let currentDate = today;
+
+    while (currentDate.isAfter(lastYear)) {
+      dates.push(currentDate.clone());
+      currentDate = currentDate.subtract(1, 'day');
+    }
+
+    return dates.map((date, index) => {
+      const formattedDate = date.format('ddd DD MMM');
+      const isSelected = date.isSame(selectedDate, 'day');
+
+      return (
+        <TouchableOpacity
+          key={index}
+          style={[styles.dateButton, isSelected ? styles.selectedDateButton : null]}
+          onPress={() => setSelectedDate(date)}
+        >
+          <Text style={styles.dateText}>{formattedDate}</Text>
+        </TouchableOpacity>
+      );
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with back and user icon */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Journaling {userID}</Text>
+        <Text style={styles.headerText}>Journaling</Text>
         <TouchableOpacity>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
-      {/* Display the current date */}
       <View style={styles.dateContainer}>
         <Text style={styles.currentDate}>{currentDate}</Text>
       </View>
 
-      {/* Calendar-like date selector */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
-        {Array(7)
-          .fill(0)
-          .map((_, index) => {
-            const date = moment().subtract(6 - index, 'days'); // Display past 6 days and today
-            const formattedDate = date.format('ddd DD');
-            const isToday = date.isSame(moment(), 'day');
-            return (
-              <TouchableOpacity
-                key={index}
-                style={[styles.dateButton, isToday ? styles.selectedDateButton : null]}
-                onPress={() => setSelectedDate(date)}
-              >
-                <Text style={styles.dateText}>{formattedDate}</Text>
-              </TouchableOpacity>
-            );
-          })}
+        {renderDateButtons()}
       </ScrollView>
 
-      {/* List of journal entries for the selected date */}
       <ScrollView style={styles.journalList}>
-        {filterJournalsByDate(selectedDate).map((journal) => (
-          <View key={journal.id} style={styles.journalEntry}>
-            <Text style={styles.journalDate}>{moment(journal.date, 'MM/DD/YYYY').format('MM/DD')}</Text>
-            <View style={styles.journalContent}>
-              <Text style={styles.journalText}>{journal.content}</Text>
-              <TouchableOpacity onPress={() => editJournal(journal.id)}>
-                <Icon name="edit" type="font-awesome" color="black" size={20} />
-              </TouchableOpacity>
+        {journals.length === 0 ? (
+          <Text style={styles.noJournals}>No journals for this day.</Text>
+        ) : (
+          journals.map((journal) => (
+            <View key={journal._id} style={styles.journalEntry}>
+              <Text style={styles.journalTime}>{moment(journal.time).format('hh:mm A')}</Text>
+              <View style={styles.journalContent}>
+                <Text style={styles.journalText}>{journal.note}</Text>
+                <View style={styles.journalActions}>
+                  <TouchableOpacity onPress={() => updateJournal(journal)}>
+                    <Icon name="edit" size={25} color="blue" style={styles.actionIcon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => deleteJournal(journal._id)}>
+                    <Icon name="trash" size={25} color="red" style={styles.actionIcon} />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
-        ))}
+          ))
+        )}
       </ScrollView>
 
-      {/* Floating button to add a new journal entry */}
-      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/Journaling/AddJournalPage')}>
+      <TouchableOpacity style={styles.floatingButton} onPress={addNewJournal}>
         <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
 
-      {/* Nav Bar */}
       <NavBar />
     </SafeAreaView>
   );
@@ -156,17 +181,17 @@ const styles = StyleSheet.create({
   dateSelector: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 5,
   },
   dateButton: {
-    marginHorizontal: 10,
+    marginHorizontal: 8,
     paddingVertical: 5,
     paddingHorizontal: 15,
     backgroundColor: '#fff',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    height:50,
+    height: 50,
   },
   selectedDateButton: {
     backgroundColor: '#d3a4ff',
@@ -177,7 +202,13 @@ const styles = StyleSheet.create({
   },
   journalList: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
+    marginTop: 0,
+  },
+  noJournals: {
+    textAlign: 'center',
+    color: '#888',
+    marginTop: 0,
   },
   journalEntry: {
     backgroundColor: '#fff',
@@ -190,7 +221,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  journalDate: {
+  journalTime: {
     fontSize: 14,
     color: '#888',
     marginBottom: 5,
@@ -206,18 +237,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
+  journalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  actionIcon: {
+    marginHorizontal: 10,
+  },
   floatingButton: {
     position: 'absolute',
     bottom: 80,
     right: 20,
     backgroundColor: '#c0392b',
-    borderRadius: 50, 
-    width: 60,       
+    borderRadius: 50,
+    width: 60,
     height: 60,
     justifyContent: 'center',
-    alignItems: 'center',    
+    alignItems: 'center',
     elevation: 5,
-  },  
+  },
 });
 
 export default JournalingPage;
