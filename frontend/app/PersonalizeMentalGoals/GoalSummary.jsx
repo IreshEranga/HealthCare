@@ -1,15 +1,117 @@
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
-import React from 'react';
-import { useRoute } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import man from '../../assets/images/man2.png';
 import NavBar from '../../components/NavBar';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+
+
 
 export default function GoalSummary() {
   const route = useRoute();
-  const { goal } = route.params; // Get the selected goal from route params
+  const navigation = useNavigation();
+  const { goal, goalType } = route.params; // Get the selected goal from route params
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
+  const [userName, setUserName] = useState('');
+  const [userID, setUserID] = useState('');
+  const [_id, set_id] = useState('');
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser && parsedUser.first_name && parsedUser.userID && parsedUser._id) {
+        setUserName(parsedUser.first_name);
+        setUserID(parsedUser.userID);
+        set_id(parsedUser._id);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  const handleBackPress = () => {
+    navigation.navigate('PersonalizeMentalGoals/Suggestions'); // Go back to the previous screen
+  };
+
+  const handleStartPress = async () => {
+    try {
+      console.log('Goal type:', goalType); // Log to check if type is present
+      console.log('Goal name:', goal.name); // Additional check for goal name
+  
+      // Fetch existing goals for the current user
+      const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
+  
+      // Check for a goal with the same type and name
+      const duplicateGoal = response.data.find(
+        (existingGoal) =>
+          existingGoal.type === goalType && existingGoal.name === goal.name
+      );
+  
+      if (duplicateGoal) {
+        // If a duplicate goal is found, navigate to GoalActivity with existing goal data
+        navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
+          existingGoal: duplicateGoal, // Pass the existing goal data
+        });
+        return; // Stop further execution if a duplicate is found
+      }
+  
+      // If no duplicate is found, proceed with saving the goal
+      const goalData = {
+        user: _id, // The user reference (ObjectId)
+        type: goalType,
+        name: goal.name,
+        activities: goal.activities.map((activity, index) => ({
+          day: index + 1, // Assuming activities are ordered and mapped to days
+          instruction: activity.instruction,
+          image: activity.image,
+          status: 'pending', // Default to 'pending'
+        })),
+        goalStatus: 'in progress', // Set initial status of the goal
+      };
+  
+      console.log('Sending goal data:', goalData); // Log goalData for debugging
+  
+      // Post new goal data to backend
+      const saveResponse = await axios.post(`${apiUrl}/users/goals`, goalData);
+  
+      // Show success toast message
+      Toast.show({
+        type: 'success',
+        text1: 'Congratulations!!',
+        text2: `You have started your goal: ${goal.name}.`,
+      });
+  
+      setTimeout(() => {
+        navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
+          existingGoal: saveResponse.data, // Pass the newly created goal data
+        });
+      }, 3000);
+    } catch (error) {
+      // Error handling
+      if (error.response) {
+        console.error('Error data:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+      console.error('Error config:', error.config);
+    }
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -25,6 +127,11 @@ export default function GoalSummary() {
             <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
           </View>
 
+          <TouchableOpacity onPress={handleBackPress}>
+            <Icon name="arrow-left" size={30} color="#2E4057" marginLeft={20} marginTop={-40} />
+          </TouchableOpacity>
+
+          {/* <Text style={styles.sumtopic}>{goalType}</Text> */}
           <Text style={styles.sumtopic}>Summary:</Text>
 
           {/* Summary and image overlay */}
@@ -33,29 +140,17 @@ export default function GoalSummary() {
             <View style={styles.summaryWrapper}>
               <Text style={styles.summary}>{goal.summary}</Text>
             </View>
+            <TouchableOpacity style={styles.startButton} onPress={handleStartPress}>
+              <Text style={styles.startButtonText}>Start</Text>
+            </TouchableOpacity>
           </View>
-
-          {/* Uncomment the section below if you want to display activities */}
-          {/* 
-          <Text style={styles.sectionTitle}>Activities:</Text>
-          {goal.activities.map((activity, index) => (
-            <View key={index} style={styles.activityItem}>
-              <Text style={styles.activityDay}>Day {activity.day}</Text>
-              <Text style={styles.activityInstruction}>{activity.instruction}</Text>
-
-              {activity.image && typeof activity.image === 'string' ? (
-                <Image source={{ uri: activity.image }} style={styles.activityImage} />
-              ) : (
-                <Image source={activity.image} style={styles.activityImage} />
-              )}
-
-              <Text style={styles.activityStatus}>Status: {activity.status}</Text>
-            </View>
-          ))} 
-          */}
         </ScrollView>
+
         <NavBar style={styles.navigation} />
       </LinearGradient>
+
+      {/* Toast Message */}
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -83,7 +178,7 @@ const styles = StyleSheet.create({
     color: '#2E4057',
     fontWeight: 'bold',
     fontSize: 20,
-    marginTop: 30,
+    marginTop: 40,
     textAlign: 'center',
   },
   sumtopic: {
@@ -91,12 +186,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     fontSize: 18,
   },
-   overlayContainer: {
-     position: 'relative',
-     marginTop: 30,
-     marginHorizontal: 50,
-     marginBottom: 30,
-   },
+  overlayContainer: {
+    position: 'relative',
+    marginTop: -60,
+    marginHorizontal: 50,
+    marginBottom: 30,
+  },
   summaryWrapper: {
     position: 'absolute',
     top: -150,
@@ -118,10 +213,9 @@ const styles = StyleSheet.create({
   manImage: {
     width: '100%',
     height: 605,
-    // resizeMode: 'cover',
-    opacity:1,
-    zIndex:1,
-    marginLeft:100 // Full opacity for the image
+    opacity: 1,
+    zIndex: 0, // Set zIndex lower than summary text
+    marginLeft: 100,
   },
   sectionTitle: {
     fontSize: 18,
@@ -147,5 +241,24 @@ const styles = StyleSheet.create({
   activityStatus: {
     fontSize: 12,
     fontStyle: 'italic',
+  },
+  startButton: {
+    backgroundColor: '#2E4057',
+    borderRadius: 20,
+    padding: 15,
+    marginHorizontal: 30,
+    marginTop: 20,
+    alignItems: 'center',
+    top: -150,
+    width: 100,
+  },
+  startButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 10,
+    paddingLeft: 10,
   },
 });

@@ -1,7 +1,17 @@
 const express = require('express');
 const UserController = require('../controllers/UserController');
 const User = require("../models/User");
-const jwt = require('jsonwebtoken');
+
+
+
+
+const MentalFitnessGoal = require('../models/MentalFitnessGoal');
+
+
+
+
+
+//const jwt = require('jsonwebtoken');
 
 // Initialize the router
 const router = express.Router();
@@ -44,6 +54,34 @@ router.get("/profile", checkAuth, async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 });
+
+
+
+
+
+
+
+// Route to fetch goals by user ID
+router.get('/users/:_id/goals', async (req, res) => {
+  const { _id } = req.params;
+
+  try {
+    // Fetch all goals for the user
+    const goals = await MentalFitnessGoal.find({ user: _id });
+    
+    /*if (!goals.length) {
+      return res.status(404).json({ message: 'No goals found for this user.' });
+    }*/
+
+    // Send back the user's goals
+    res.json(goals);
+  } catch (error) {
+    console.error('Error fetching goals:', error);
+    res.status(500).json({ message: 'Server error while fetching goals.' });
+  }
+});
+
+
 
 // Export the router to use it in your main app
 module.exports = router;
