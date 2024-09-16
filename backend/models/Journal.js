@@ -8,10 +8,12 @@ const journalSchema = new mongoose.Schema({
   date: {
     type: String,
     required: true,
+    default: () => new Date().toLocaleDateString(), 
   },
   time: {
     type: String,
     required: true,
+    default: () => new Date().toLocaleTimeString(), 
   },
   note: {
     type: String,

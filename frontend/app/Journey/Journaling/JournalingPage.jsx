@@ -13,7 +13,23 @@ const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment()); 
   const [currentDate, setCurrentDate] = useState(moment().format('Do MMMM, YYYY'));
+  const [userID, setUserID] = useState('');
   const navigation = useNavigation();
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+      if (parsedUser /*&& parsedUser.first_name*/ && parsedUser.userID) {
+        //setUserName(parsedUser.first_name);
+        setUserID(parsedUser.userID);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+  fetchUserData();
 
   // Fetch user journals from AsyncStorage or API (Simulated here for demo)
   const fetchJournals = async () => {
@@ -53,7 +69,7 @@ const JournalingPage = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Journaling</Text>
+        <Text style={styles.headerText}>Journaling {userID}</Text>
         <TouchableOpacity>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
@@ -100,7 +116,7 @@ const JournalingPage = () => {
       </ScrollView>
 
       {/* Floating button to add a new journal entry */}
-      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/MoodCheckIn/AddMoodCheckInPage')}>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/Journaling/AddJournalPage')}>
         <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
 

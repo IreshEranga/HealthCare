@@ -5,23 +5,21 @@ const Journal = require('../models/Journal');
 
 // Add a new journal entry
 router.post('/add', async (req, res) => {
-  const { userID, date, time, note } = req.body;
+  const { userID, note } = req.body;
 
   // Check for missing fields
-  if (!userID || !date || !time || !note) {
-    return res.status(400).json({ message: 'All fields are required.' });
+  if (!userID || !note) {
+    return res.status(400).json({ message: 'User ID and note are required.' });
   }
 
   try {
     const newJournal = new Journal({
       userID,
-      date,
-      time,
       note,
     });
 
     await newJournal.save();
-    res.status(201).json({ message: 'Journal entry saved successfully.' });
+    res.status(201).json({ message: 'Journal entry saved successfully.', journal: newJournal });
   } catch (error) {
     console.error('Error saving journal entry:', error);
     res.status(500).json({ message: 'Failed to save journal entry. Please try again later.' });

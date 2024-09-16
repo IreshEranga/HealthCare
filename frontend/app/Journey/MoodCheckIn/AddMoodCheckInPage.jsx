@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { Icon } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -126,7 +126,7 @@ const AddMoodCheckInPage = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" type="ionicon" color="black" size={30} />
+            <Icon name="arrow-left" color="black" size={30} />
           </TouchableOpacity>
           <Text style={styles.headerText}>Mood Check-In {userID}</Text>
           <TouchableOpacity>
