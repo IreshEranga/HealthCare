@@ -36,9 +36,9 @@ const checkAuth = (req, res, next) => {
 router.post("/signUp", UserController.createUser);
 
 // Route to get logged-in user data
-router.get("/profile", checkAuth, async (req, res) => {
+router.get("/profile/:_id", async (req, res) => {
     try {
-        const user = await User.findOne({ userID: req.userId });
+        const user = await User.findOne({ _id: req.params._id });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
