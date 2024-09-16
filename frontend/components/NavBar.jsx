@@ -13,9 +13,9 @@ const NavBar = () => {
         <Icon name="home-outline" size={24} color="white" />
         <Text style={styles.navText}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton}>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('PersonalizeMentalGoals/Suggestions')}>
         <Icon name="search-outline" size={24} color="white" />
-        <Text style={styles.navText}>Search</Text>
+        <Text style={styles.navText}>Goal</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
         <Icon name="notifications-outline" size={24} color="white" />
