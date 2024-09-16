@@ -1,5 +1,7 @@
 import { Image, StyleSheet, Platform, Text, View, FlatList, TextInput, Button } from 'react-native';
-import FoodListItem from '@/Components/FoodListItem';
+
+import FoodListItem from '@/components/FoodListItem';
+
 import { useState } from 'react';
 
 const foodItems = [
@@ -8,7 +10,9 @@ const foodItems = [
   {label: 'Noodles', cal: 92, brand: 'Ramen'},
 ]
 
-export default function HomeScreen() {
+
+export default function NutritionHome() {
+
   const [search, setSearch] = useState('');
 
   const performSearch = () => {

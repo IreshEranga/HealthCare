@@ -25,6 +25,26 @@ import DoneAddMoodCheckInPage from './app/Journey/MoodCheckIn/DoneAddMoodCheckIn
 import Quiz from './app/PersonalizeMentalGoals/Quiz';
 import Loading from './app/PersonalizeMentalGoals/Loading';
 import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
+import GoalSummary from './app/PersonalizeMentalGoals/GoalSummary';
+import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import NutritionHome from './app/Nutritions/nutritionHome';
 
 
 const Stack = createStackNavigator();
@@ -130,6 +150,18 @@ export default function App() {
         <Stack.Screen  name="Suggestions"
           component={Suggestions}
           options={{ title: 'Suggestions' }}
+        />
+        <Stack.Screen  name="NutritionHome"
+          component={NutritionHome}
+          options={{ title: 'NutritionHome' }}
+          />
+        <Stack.Screen  name="GoalSummary"
+          component={GoalSummary}
+          options={{ title: 'GoalSummary' }}
+        />
+        <Stack.Screen  name="GoalActivity"
+          component={GoalActivity}
+          options={{ title: 'GoalActivity' }}
         />
       </Stack.Navigator>
       

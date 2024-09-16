@@ -104,7 +104,7 @@ export default function Welcome() {
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
             <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
