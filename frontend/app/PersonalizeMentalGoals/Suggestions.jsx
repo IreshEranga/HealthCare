@@ -130,7 +130,7 @@ const goalData = [
         name: 'Reduce Work Stress',
         summary: 'This goal is focused on helping you manage and reduce work-related stress by incorporating daily activities that promote relaxation and mindfulness. Over 10 days, you\'ll engage in practices such as deep breathing, taking breaks to walk, and reflecting on stressors. Each activity is designed to be simple, practical, and easy to integrate into your workday, helping you build habits that contribute to overall stress reduction and mental well-being.',
         activities: [
-          { day: 1, instruction: 'Start your day with 5 minutes of deep breathing exercises.', image: require('../../assets/images/breathing.png'), status: 'pending' },
+          { day: 1, instruction: 'Start your day with 5 minutes of deep breathing exercises.', image:'https://cdn.painscale.com/cms/imgs/a3fdad40-d477-11eb-80b1-dda9a4b176e4.jpg', status: 'pending' },
           { day: 2, instruction: 'Take a 10-minute walk during your lunch break.', image: 'https://media.istockphoto.com/id/1317323736/photo/a-view-up-into-the-trees-direction-sky.jpg?s=612x612&w=0&k=20&c=i4HYO7xhao7CkGy7Zc_8XSNX_iqG0vAwNsrH1ERmw2Q=', status: 'pending' },
           { day: 3, instruction: 'Write down 3 things that stressed you today and how you handled them.', image: 'https://example.com/day3_image.jpg', status: 'pending' },
           { day: 4, instruction: 'Practice progressive muscle relaxation for 10 minutes.', image: 'https://example.com/day4_image.jpg', status: 'pending' },
