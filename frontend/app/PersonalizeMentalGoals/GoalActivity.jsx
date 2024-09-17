@@ -5,12 +5,23 @@ import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-
 export default function GoalActivity() {
   const route = useRoute();
-  const { existingGoal } = route.params; // Get the goal data from route params
+  const { goal } = route.params || {}; // Default to an empty object to avoid undefined
 
-  // Render the goal details based on existingGoal data
+  // Normalize goal data to handle cases with and without 'data' key
+  const goalData = goal?.data || goal;
+  console.log('Goal Data:', goalData); // Ensure goalData object is logged for debugging
+  console.log('Goal Name:', goalData?.name); // Access name directly
+
+  if (!goalData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>No goal data available</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -18,43 +29,36 @@ export default function GoalActivity() {
         style={styles.background}
       >
         <View>
-        <Text style={styles.goalName}>{existingGoal.name}</Text>
+          <Text style={styles.goalName}>{goalData.name}</Text>
         </View>
 
         <View>
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
-        {/* <View style={styles.upborder}>
-          
-          <Text style={styles.goalType}>Goal Type: {existingGoal.type}</Text>
-          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text>
-        </View> */}
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={styles.goalDetails}>
-          {/* <Text style={styles.goalName}>{existingGoal.name}</Text>
-          <Text style={styles.goalType}>Type: {existingGoal.type}</Text>
-          <Text style={styles.goalStatus}>Status: {existingGoal.goalStatus}</Text> */}
-          {existingGoal.activities.map((activity, index) => (
-            <View key={index} style={styles.activityItem}>
-              <Text style={styles.activityDay}>Day {activity.day}</Text>
-              <Text style={styles.activityInstruction}>{activity.instruction}</Text>
-              {activity.image ? (
-                <Image 
-                  source={{ uri: activity.image }} 
-                  style={styles.activityImage} 
-                  resizeMode='cover' // Adjust this as needed
-                />
-              ) : (
-                <Text style={styles.noImageText}>No image available</Text>
-              )}
-              <Text style={styles.activityStatus}>Status: {activity.status}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+        {/* Uncomment and use the activities list as needed */}
+         <ScrollView contentContainerStyle={styles.scrollView}>
+          <View style={styles.goalDetails}>
+            {goalData.activities.map((activity, index) => (
+              <View key={index} style={styles.activityItem}>
+                <Text style={styles.activityDay}>Day {activity.day}</Text>
+                <Text style={styles.activityInstruction}>{activity.instruction}</Text>
+                {activity.image ? (
+                  <Image 
+                    source={{ uri: activity.image }} 
+                    style={styles.activityImage} 
+                    resizeMode='cover'
+                  />
+                ) : (
+                  <Text style={styles.noImageText}>No image available</Text>
+                )}
+                <Text style={styles.activityStatus}>Status: {activity.status}</Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView> 
       </LinearGradient>
-      <NavBar/>
+      <NavBar />
     </SafeAreaView>
   );
 }
@@ -81,7 +85,6 @@ const styles = StyleSheet.create({
   },
   goalDetails: {
     marginBottom: 20,
-    
   },
   goalName: {
     fontSize: 24,
@@ -94,16 +97,15 @@ const styles = StyleSheet.create({
   goalType: {
     fontSize: 16,
     marginVertical: 10,
-    marginLeft:20,
+    marginLeft: 20,
   },
   goalStatus: {
     fontSize: 16,
     marginBottom: 10,
-    marginLeft:20,
-    
+    marginLeft: 20,
   },
-  upborder:{
-    borderBottomWidth:5,
+  upborder: {
+    borderBottomWidth: 5,
     borderBottomColor: '#8090d2',
   },
   activityItem: {

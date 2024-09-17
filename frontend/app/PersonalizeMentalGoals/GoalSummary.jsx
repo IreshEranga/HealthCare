@@ -61,7 +61,7 @@ export default function GoalSummary() {
       if (duplicateGoal) {
         // If a duplicate goal is found, navigate to GoalActivity with existing goal data
         navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
-          existingGoal: duplicateGoal, // Pass the existing goal data
+          goal: duplicateGoal, // Pass the existing goal data
         });
         return; // Stop further execution if a duplicate is found
       }
@@ -94,9 +94,10 @@ export default function GoalSummary() {
   
       setTimeout(() => {
         navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
-          existingGoal: saveResponse.data, // Pass the newly created goal data
+          goal: saveResponse.data, // Ensure correct naming
         });
       }, 3000);
+      
     } catch (error) {
       // Error handling
       if (error.response) {
