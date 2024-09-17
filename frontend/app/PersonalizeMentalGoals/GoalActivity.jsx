@@ -1,24 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import LoadingAnimation from '../../assets/videos/square.gif';
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function GoalActivity() {
   const route = useRoute();
   const { goal } = route.params || {}; // Default to an empty object to avoid undefined
 
-  // Normalize goal data to handle cases with and without 'data' key
   const goalData = goal?.data || goal;
-  console.log('Goal Data:', goalData); // Ensure goalData object is logged for debugging
-  console.log('Goal Name:', goalData?.name); // Access name directly
+  const [filteredGoalData, setFilteredGoalData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!goalData) {
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const _id = '66deb5a5a1f5bf364dbbc274'; // Replace with actual user ID logic
+        const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
+        const goals = response.data;
+
+        // Normalize goal data to handle cases with and without 'data' key
+        const goalName = goalData?.name || '';
+        const filteredGoal = goals.find(g => g.name === goalName);
+        setFilteredGoalData(filteredGoal);
+      } catch (error) {
+        console.error('Error fetching goals:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGoals();
+  }, [goalData?.name]);
+
+  if (loading) {
+    return (
+        <View style={styles.loadingContainer}>
+          <Image source={LoadingAnimation} style={styles.loadingGif} />
+          <Text style={styles.loadingText}>Please wait...</Text>
+        </View>
+    );
+  }
+
+  if (!filteredGoalData) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>No goal data available</Text>
-      </SafeAreaView>
+      <Text style={styles.errorText}>No goal data available</Text>
+    </SafeAreaView>
     );
   }
 
@@ -29,17 +62,16 @@ export default function GoalActivity() {
         style={styles.background}
       >
         <View>
-          <Text style={styles.goalName}>{goalData.name}</Text>
+          <Text style={styles.goalName}>{filteredGoalData.name}</Text>
         </View>
 
         <View>
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
-        {/* Uncomment and use the activities list as needed */}
-         <ScrollView contentContainerStyle={styles.scrollView}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.goalDetails}>
-            {goalData.activities.map((activity, index) => (
+            {filteredGoalData.activities.map((activity, index) => (
               <View key={index} style={styles.activityItem}>
                 <Text style={styles.activityDay}>Day {activity.day}</Text>
                 <Text style={styles.activityInstruction}>{activity.instruction}</Text>
@@ -56,7 +88,7 @@ export default function GoalActivity() {
               </View>
             ))}
           </View>
-        </ScrollView> 
+        </ScrollView>
       </LinearGradient>
       <NavBar />
     </SafeAreaView>
@@ -90,7 +122,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2E4057',
-    fontSize: 20,
     marginTop: 20,
     textAlign: 'center',
   },
@@ -110,7 +141,7 @@ const styles = StyleSheet.create({
   },
   activityItem: {
     marginBottom: 20,
-    borderTopWidth: 2, // Border width for the top of the NavBar
+    borderTopWidth: 2,
     borderTopColor: '#8090d2',
   },
   activityDay: {
@@ -125,7 +156,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     marginBottom: 10,
-    borderRadius: 10, // Optional: adds rounded corners
+    borderRadius: 10,
   },
   noImageText: {
     fontSize: 14,
@@ -135,5 +166,20 @@ const styles = StyleSheet.create({
   activityStatus: {
     fontSize: 12,
     fontStyle: 'italic',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingGif: {
+    width: 500,
+    height: 200,
+    padding:50,
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 18,
+    color: '#2E4057',
   },
 });
