@@ -34,11 +34,11 @@ export default function Welcome() {
     let message = '';
 
     if (currentHour < 12) {
-      message = 'Good Morning ';
+      message = 'Good Morning 🌤️';
     } else if (currentHour < 18) {
-      message = 'Good Afternoon ';
+      message = 'Good Afternoon 🌞';
     } else {
-      message = 'Good Evening ';
+      message = 'Good Evening 🌛';
     }
 
     setGreetingMessage(message);
