@@ -6,6 +6,7 @@ import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
+import ErrorAnimation from '../../assets/videos/error.gif';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -50,6 +51,7 @@ export default function GoalActivity() {
   if (!filteredGoalData) {
     return (
       <SafeAreaView style={styles.container}>
+        <Image source={ErrorAnimation} style={styles.errorGif} />
       <Text style={styles.errorText}>No goal data available</Text>
     </SafeAreaView>
     );
@@ -182,4 +184,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#2E4057',
   },
+  errorGif:{
+    width:100,
+    height:100,
+  }
 });
