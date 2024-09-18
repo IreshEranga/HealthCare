@@ -47,23 +47,23 @@ router.get('/:userID', async (req, res) => {
 // Update a daily routine
 router.put('/:userID', async (req, res) => {
   const { userID } = req.params;
-  const { date, morning, day, evening } = req.body;
+  const { date, morning, day, evening, originalDate } = req.body;
 
-  if (!userID || !date) {
-    return res.status(400).json({ message: 'UserID and date are required.' });
+  if (!userID || !originalDate) {
+    return res.status(400).json({ message: 'UserID and originalDate are required.' });
   }
 
   try {
-    const existingRoutine = await DailyRoutine.findOne({ userID, date });
-    if (!existingRoutine) {
+    const routineToUpdate = await DailyRoutine.findOne({ userID, date: originalDate });
+    if (!routineToUpdate) {
       return res.status(404).json({ message: 'Routine not found for this date.' });
     }
 
-    if (morning !== undefined) existingRoutine.morning = morning;
-    if (day !== undefined) existingRoutine.day = day;
-    if (evening !== undefined) existingRoutine.evening = evening;
+    if (morning !== undefined) routineToUpdate.morning = morning;
+    if (day !== undefined) routineToUpdate.day = day;
+    if (evening !== undefined) routineToUpdate.evening = evening;
 
-    const updatedRoutine = await existingRoutine.save();
+    const updatedRoutine = await routineToUpdate.save();
     res.status(200).json(updatedRoutine);
   } catch (error) {
     console.error('Error updating routine:', error);

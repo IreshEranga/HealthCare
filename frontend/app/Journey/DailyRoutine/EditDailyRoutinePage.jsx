@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Platform, Text, ScrollView } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from '../../../components/NavBar';
 
+
 const EditDailyRoutinePage = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { routine, date } = route.params;
-
   const [selectedDate, setSelectedDate] = useState(date ? moment(date).toDate() : new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [morning, setMorning] = useState(routine ? routine.morning : '');
   const [day, setDay] = useState(routine ? routine.day : '');
   const [evening, setEvening] = useState(routine ? routine.evening : '');
@@ -29,43 +27,31 @@ const EditDailyRoutinePage = () => {
     }
   }, [routine]);
 
-  const showDatepicker = () => setShowDatePicker(true);
-
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios');
-    if (selectedDate) {
-      setSelectedDate(selectedDate);
-    }
-  };
-
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const userID = storedUser ? JSON.parse(storedUser).userID : null;
-      const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
+      
       // Prepare request payload with fields that have been modified
-      const updatePayload = {};
+      const updatePayload = {
+        originalDate: routine.date 
+      };
+      
       if (morning !== routine.morning) updatePayload.morning = morning;
       if (day !== routine.day) updatePayload.day = day;
       if (evening !== routine.evening) updatePayload.evening = evening;
-
+      
       // Handle case when all fields are empty or unchanged
-      if (Object.keys(updatePayload).length === 0) {
+      if (Object.keys(updatePayload).length === 1) { 
         Alert.alert('No Changes', 'No changes have been made to the routine.');
         setIsSaving(false);
         return;
       }
-
-      // Include the new date in the payload if it has changed
-      if (formattedDate !== routine.date) {
-        updatePayload.date = formattedDate;
-      }
-
+  
       const response = await axios.put(`${apiUrl}/daily-routines/${userID}`, updatePayload);
-
+      
       if (response.status === 200) {
         setIsSaving(false);
         Alert.alert('Success', 'Routine updated successfully');
@@ -78,7 +64,7 @@ const EditDailyRoutinePage = () => {
       console.log('Error updating routine:', error.response ? error.response.data : error);
       Alert.alert('Error', error.response?.data?.message || 'Failed to update routine');
     }
-  };
+  };    
 
   return (
     <SafeAreaView style={styles.container}>
@@ -94,19 +80,9 @@ const EditDailyRoutinePage = () => {
 
       <View style={styles.container1}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
+          <TouchableOpacity style={styles.datePickerButton}>
             <Text style={styles.datePickerText}>{moment(selectedDate).format('MMMM Do YYYY')}</Text>
           </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={selectedDate}
-              mode="date"
-              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-              onChange={handleDateChange}
-              minimumDate={new Date()}
-            />
-          )}
 
           <Text style={styles.label}>Morning</Text>
           <View style={styles.planContainer}>

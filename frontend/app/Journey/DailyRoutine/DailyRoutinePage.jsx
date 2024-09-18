@@ -26,6 +26,19 @@ const DailyRoutinePage = () => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    if (userID) {
+      // Fetch routine for today's date on component mount
+      fetchRoutine(moment());
+    }
+  }, [userID]);
+  
+  useEffect(() => {
+    if (userID && selectedDate) {
+      fetchRoutine(selectedDate);
+    }
+  }, [userID, selectedDate]);
+
   // Get All Routines Function
   const fetchRoutine = async (date) => {
     try {
@@ -66,16 +79,18 @@ const DailyRoutinePage = () => {
     navigation.navigate('Journey/DailyRoutine/EditDailyRoutinePage', { routine, date: selectedDate });
   };
 
+  // Render date buttons for past 7 days and future dates
   const renderDateButtons = () => {
-    const futureYear = moment().add(1, 'year');
+    const futureDate = moment().add(3, 'months'); // 3 months from today
+    const startDate = moment().subtract(7, 'days'); // Past 7 days
     const dates = [];
-    let currentDate = moment();
-
-    while (currentDate.isBefore(futureYear)) {
+    let currentDate = startDate.clone();
+  
+    while (currentDate.isBefore(futureDate)) {
       dates.push(currentDate.clone());
       currentDate = currentDate.add(1, 'day');
     }
-
+  
     return dates.map((date, index) => (
       <TouchableOpacity
         key={index}
@@ -97,15 +112,15 @@ const DailyRoutinePage = () => {
         </Text>
       </TouchableOpacity>
     ));
-  };
-
+  };  
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Daily Reflections</Text>
+        <Text style={styles.headerText}>Daily Plans</Text>
         <TouchableOpacity>
           <Icon name="user" size={30} color="black" />
         </TouchableOpacity>
