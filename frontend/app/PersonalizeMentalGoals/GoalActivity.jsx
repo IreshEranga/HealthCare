@@ -8,18 +8,23 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
 import ErrorAnimation from '../../assets/videos/error.gif';
 import completeGif from '../../assets/videos/complete.gif';
-
+import * as Progress from 'react-native-progress';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function GoalActivity() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { goal } = route.params || {}; // Default to an empty object to avoid undefined
+  const { goal } = route.params || {};
 
   const goalData = goal?.data || goal;
   const [filteredGoalData, setFilteredGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Only calculate progress if filteredGoalData is available and has activities
+  const totalActivities = filteredGoalData?.activities?.length || 0;
+  const completedActivities = filteredGoalData?.activities?.filter(activity => activity.status === 'completed').length || 0;
+  const progress = totalActivities > 0 ? completedActivities / totalActivities : 0;
 
   const handleNavigate = (activity) => {
     navigation.navigate('PersonalizeMentalGoals/GoalDetail', { 
@@ -27,8 +32,6 @@ export default function GoalActivity() {
       goalId: filteredGoalData._id // Pass the goal ID
     });
   };
-  
-  
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -37,7 +40,6 @@ export default function GoalActivity() {
         const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
         const goals = response.data;
 
-        // Normalize goal data to handle cases with and without 'data' key
         const goalName = goalData?.name || '';
         const filteredGoal = goals.find(g => g.name === goalName);
         setFilteredGoalData(filteredGoal);
@@ -53,10 +55,10 @@ export default function GoalActivity() {
 
   if (loading) {
     return (
-        <View style={styles.loadingContainer}>
-          <Image source={LoadingAnimation} style={styles.loadingGif} />
-          <Text style={styles.loadingText}>Please wait...</Text>
-        </View>
+      <View style={styles.loadingContainer}>
+        <Image source={LoadingAnimation} style={styles.loadingGif} />
+        <Text style={styles.loadingText}>Please wait...</Text>
+      </View>
     );
   }
 
@@ -64,8 +66,8 @@ export default function GoalActivity() {
     return (
       <SafeAreaView style={styles.container}>
         <Image source={ErrorAnimation} style={styles.errorGif} />
-      <Text style={styles.errorText}>No goal data available</Text>
-    </SafeAreaView>
+        <Text style={styles.errorText}>No goal data available</Text>
+      </SafeAreaView>
     );
   }
 
@@ -83,7 +85,18 @@ export default function GoalActivity() {
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
-        {/*progress bar */}
+        {/* Progress bar */}
+        <View style={styles.progressContainer}>
+          <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
+          <Progress.Bar 
+            progress={progress} 
+            width={200} 
+            color="#2E4057" 
+            unfilledColor="#ccc"
+            borderWidth={0}
+            height={30}
+          />
+        </View>
 
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.goalDetails}>
@@ -92,8 +105,8 @@ export default function GoalActivity() {
                 <View style={styles.dayandani}>
                   <Text style={styles.activityDay}>Day {activity.day}</Text>
                   {activity.status === 'completed' && (
-                  <Image source={completeGif} style={styles.completeGif} />
-              )}
+                    <Image source={completeGif} style={styles.completeGif} />
+                  )}
                 </View>
                 <Text style={styles.activityInstruction}>{activity.instruction}</Text> 
                 {activity.image ? (
@@ -107,14 +120,13 @@ export default function GoalActivity() {
                 )}
                 <View style={styles.statusAndStart}>
                   <Text style={styles.activityStatus}>Status: {activity.status}</Text>
-                  
-                  <Icon style={styles.arrow} 
-                        name="arrow-right" 
-                        size={30} 
-                        color="#2E4057" 
-                        onPress={() => handleNavigate(activity)}  
+                  <Icon 
+                    style={styles.arrow} 
+                    name="arrow-right" 
+                    size={30} 
+                    color="#2E4057" 
+                    onPress={() => handleNavigate(activity)}  
                   />
-                  
                 </View>
               </View>
             ))}
@@ -240,5 +252,15 @@ const styles = StyleSheet.create({
   },
   dayandani : {
     flexDirection:'row',
-  }
+  },
+  progressContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  progressText: {
+    fontSize: 16,
+    color: '#2E4057',
+    marginBottom: 10,
+  },
+  
 });
