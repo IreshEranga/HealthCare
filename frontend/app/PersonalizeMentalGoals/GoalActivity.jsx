@@ -22,8 +22,12 @@ export default function GoalActivity() {
   const [loading, setLoading] = useState(true);
 
   const handleNavigate = (activity) => {
-    navigation.navigate('PersonalizeMentalGoals/GoalDetail', { activity });
+    navigation.navigate('PersonalizeMentalGoals/GoalDetail', { 
+      activity,
+      goalId: filteredGoalData._id // Pass the goal ID
+    });
   };
+  
   
 
   useEffect(() => {
