@@ -29,7 +29,7 @@ import Loading from './app/PersonalizeMentalGoals/Loading';
 import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 import GoalSummary from './app/PersonalizeMentalGoals/GoalSummary';
 import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
-
+import GoalDetail from './app/PersonalizeMentalGoals/GoalDetail';
 
 
 
@@ -169,6 +169,10 @@ export default function App() {
         <Stack.Screen  name="GoalActivity"
           component={GoalActivity}
           options={{ title: 'GoalActivity' }}
+        />
+        <Stack.Screen  name="GoalDetail"
+          component={GoalDetail}
+          options={{ title: 'GoalDetail' }}
         />
       </Stack.Navigator>
       
