@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
 import ErrorAnimation from '../../assets/videos/error.gif';
-
+import completeGif from '../../assets/videos/complete.gif'
 
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -83,7 +83,12 @@ export default function GoalActivity() {
           <View style={styles.goalDetails}>
             {filteredGoalData.activities.map((activity, index) => (
               <View key={index} style={styles.activityItem}>
-                <Text style={styles.activityDay}>Day {activity.day}</Text>
+                <View style={styles.dayandani}>
+                  <Text style={styles.activityDay}>Day {activity.day}</Text>
+                  {activity.status === 'completed' && (
+                  <Image source={completeGif} style={styles.completeGif} />
+              )}
+                </View>
                 <Text style={styles.activityInstruction}>{activity.instruction}</Text> 
                 {activity.image ? (
                   <Image 
@@ -96,6 +101,7 @@ export default function GoalActivity() {
                 )}
                 <View style={styles.statusAndStart}>
                   <Text style={styles.activityStatus}>Status: {activity.status}</Text>
+                  
                   <Icon style={styles.arrow} 
                         name="arrow-right" 
                         size={30} 
@@ -219,5 +225,14 @@ const styles = StyleSheet.create({
   },
   space : {
     paddingTop:100,
+  },
+  completeGif:{
+    width: 40,
+    height: 30,
+    marginLeft: 10,
+    marginTop:6,
+  },
+  dayandani : {
+    flexDirection:'row',
   }
 });
