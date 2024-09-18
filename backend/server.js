@@ -10,7 +10,7 @@ const userRoutes = require("./routes/userRoutes");
 const logInRoutes = require("./routes/logInRoutes");
 const MoodCheckInRoutes = require('./routes/MoodCheckInRoutes');
 const JournalRoutes = require('./routes/JournalRoutes');
-//const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
+const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
 
 
 
@@ -37,7 +37,7 @@ app.use("/users", userRoutes);
 app.use("/users", logInRoutes);
 app.use('/mood-checks', MoodCheckInRoutes);
 app.use('/journals', JournalRoutes);
-//app.use('/DailyRoutines', DailyRoutineRoutes);
+app.use('/daily-routines', DailyRoutineRoutes);
 
 
 app.use("/users", MentalFitnessRoutes);

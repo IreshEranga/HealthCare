@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import axios from 'axios';
 
+
 const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment()); 
