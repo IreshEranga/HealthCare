@@ -19,22 +19,20 @@ const AddDailyRoutinePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const navigation = useNavigation();
 
-  // Show Date Picker
   const showDatepicker = () => setShowDatePicker(true);
 
-  // Handle date change from the picker
   const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios'); // Keep the picker open on iOS
+    setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
-      setDate(selectedDate); // Set selected date
+      setDate(selectedDate);
     }
   };
 
-  // Handle saving of the daily routine
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const userID = await AsyncStorage.getItem('loggedInUser');
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const userID = storedUser ? JSON.parse(storedUser).userID : null;
       const formattedDate = moment(date).format('YYYY-MM-DD');
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -43,21 +41,18 @@ const AddDailyRoutinePage = () => {
         date: formattedDate,
         morning,
         day,
-        evening
+        evening,
       });
 
-      // Check response for success
       if (response.status === 201) {
         setIsSaving(false);
         Alert.alert('Success', 'Routine added successfully');
         navigation.navigate('Journey/DailyRoutine/DoneAddDailyRoutinePage');
       } else {
-        // Handle unexpected status codes
         Alert.alert('Error', 'Unexpected response from server');
       }
     } catch (error) {
       setIsSaving(false);
-      // Log the error and provide detailed feedback to the user
       console.log('Error adding routine:', error.response ? error.response.data : error);
       Alert.alert('Error', error.response?.data?.message || 'Failed to add routine');
     }
@@ -65,94 +60,71 @@ const AddDailyRoutinePage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with back button and save button */}
       <View style={styles.header}>
-        {/* Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
-
-        {/* Title */}
         <Text style={styles.title}>Daily Plan</Text>
-
-        {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isSaving}>
-          <Text style={styles.saveButtonText}>
-            {isSaving ? 'Saving...' : 'Save'}
-          </Text>
+          <Text style={styles.saveButtonText}>{isSaving ? 'Saving...' : 'Save'}</Text>
         </TouchableOpacity>
       </View>
-    <View style={styles.container1}>   
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* Date Picker Button */}
-      <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
-        <Text style={styles.datePickerText}>
-          {moment(date).format('MMMM Do YYYY')}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.container1}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <TouchableOpacity onPress={showDatepicker} style={styles.datePickerButton}>
+            <Text style={styles.datePickerText}>{moment(date).format('MMMM Do YYYY')}</Text>
+          </TouchableOpacity>
 
-      {/* Show DateTimePicker only if triggered */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-          minimumDate={new Date()} // Allow only today and future dates
-        />
-      )}
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleDateChange}
+              minimumDate={new Date()}
+            />
+          )}
 
-      {/* Morning Plan */}
-      <Text style={styles.label}>Morning</Text>
-      <View style={styles.planContainer}>
-        <TextInput
-          placeholder="Add morning plan..."
-          value={morning}
-          onChangeText={setMorning}
-          style={styles.input}
-          multiline={true}
-        />
-        {/*<TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>*/}
+          <Text style={styles.label}>Morning</Text>
+          <View style={styles.planContainer}>
+            <TextInput
+              placeholder="Add morning plan..."
+              value={morning}
+              onChangeText={setMorning}
+              style={styles.input}
+              multiline={true}
+            />
+          </View>
+
+          <Text style={styles.label}>Day</Text>
+          <View style={styles.planContainer}>
+            <TextInput
+              placeholder="Add day plan..."
+              value={day}
+              onChangeText={setDay}
+              style={styles.input}
+              multiline={true}
+            />
+          </View>
+
+          <Text style={styles.label}>Evening</Text>
+          <View style={styles.planContainer}>
+            <TextInput
+              placeholder="Add evening plan..."
+              value={evening}
+              onChangeText={setEvening}
+              style={styles.input}
+              multiline={true}
+            />
+          </View>
+        </ScrollView>
       </View>
-
-      {/* Day Plan */}
-      <Text style={styles.label}>Day</Text>
-      <View style={styles.planContainer}>
-        <TextInput
-          placeholder="Add day plan..."
-          value={day}
-          onChangeText={setDay}
-          style={styles.input}
-          multiline={true}
-        />
-        {/*<TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>*/}
+      {/* Fixed Navigation Bar */}
+      <View style={styles.navbarContainer}>
+          <NavBar />
       </View>
-
-      {/* Evening Plan */}
-      <Text style={styles.label}>Evening</Text>
-      <View style={styles.planContainer}>
-        <TextInput
-          placeholder="Add evening plan..."
-          value={evening}
-          onChangeText={setEvening}
-          style={styles.input}
-          multiline={true}
-        />
-        {/*<TouchableOpacity style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>*/}
-      </View>
-      
-      </ScrollView>
-    </View>
-      <NavBar />
     </SafeAreaView>
-    
   );
 };
 
@@ -160,12 +132,9 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fce4ec',
-  },
-  container: {
-    flex: 1,
     backgroundColor: '#f9c8e6',
   },
+  container: { flex: 1, backgroundColor: '#f9c8e6' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -247,6 +216,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  navbarContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+/*
+  container1: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f9c8e6',
+  },
+  container: { flex: 1, backgroundColor: '#f9c8e6' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15 },
+  title: { fontSize: 24, fontWeight: 'bold', color: 'black' },
+  saveButton: { padding: 10, backgroundColor: '#e67e22', borderRadius: 5 },
+  saveButtonText: { fontSize: 18, color: 'white' },
+  scrollContainer: { paddingBottom: 20 },
+  datePickerButton: { backgroundColor: '#fff', borderRadius: 10, padding: 10, marginVertical: 15 },
+  datePickerText: { fontSize: 18, textAlign: 'center', color: '#333' },
+  label: { fontSize: 18, marginVertical: 10 },
+  planContainer: { backgroundColor: '#fff', padding: 10, borderRadius: 10 },
+  input: { fontSize: 16 },*/
 });
 
 export default AddDailyRoutinePage;

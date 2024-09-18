@@ -69,21 +69,64 @@ export default function Welcome() {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.topic1}>Routine Plan</Text>
-          <View style={styles.card}>
-            <Image source={vector} style={styles.vector} />
-            <Text style={styles.cardTitle}>Personalize your Routines.</Text>
-            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
 
-            <TouchableOpacity 
-              style={styles.button} 
-              onPress={() => navigation.navigate('Journey/JourneyPage')}
-            >
-              <Text style={styles.buttonText}>
-                Take Task   <Image source={rightArrow} />
+          <Text style={styles.topic1}>Journey to Balance 📈</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Journey/JourneyPage')}>
+            <View style={styles.card}>
+              <Image source={vector} style={styles.vector} />
+              
+              <Text style={styles.cardTitle}>Track Your Progress..</Text>
+              <Text style={styles.cardDetails}>
+                Keep an eye on your daily routines, mood trends, and journal entries to see how you’re growing day by day.
               </Text>
+              {/*<TouchableOpacity 
+                      style={styles.button} 
+                      onPress={() => navigation.navigate('Journey/JourneyPage')}
+                    >
+                      <Text style={styles.buttonText}>
+                        Take Task   <Image source={rightArrow} />
+                      </Text>
+              </TouchableOpacity>*/}
+            </View>
+          </TouchableOpacity>
+
+          <Text style={styles.topic1}>Journey to Balance 📈</Text>
+
+            {/* Daily Routines Card */}
+            <TouchableOpacity onPress={() => navigation.navigate('Journey/DailyRoutinePage')}>
+              <View style={styles.card}>
+                {/*<Image source={require('./assets/routines.png')} style={styles.vector} />*/}
+                <Text style={styles.cardTitle}>Track Your Daily Routines</Text>
+                <Text style={styles.cardDetails}>Stay organized by setting up and managing your daily routines.</Text>
+              </View>
             </TouchableOpacity>
-          </View>
+
+            {/* Mood Tracking Card */}
+            <TouchableOpacity onPress={() => navigation.navigate('Journey/MoodTrackingPage')}>
+              <View style={styles.card}>
+                {/*<Image source={require('./assets/mood.png')} style={styles.vector} />*/}
+                <Text style={styles.cardTitle}>Monitor Your Moods</Text>
+                <Text style={styles.cardDetails}>Check in daily to track your emotions and improve your mental well-being.</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Journaling Card */}
+            <TouchableOpacity onPress={() => navigation.navigate('Journey/JournalingPage')}>
+              <View style={styles.card}>
+                {/*<Image source={require('./assets/journaling.png')} style={styles.vector} />*/}
+                <Text style={styles.cardTitle}>Express Your Thoughts</Text>
+                <Text style={styles.cardDetails}>Use the journaling feature to reflect on your experiences and progress.</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* Reflection and Progress Card */}
+            <TouchableOpacity onPress={() => navigation.navigate('Journey/ProgressPage')}>
+              <View style={styles.card}>
+                {/*<Image source={require('./assets/progress.png')} style={styles.vector} />*/}
+                <Text style={styles.cardTitle}>Review Your Progress</Text>
+                <Text style={styles.cardDetails}>Look back on your journey and reflect on your mental health progress.</Text>
+              </View>
+            </TouchableOpacity>
 
           <Text style={styles.topic1}>Mental Fitness Plan</Text>
           <View style={styles.card}>
@@ -159,13 +202,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 15,
     marginLeft: 25,
+    textAlign:'center',
+    marginBottom:0,
   },
   date: {
     color: 'white',
     fontSize: 18,
     marginTop: -5,
     marginLeft:25,
-    paddingBottom:10
+    paddingBottom:30
   },
   daydate: {
     display: 'flex',
@@ -176,13 +221,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9d9d9',
     borderRadius: 10,
     padding: 20,
-    margin: 15,
+    margin: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
     elevation: 5,
-    marginTop: 40,
+    marginTop: 30,
     opacity: 0.8,
   },
   cardTitle: {
