@@ -5,11 +5,12 @@ import ErrorAnimation from '../../assets/videos/error.gif';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NavBar from '../../components/NavBar';
+import completeGif from '../../assets/videos/complete.gif'; 
 
 export default function GoalDetail() {
   const route = useRoute();
-  const navigation = useNavigation(); 
-  const { activity } = route.params || {}; 
+  const navigation = useNavigation();
+  const { activity } = route.params || {};
 
   if (!activity) {
     return (
@@ -35,32 +36,42 @@ export default function GoalDetail() {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollView}>
-        
-        <View style={styles.imageContainer}>
-          {activity.image ? (
-            <Image
-              source={{ uri: activity.image }}
-              style={styles.activityImage}
-              resizeMode="cover"
-            />
-          ) : (
-            <Text style={styles.noImageText}>No image available</Text>
-          )}
-        </View>
+          <View style={styles.imageContainer}>
+            {activity.image ? (
+              <Image
+                source={{ uri: activity.image }}
+                style={styles.activityImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <Text style={styles.noImageText}>No image available</Text>
+            )}
+          </View>
 
-        <Text style={styles.instructionTopic}>Instructions :</Text>
-        <View style={styles.insView}>
-          <Text style={styles.instruction}>👉 {activity.instruction}</Text>
-          <Text style={styles.status}>Status: {activity.status}</Text>
-        </View>
+          <Text style={styles.instructionTopic}>Instructions :</Text>
+          <View style={styles.insView}>
+            <Text style={styles.instruction}>👉 {activity.instruction}</Text>
+            <View style={styles.statusContainer}>
+              <Text style={styles.status}>Status: {activity.status}</Text>
+              {activity.status === 'completed' && (
+                <Image source={completeGif} style={styles.completeGif} />
+              )}
+            </View>
+          </View>
 
-        
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.doneButton}>
-          <Text style={styles.doneButtonText}>Done</Text>
-        </TouchableOpacity>
+          {/* Done Button */}
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={[styles.doneButton, activity.status === 'completed' && styles.disabledDoneButton]}
+            disabled={activity.status === 'completed'}
+          >
+            <Text style={styles.doneButtonText}>
+              {activity.status === 'completed' ? 'Completed' : 'Done'}
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </LinearGradient>
-      
+
       <NavBar />
     </SafeAreaView>
   );
@@ -99,10 +110,20 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: 'left',
   },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
   status: {
     fontSize: 16,
     fontStyle: 'italic',
     textAlign: 'left',
+  },
+  completeGif: {
+    width: 40,
+    height: 40,
+    marginLeft: 10,
   },
   imageContainer: {
     paddingHorizontal: 20, // Padding left and right
@@ -147,6 +168,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginHorizontal: 30,
+  },
+  disabledDoneButton: {
+    backgroundColor: '#ccc',
   },
   doneButtonText: {
     color: '#fff',
