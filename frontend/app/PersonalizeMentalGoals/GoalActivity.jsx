@@ -83,6 +83,8 @@ export default function GoalActivity() {
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
+        {/*progress bar */}
+
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.goalDetails}>
             {filteredGoalData.activities.map((activity, index) => (
