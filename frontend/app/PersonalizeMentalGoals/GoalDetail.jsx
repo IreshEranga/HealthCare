@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
   },
   disabledDoneButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#5b8179',
   },
   doneButtonText: {
     color: '#fff',
