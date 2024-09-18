@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, Animated } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
