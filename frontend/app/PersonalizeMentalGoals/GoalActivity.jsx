@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
 import ErrorAnimation from '../../assets/videos/error.gif';
-import completeGif from '../../assets/videos/complete.gif'
+import completeGif from '../../assets/videos/complete.gif';
 
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
