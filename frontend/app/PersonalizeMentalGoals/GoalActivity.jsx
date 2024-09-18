@@ -1,22 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
 import ErrorAnimation from '../../assets/videos/error.gif';
 
+
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function GoalActivity() {
   const route = useRoute();
+  const navigation = useNavigation();
   const { goal } = route.params || {}; // Default to an empty object to avoid undefined
 
   const goalData = goal?.data || goal;
   const [filteredGoalData, setFilteredGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleNavigate = (activity) => {
+    navigation.navigate('PersonalizeMentalGoals/GoalDetail', { activity });
+  };
+  
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -76,7 +84,7 @@ export default function GoalActivity() {
             {filteredGoalData.activities.map((activity, index) => (
               <View key={index} style={styles.activityItem}>
                 <Text style={styles.activityDay}>Day {activity.day}</Text>
-                <Text style={styles.activityInstruction}>{activity.instruction}</Text>
+                <Text style={styles.activityInstruction}>{activity.instruction}</Text> 
                 {activity.image ? (
                   <Image 
                     source={{ uri: activity.image }} 
@@ -86,10 +94,20 @@ export default function GoalActivity() {
                 ) : (
                   <Text style={styles.noImageText}>No image available</Text>
                 )}
-                <Text style={styles.activityStatus}>Status: {activity.status}</Text>
+                <View style={styles.statusAndStart}>
+                  <Text style={styles.activityStatus}>Status: {activity.status}</Text>
+                  <Icon style={styles.arrow} 
+                        name="arrow-right" 
+                        size={30} 
+                        color="#2E4057" 
+                        onPress={() => handleNavigate(activity)}  
+                  />
+                  
+                </View>
               </View>
             ))}
           </View>
+          <Text style={styles.space}></Text>
         </ScrollView>
       </LinearGradient>
       <NavBar />
@@ -119,6 +137,7 @@ const styles = StyleSheet.create({
   },
   goalDetails: {
     marginBottom: 20,
+    padding:10,
   },
   goalName: {
     fontSize: 24,
@@ -149,6 +168,8 @@ const styles = StyleSheet.create({
   activityDay: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginTop:10,
+    marginBottom:10,
   },
   activityInstruction: {
     fontSize: 14,
@@ -156,7 +177,7 @@ const styles = StyleSheet.create({
   },
   activityImage: {
     width: '100%',
-    height: 200,
+    height: 150,
     marginBottom: 10,
     borderRadius: 10,
   },
@@ -168,6 +189,7 @@ const styles = StyleSheet.create({
   activityStatus: {
     fontSize: 12,
     fontStyle: 'italic',
+    marginTop:5
   },
   loadingContainer: {
     flex: 1,
@@ -187,5 +209,15 @@ const styles = StyleSheet.create({
   errorGif:{
     width:100,
     height:100,
+  },
+  statusAndStart:{
+    flexDirection:'row',
+    marginTop:10,
+  },
+  arrow : {
+    marginLeft:200
+  },
+  space : {
+    paddingTop:100,
   }
 });
