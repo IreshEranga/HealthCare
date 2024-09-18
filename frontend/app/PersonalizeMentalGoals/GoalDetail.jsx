@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import ErrorAnimation from '../../assets/videos/error.gif';
@@ -6,11 +6,35 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NavBar from '../../components/NavBar';
 import completeGif from '../../assets/videos/complete.gif'; 
+import axios from 'axios'; // Add axios for API requests
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function GoalDetail() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { activity } = route.params || {};
+  const { activity, goalId } = route.params || {};
+  const [loading, setLoading] = useState(false);
+
+  console.log("Goal id : ",goalId);
+
+  const updateStatus = async () => {
+    if (activity.status === 'completed') return;
+
+    setLoading(true);
+    try {
+      await axios.put(`${apiUrl}/users/goals/${goalId}/activities/${activity._id}/complete`, {
+        status: 'completed'
+      });
+      
+      // Optionally, you could update the state or refetch data here
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!activity) {
     return (
@@ -61,9 +85,9 @@ export default function GoalDetail() {
 
           {/* Done Button */}
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={updateStatus}
             style={[styles.doneButton, activity.status === 'completed' && styles.disabledDoneButton]}
-            disabled={activity.status === 'completed'}
+            disabled={activity.status === 'completed' || loading}
           >
             <Text style={styles.doneButtonText}>
               {activity.status === 'completed' ? 'Completed' : 'Done'}
