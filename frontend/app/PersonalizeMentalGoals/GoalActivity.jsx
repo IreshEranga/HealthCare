@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, Animated } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,6 +20,7 @@ export default function GoalActivity() {
   const goalData = goal?.data || goal;
   const [filteredGoalData, setFilteredGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [animatedProgress, setAnimatedProgress] = useState(0);
 
   // Only calculate progress if filteredGoalData is available and has activities
   const totalActivities = filteredGoalData?.activities?.length || 0;
@@ -53,6 +54,16 @@ export default function GoalActivity() {
     fetchGoals();
   }, [goalData?.name]);
 
+
+  // Update animated progress when the actual progress changes
+  useEffect(() => {
+    if (progress !== animatedProgress) {
+      setTimeout(() => {
+        setAnimatedProgress(progress);
+      }, 500); // Add a delay to animate smoothly
+    }
+  }, [progress]);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -85,16 +96,18 @@ export default function GoalActivity() {
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
-        {/* Progress bar */}
+        {/* Animated Progress Bar */}
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
           <Progress.Bar 
-            progress={progress} 
+            progress={animatedProgress} 
             width={200} 
             color="#2E4057" 
             unfilledColor="#ccc"
             borderWidth={0}
             height={30}
+            animated={true} // Enable animation
+            animationType="spring" // Optional: you can set the animation type
           />
         </View>
 
