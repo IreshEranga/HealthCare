@@ -90,44 +90,6 @@ export default function Welcome() {
             </View>
           </TouchableOpacity>
 
-          <Text style={styles.topic1}>Journey to Balance 📈</Text>
-
-            {/* Daily Routines Card */}
-            <TouchableOpacity onPress={() => navigation.navigate('Journey/DailyRoutinePage')}>
-              <View style={styles.card}>
-                {/*<Image source={require('./assets/routines.png')} style={styles.vector} />*/}
-                <Text style={styles.cardTitle}>Track Your Daily Routines</Text>
-                <Text style={styles.cardDetails}>Stay organized by setting up and managing your daily routines.</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Mood Tracking Card */}
-            <TouchableOpacity onPress={() => navigation.navigate('Journey/MoodTrackingPage')}>
-              <View style={styles.card}>
-                {/*<Image source={require('./assets/mood.png')} style={styles.vector} />*/}
-                <Text style={styles.cardTitle}>Monitor Your Moods</Text>
-                <Text style={styles.cardDetails}>Check in daily to track your emotions and improve your mental well-being.</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Journaling Card */}
-            <TouchableOpacity onPress={() => navigation.navigate('Journey/JournalingPage')}>
-              <View style={styles.card}>
-                {/*<Image source={require('./assets/journaling.png')} style={styles.vector} />*/}
-                <Text style={styles.cardTitle}>Express Your Thoughts</Text>
-                <Text style={styles.cardDetails}>Use the journaling feature to reflect on your experiences and progress.</Text>
-              </View>
-            </TouchableOpacity>
-
-            {/* Reflection and Progress Card */}
-            <TouchableOpacity onPress={() => navigation.navigate('Journey/ProgressPage')}>
-              <View style={styles.card}>
-                {/*<Image source={require('./assets/progress.png')} style={styles.vector} />*/}
-                <Text style={styles.cardTitle}>Review Your Progress</Text>
-                <Text style={styles.cardDetails}>Look back on your journey and reflect on your mental health progress.</Text>
-              </View>
-            </TouchableOpacity>
-
           <Text style={styles.topic1}>Mental Fitness Plan</Text>
           <View style={styles.card}>
             <Image source={mental} style={styles.mental} />
