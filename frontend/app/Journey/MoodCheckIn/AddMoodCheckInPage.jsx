@@ -24,8 +24,7 @@ const AddMoodCheckInPage = () => {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-      if (parsedUser /*&& parsedUser.first_name */&& parsedUser.userID) {
-        //setUserName(parsedUser.first_name);
+      if (parsedUser && parsedUser.userID) {
         setUserID(parsedUser.userID);
       }
     } catch (error) {
@@ -33,7 +32,9 @@ const AddMoodCheckInPage = () => {
     }
   };
 
-  fetchUserData();
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   // Fetch current date and format it
   useEffect(() => {
@@ -46,13 +47,12 @@ const AddMoodCheckInPage = () => {
     setCurrentDate(date);
   }, []);
 
-  // Mood icons with colors for better feedback
   const moodIcons = [
-    { id: 1, emoji: '😡', color: '#e74c3c', label: 'Angry' },
+    { id: 1, emoji: '😭', color: '#e74c3c', label: 'Very Sad' },
     { id: 2, emoji: '😟', color: '#e67e22', label: 'Worried' },
-    { id: 3, emoji: '😐', color: '#f1c40f', label: 'Neutral' },
+    { id: 3, emoji: '😐', color: '#f1c40f', label: 'Okay' },
     { id: 4, emoji: '😊', color: '#2ecc71', label: 'Happy' },
-    { id: 5, emoji: '😄', color: '#27ae60', label: 'Excited' },
+    { id: 5, emoji: '😄', color: '#27ae60', label: 'Very Happy' },
   ];
 
   const feelings = ['Calm', 'Relaxed', 'Tired', 'Energetic', 'Sad', 'Proud', 'Lonely'];
@@ -81,7 +81,6 @@ const AddMoodCheckInPage = () => {
     }
   };
 
-  // Save the mood check-in to the backend
   const handleSave = async () => {
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
     console.log(apiUrl);
@@ -98,26 +97,28 @@ const AddMoodCheckInPage = () => {
       selectedActivity,
       selectedLocation,
       date: currentDate,
+      userID,
     };
+
     setIsSaving(true);
 
     try {
+      // Check if a mood check-in exists for the current date
+      const response = await axios.get(`${apiUrl}/mood-checks/${userID}/check?date=${currentDate}`);
+      if (response.data.exists) {
+        setIsSaving(false);
+        Alert.alert('Error', 'You have already checked in your mood for today.');
+        return;
+      }
+
       await axios.post(`${apiUrl}/mood-checks/add`, moodData);
-      setIsSaving(false); 
+      setIsSaving(false);
       Alert.alert('Success', 'Mood check-in saved successfully!');
-      resetForm();
+      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage');
     } catch (error) {
       setIsSaving(false);
       Alert.alert('Error', 'Failed to save mood check-in. Please try again later.');
     }
-  };
-
-  const resetForm = () => {
-    setSelectedMood(null);
-    setSelectedFeeling([]);
-    setSelectedCompany(null);
-    setSelectedActivity([]);
-    setSelectedLocation(null);
   };
 
   return (
@@ -150,7 +151,6 @@ const AddMoodCheckInPage = () => {
               onPress={() => setSelectedMood(mood.id)}
             >
               <Text style={styles.emojiText}>{mood.emoji}</Text>
-              {/*<Text style={styles.emojiLabel}>{mood.label}</Text>*/}
             </TouchableOpacity>
           ))}
         </View>
@@ -185,7 +185,6 @@ const AddMoodCheckInPage = () => {
               onPress={() => setSelectedCompany(company.id)}
             >
               <Icon name={company.name} type="font-awesome" color="white" size={24} />
-              {/*<Text style={styles.companyLabel}>{company.label}</Text>*/}
             </TouchableOpacity>
           ))}
         </View>
@@ -220,7 +219,6 @@ const AddMoodCheckInPage = () => {
               onPress={() => setSelectedLocation(location.id)}
             >
               <Icon name={location.name} type="font-awesome" color="white" size={24} />
-              {/*<Text style={styles.companyLabel}>{location.label}</Text>*/}
             </TouchableOpacity>
           ))}
         </View>
@@ -236,9 +234,7 @@ const AddMoodCheckInPage = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-
-       {/* Nav Bar */}
-       <NavBar  style={styles.navigation}/>
+      <NavBar />
     </SafeAreaView>
   );
 };
@@ -252,17 +248,16 @@ const styles = StyleSheet.create({
   moodSelector: { flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 15, backgroundColor: '#fff', borderRadius: 10 },
   moodIcon: { padding: 10, borderRadius: 50, alignItems: 'center' },
   emojiText: { fontSize: 24 },
-  emojiLabel: { fontSize: 14, color: '#444', marginTop: 5 },
-  multiSelectContainer: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: 15 },
+  multiSelectContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 10, backgroundColor: '#fff', borderRadius: 10 },
   multiSelectItem: { padding: 10, margin: 5, borderRadius: 20 },
-  selectedItem: { backgroundColor: '#27ae60', color: '#fff' },
-  unselectedItem: { backgroundColor: '#f1f1f1' },
-  multiSelectText: { fontSize: 16 },
-  iconSelector: { flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 10 },
+  selectedItem: { backgroundColor: '#7f8c8d' },
+  unselectedItem: { backgroundColor: '#eee' },
+  multiSelectText: { fontSize: 16, color: 'black' },
+  iconSelector: { flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 15, backgroundColor: '#fff', borderRadius: 10 },
   companyIcon: { padding: 10, borderRadius: 50, alignItems: 'center' },
-  companyLabel: { fontSize: 14, color: '#444', marginTop: 5 },
-  saveButton: { backgroundColor: '#9b59b6', padding: 15, borderRadius: 10, marginHorizontal: 20, marginTop: 30, alignItems: 'center', marginBottom: 50},
-  saveButtonText: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  saveButton: { backgroundColor: '#3498db', paddingVertical: 15, margin: 20, borderRadius: 10, marginBottom:120 },
+  saveButtonText: { textAlign: 'center', fontSize: 18, color: '#fff' },
+  alreadyCheckedInText: { textAlign: 'center', fontSize: 24, fontWeight: 'bold', color: 'black', marginVertical: 50 },
 });
 
 export default AddMoodCheckInPage;

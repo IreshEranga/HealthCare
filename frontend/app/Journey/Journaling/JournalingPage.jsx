@@ -10,7 +10,7 @@ import axios from 'axios';
 
 const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(moment()); 
+  const [selectedDate, setSelectedDate] = useState(moment());
   const [currentDate, setCurrentDate] = useState(moment().format('Do MMMM, YYYY'));
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
@@ -56,10 +56,23 @@ const JournalingPage = () => {
   };
 
   const updateJournal = (journal) => {
+    const today = moment().format('YYYY-MM-DD');
+    const journalDate = moment(journal.time).format('YYYY-MM-DD');
+    if (today !== journalDate) {
+      Alert.alert('Error', 'You can only update journals for today.');
+      return;
+    }
     navigation.navigate('Journey/Journaling/EditJournalPage', { journal });
   };
 
   const deleteJournal = async (journalID) => {
+    const today = moment().format('YYYY-MM-DD');
+    const journalDate = moment(journals.find(journal => journal._id === journalID)?.time).format('YYYY-MM-DD');
+    if (today !== journalDate) {
+      Alert.alert('Error', 'You can only delete journals for today.');
+      return;
+    }
+
     try {
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       await axios.delete(`${apiUrl}/journals/${journalID}`);
@@ -123,22 +136,32 @@ const JournalingPage = () => {
         {journals.length === 0 ? (
           <Text style={styles.noJournals}>No journals for this day.</Text>
         ) : (
-          journals.map((journal) => (
-            <View key={journal._id} style={styles.journalEntry}>
-              <Text style={styles.journalTime}>{moment(journal.time).format('hh:mm A')}</Text>
-              <View style={styles.journalContent}>
-                <Text style={styles.journalText}>{journal.note}</Text>
-                <View style={styles.journalActions}>
-                  <TouchableOpacity onPress={() => updateJournal(journal)}>
-                    <Icon name="edit" size={25} color="blue" style={styles.actionIcon} />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => deleteJournal(journal._id)}>
-                    <Icon name="trash" size={25} color="red" style={styles.actionIcon} />
-                  </TouchableOpacity>
+          journals.map((journal) => {
+            const today = moment().format('YYYY-MM-DD');
+            const journalDate = moment(journal.time).format('YYYY-MM-DD');
+            const isToday = today === journalDate;
+
+            return (
+              <View key={journal._id} style={styles.journalEntry}>
+                <Text style={styles.journalTime}>{moment(journal.time).format('hh:mm A')}</Text>
+                <View style={styles.journalContent}>
+                  <Text style={styles.journalText}>{journal.note}</Text>
+                  <View style={styles.journalActions}>
+                    {isToday && (
+                      <>
+                        <TouchableOpacity onPress={() => updateJournal(journal)}>
+                          <Icon name="edit" size={25} color="blue" style={styles.actionIcon} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => deleteJournal(journal._id)}>
+                          <Icon name="trash" size={25} color="red" style={styles.actionIcon} />
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
                 </View>
               </View>
-            </View>
-          ))
+            );
+          })
         )}
       </ScrollView>
 
@@ -171,7 +194,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
+    marginVertical: 5, // Reduced margin
   },
   currentDate: {
     fontSize: 18,
@@ -203,7 +226,7 @@ const styles = StyleSheet.create({
   journalList: {
     flex: 1,
     paddingHorizontal: 10,
-    marginTop: 0,
+    marginTop: 0, // Adjusted margin
   },
   noJournals: {
     textAlign: 'center',

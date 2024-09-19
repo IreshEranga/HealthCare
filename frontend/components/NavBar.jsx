@@ -17,9 +17,9 @@ const NavBar = () => {
         <Icon name="search-outline" size={24} color="white" />
         <Text style={styles.navText}>Goal</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton}>
-        <Icon name="notifications-outline" size={24} color="white" />
-        <Text style={styles.navText}>Notifications</Text>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Journey/JourneyPage')}>
+        <Icon name="book-outline" size={24} color="white" />
+        <Text style={styles.navText}>Journey</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
         <Icon name="person-outline" size={24} color="white" onPress={() => navigation.navigate('ProfilePage')}/>
