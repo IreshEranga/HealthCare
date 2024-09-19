@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop:-150,
   },
   test : {
-    marginTop:-120
+    marginTop:-150
   }
   
 });
