@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image ,Animated, Easing} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,6 +21,8 @@ export default function GoalActivity() {
   const [filteredGoalData, setFilteredGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const animatedOverlay = useRef(new Animated.Value(0)).current; // Create animated value for width
+
 
   // Only calculate progress if filteredGoalData is available and has activities
   const totalActivities = filteredGoalData?.activities?.length || 0;
@@ -56,6 +58,7 @@ export default function GoalActivity() {
 
 
   // Update animated progress when the actual progress changes
+  /*
   useEffect(() => {
     if (progress !== animatedProgress) {
       setTimeout(() => {
@@ -63,6 +66,24 @@ export default function GoalActivity() {
       }, 500); // Add a delay to animate smoothly
     }
   }, [progress]);
+  */
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(animatedOverlay, {
+        toValue: 1,
+        duration: 1000, // Speed of running bars
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    ).start();
+  }, []);
+
+  // Fix: Define animatedBarPosition with interpolation
+  const animatedBarPosition = animatedOverlay.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-200, 200], // Adjust based on the width of the progress bar
+  });
 
   if (loading) {
     return (
@@ -97,7 +118,7 @@ export default function GoalActivity() {
         </View>
 
         {/* Animated Progress Bar */}
-        <View style={styles.progressContainer}>
+        {/*<View style={styles.progressContainer}>
           <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
           <Progress.Bar 
             progress={animatedProgress} 
@@ -109,7 +130,38 @@ export default function GoalActivity() {
             animated={true} // Enable animation
             animationType="spring" // Optional: you can set the animation type
           />
-        </View>
+        </View>*/}
+
+        {/* Static Progress Bar with Moving Overlay */}
+        {/*<View style={styles.progressContainer}>
+          <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
+          
+          <View style={styles.progressBarBackground}>
+            
+            
+            <View style={[styles.staticProgressBar, { width: `${progress * 100}%` }]} />
+            
+            
+          </View>
+        </View>*/}
+
+<View style={styles.progressContainer}>
+  <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
+  
+  <View style={styles.progressBarBackground}>
+    {/* Static Progress with Gradient */}
+    <LinearGradient
+      colors={['#73a773', '#42a175', '#508455']} // Gradient colors
+      start={[0, 0]} // Start position of the gradient
+      end={[1, 0]}   // End position of the gradient
+      style={[styles.staticProgressBar, { width: `${progress * 100}%` }]} // Apply progress-based width
+    />
+    
+    {/* Optional: Moving Overlay */}
+    {/* <Animated.View style={[styles.movingBars, { left: animatedBarPosition }]} /> */}
+  </View>
+</View>
+
 
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.goalDetails}>
@@ -275,5 +327,28 @@ const styles = StyleSheet.create({
     color: '#2E4057',
     marginBottom: 10,
   },
-  
+  progressBarBackground: {
+    width: 200, // Max width for the progress bar
+    height: 30,
+    backgroundColor: '#ccc',
+    borderRadius: 15,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  staticProgressBar: {
+    height: '100%',
+    backgroundColor: '#2E4057',
+    borderRadius: 15,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  movingBars: {
+    position: 'absolute',
+    height: '100%',
+    width: 50, // Width of the moving bar
+    backgroundColor: '#2E4057', // Same color as the static progress bar
+    opacity: 0.5, // Make it semi-transparent
+    borderRadius: 15,
+  },
 });
