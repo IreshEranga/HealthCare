@@ -24,6 +24,20 @@ export default function AddFood() {
     }
   };
 
+  // Function to add selected food to MongoDB via your backend
+  const addFoodToLog = async (foodItem) => {
+    const foodData = {
+      foodItem, // The food item selected
+    };
+
+    try {
+      const response = await axios.post('http://192.168.8.148:8000/food-log/add', foodData); // Your backend URL
+      Alert.alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error adding food log');
+    }
+  };
 
   return (
     <View style={{ padding: 20 }}>
