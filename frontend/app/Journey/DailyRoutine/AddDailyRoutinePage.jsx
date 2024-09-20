@@ -47,6 +47,9 @@ const AddDailyRoutinePage = () => {
       if (response.status === 201) {
         setIsSaving(false);
         Alert.alert('Success', 'Routine added successfully');
+        setTimeout(() => {
+          navigation.navigate('Journey/DailyRoutine/DoneAddDailyRoutinePage');
+        }, 3000);
         navigation.navigate('Journey/DailyRoutine/DoneAddDailyRoutinePage');
       } else {
         Alert.alert('Error', 'Unexpected response from server');

@@ -1,13 +1,34 @@
 const mongoose = require('mongoose');
 
-const moodCheckSchema = new mongoose.Schema({
-  userID: { type: String, required: true },
-  selectedMood: { type: String, required: true },
-  selectedFeeling: { type: String, required: true },
-  selectedCompany: { type: String, required: true },
-  selectedActivity: { type: [String], required: true },
-  selectedLocation: { type: String, required: true },
-  date: { type: String, required: true }, // Store date as YYYY-MM-DD
+const moodCheckInSchema = new mongoose.Schema({
+  userID: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: String,
+    required: true,
+  },
+  mood: {
+    type: String,
+    required: true,
+  },
+  feelings: {
+    type: [String],
+    default: [],
+  },
+  company: {
+    type: String,
+    default: '',
+  },
+  activity: {
+    type: String,
+    default: '',
+  },
+  location: {
+    type: String,
+    default: '',
+  },
 });
 
-module.exports = mongoose.model('MoodCheck', moodCheckSchema);
+module.exports = mongoose.model('MoodCheckIn', moodCheckInSchema);

@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import axios from 'axios';
 
+
 const JournalingPage = () => {
   const [journals, setJournals] = useState([]);
   const [selectedDate, setSelectedDate] = useState(moment());
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 5, // Reduced margin
+    marginVertical: 5,
   },
   currentDate: {
     fontSize: 18,

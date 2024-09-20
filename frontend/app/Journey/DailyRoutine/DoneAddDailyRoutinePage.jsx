@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, Button, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,17 @@ import NavBar from '../../../components/NavBar';
 
 const DoneAddDailyRoutinePage = () => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    // Set a timeout to navigate after 5 seconds
+    const timeout = setTimeout(() => {
+      navigation.navigate('Journey/DailyRoutine/DailyRoutinePage'); 
+      console.log("Naviagtion success")
+    }, 3000);
+
+    // Clean up the timeout when the component unmounts
+    return () => clearTimeout(timeout);
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -26,7 +37,7 @@ const DoneAddDailyRoutinePage = () => {
             Your daily routine has been added successfully..
           </Text>
 
-          <Button title="✔ Done" onPress={() => navigation.navigate('Journey/DailyRoutine/DailyRoutinePage')} />
+          {/*<Button title="✔ Done" onPress={() => navigation.navigate('Journey/DailyRoutine/DailyRoutinePage')} />*/}
         </View>
         <NavBar />
       {/*</LinearGradient>*/}
