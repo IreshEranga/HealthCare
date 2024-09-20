@@ -8,6 +8,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from '../../../components/NavBar';
 
+
 const EditDailyRoutinePage = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -26,7 +27,14 @@ const EditDailyRoutinePage = () => {
     }
   }, [routine]);
 
+  const isPastDate = moment(selectedDate).isBefore(moment(), 'day');
+
   const handleSave = async () => {
+    if (isPastDate) {
+      Alert.alert('Error', 'Cannot update past routines');
+      return;
+    }
+
     setIsSaving(true);
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
@@ -35,17 +43,17 @@ const EditDailyRoutinePage = () => {
 
       const updatePayload = {
         originalDate: routine.date,
-        morning: { 
-          content: morning, 
-          status: routine.morning.status === 'pending..' && morning !== routine.morning.content ? 'pending..' : routine.morning.status 
+        morning: {
+          content: morning,
+          status: routine.morning.status === 'pending..' && morning !== routine.morning.content ? 'pending..' : routine.morning.status,
         },
-        day: { 
-          content: day, 
-          status: routine.day.status === 'pending..' && day !== routine.day.content ? 'pending..' : routine.day.status 
+        day: {
+          content: day,
+          status: routine.day.status === 'pending..' && day !== routine.day.content ? 'pending..' : routine.day.status,
         },
-        evening: { 
-          content: evening, 
-          status: routine.evening.status === 'pending..' && evening !== routine.evening.content ? 'pending..' : routine.evening.status 
+        evening: {
+          content: evening,
+          status: routine.evening.status === 'pending..' && evening !== routine.evening.content ? 'pending..' : routine.evening.status,
         },
       };
 
@@ -72,7 +80,7 @@ const EditDailyRoutinePage = () => {
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.title}>Edit Daily Plan</Text>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isSaving}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={isSaving || isPastDate}>
           <Text style={styles.saveButtonText}>{isSaving ? 'Saving...' : 'Save'}</Text>
         </TouchableOpacity>
       </View>
@@ -92,7 +100,7 @@ const EditDailyRoutinePage = () => {
               onChangeText={setMorning}
               style={styles.input}
               multiline={true}
-              editable={routine.morning.status === 'pending..'}
+              editable={!isPastDate && routine.morning.status !== 'completed'}
             />
           </View>
 
@@ -105,7 +113,7 @@ const EditDailyRoutinePage = () => {
               onChangeText={setDay}
               style={styles.input}
               multiline={true}
-              editable={routine.day.status === 'pending..'}
+              editable={!isPastDate && routine.day.status !== 'completed'}
             />
           </View>
 
@@ -118,7 +126,7 @@ const EditDailyRoutinePage = () => {
               onChangeText={setEvening}
               style={styles.input}
               multiline={true}
-              editable={routine.evening.status === 'pending..'}
+              editable={!isPastDate && routine.evening.status !== 'completed'}
             />
           </View>
         </ScrollView>
@@ -130,7 +138,6 @@ const EditDailyRoutinePage = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container1: {

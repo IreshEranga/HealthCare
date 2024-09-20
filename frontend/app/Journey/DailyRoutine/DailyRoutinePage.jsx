@@ -92,7 +92,7 @@ const DailyRoutinePage = () => {
       
       // Update the status for the specified section
       const updatedRoutine = { ...routine };
-      updatedRoutine[section].status = 'completed'; // Update status locally
+      updatedRoutine[section].status = 'completed'; 
 
       await axios.put(`${apiUrl}/daily-routines/status/${userID}`, {
         date: formattedDate,
@@ -101,35 +101,45 @@ const DailyRoutinePage = () => {
       });
 
       // Set the updated routine to state
-      setRoutine(updatedRoutine); // Update the local state
+      setRoutine(updatedRoutine); 
     } catch (error) {
       //console.log('Error updating status:', error);
     }
   }; 
 
-  // Render Done Button for each section
+  // Update the status checks in the renderDoneButton function
   const renderDoneButton = (section) => {
     const activity = routine[section];
-  
-    // Only show the button if the status is not completed
+
     if (activity.status === 'completed') {
-      return null; // Do not render the button
+      return null; // Do not render the button if already completed
     }
-  
-    return (
-      <TouchableOpacity
-        onPress={updateStatus.bind(null, section)}
-        style={styles.doneButton}
-      >
-        <Text style={styles.doneButtonText}>✅</Text>
-      </TouchableOpacity>
-    );
-  };  
+
+    const isPastSection = selectedDate.isBefore(moment(), 'day') || 
+                          (selectedDate.isSame(moment(), 'day') && moment().isAfter(morningEnd));
+
+    const isCurrentSection = (section === 'morning' && selectedDate.isSame(moment(), 'day') && now.isBefore(morningEnd)) ||
+                            (section === 'day' && selectedDate.isSame(moment(), 'day') && now.isAfter(morningEnd) && now.isBefore(dayEnd)) ||
+                            (section === 'evening' && selectedDate.isSame(moment(), 'day') && now.isAfter(dayEnd));
+
+    if (isPastSection || isCurrentSection) {
+      return (
+        <TouchableOpacity
+          onPress={updateStatus.bind(null, section)}
+          style={styles.doneButton}
+        >
+          <Text style={styles.doneButtonText}>✅</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    return null; 
+  };
 
   // Render date buttons for past 7 days and future dates
   const renderDateButtons = () => {
-    const futureDate = moment().add(3, 'months'); // 3 months from today
-    const startDate = moment().subtract(7, 'days'); // Past 7 days
+    const futureDate = moment().add(3, 'months'); 
+    const startDate = moment().subtract(7, 'days');
     const dates = [];
     let currentDate = startDate.clone();
   
@@ -183,61 +193,37 @@ const DailyRoutinePage = () => {
             <View style={styles.iconsContainer}>
               <Text style={styles.routineDate}>{selectedDate.format('Do MMMM, YYYY')}</Text>
               
-              <TouchableOpacity onPress={editRoutine}>
-                <Icon name="edit" size={25} color="#27ae60" style={styles.icon} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => deleteRoutine()}>
-                <Icon name="trash" size={25} color="#e74c3c" style={styles.icon} />
-              </TouchableOpacity>
+              {/* Check if the selected date is in the past */}
+              {!selectedDate.isBefore(moment(), 'day') && (
+                <>
+                  <TouchableOpacity onPress={editRoutine}>
+                    <Icon name="edit" size={25} color="#27ae60" style={styles.icon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={deleteRoutine}>
+                    <Icon name="trash" size={25} color="#e74c3c" style={styles.icon} />
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
 
-            {/* Morning section */}
-              <View style={styles.section}>
-                <View style={styles.statusContainer}>
-                  <Text style={styles.sectionTitle}>Morning</Text>
-                  {selectedDate.isSame(moment(), 'day') && now.isBefore(morningEnd) ? (
-                    renderDoneButton('morning')
-                  ) : (
-                    <Text style={styles.statusText}>{routine.morning.status}</Text>
-                  )}
-                  {routine.morning.status === 'completed' && (
-                  <Image source={completeGif} style={styles.completeGif} />
-                  )}
+            {['morning', 'day', 'evening'].map((section) => {
+              const isPastSection = selectedDate.isBefore(moment(), 'day') || 
+                (selectedDate.isSame(moment(), 'day') && moment().isAfter((section === 'morning') ? morningEnd : dayEnd));
+              
+              return (
+                <View style={styles.section} key={section}>
+                  <View style={styles.statusContainer}>
+                    <Text style={styles.sectionTitle}>{section.charAt(0).toUpperCase() + section.slice(1)}</Text>
+                    {renderDoneButton(section)}
+                    {routine[section].status === 'completed' && (
+                      <Image source={completeGif} style={styles.completeGif} />
+                    )}
+                  </View>
+                  {/*{!isPastSection && <Text style={styles.statusText}>{routine[section].status}</Text>}*/}
+                  <Text style={styles.sectionContent}>{routine[section].content}</Text>
                 </View>
-                <Text style={styles.sectionContent}>{routine.morning.content}</Text>               
-              </View>
-
-              {/* Day section */}
-              <View style={styles.section}>
-                <View style={styles.statusContainer}>
-                  <Text style={styles.sectionTitle}>Day</Text>
-                  {selectedDate.isSame(moment(), 'day') && now.isAfter(morningEnd) && now.isBefore(dayEnd) ? (
-                    renderDoneButton('day')
-                  ) : (
-                    <Text style={styles.statusText}>{routine.day.status}</Text>
-                  )}
-                  {routine.day.status === 'completed' && (
-                  <Image source={completeGif} style={styles.completeGif} />
-                )}
-                </View>
-                <Text style={styles.sectionContent}>{routine.day.content}</Text>               
-              </View>
-
-              {/* Evening section */}
-              <View style={styles.section}>
-                <View style={styles.statusContainer}>
-                  <Text style={styles.sectionTitle}>Evening</Text>
-                  {selectedDate.isSame(moment(), 'day') && now.isAfter(dayEnd) ? (
-                    renderDoneButton('evening')
-                  ) : (
-                    <Text style={styles.statusText}>{routine.evening.status}</Text>
-                  )}
-                  {routine.evening.status === 'completed' && (
-                  <Image source={completeGif} style={styles.completeGif} />
-                  )}
-                </View>
-                <Text style={styles.sectionContent}>{routine.evening.content}</Text>
-              </View>
+              );
+            })}
           </View>
         ) : (
           <Text>No routine for this day.</Text>

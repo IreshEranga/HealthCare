@@ -35,7 +35,7 @@ app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/users", logInRoutes);
-app.use('/mood-checks', MoodCheckInRoutes);
+app.use('/mood-check-in', MoodCheckInRoutes);
 app.use('/journals', JournalRoutes);
 app.use('/daily-routines', DailyRoutineRoutes);
 
