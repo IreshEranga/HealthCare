@@ -39,9 +39,9 @@ const AddDailyRoutinePage = () => {
       const response = await axios.post(`${apiUrl}/daily-routines`, {
         userID,
         date: formattedDate,
-        morning,
-        day,
-        evening,
+        morning: { content: morning, status: 'pending..' },
+        day: { content: day, status: 'pending..' },
+        evening: { content: evening, status: 'pending..' },
       });
 
       if (response.status === 201) {

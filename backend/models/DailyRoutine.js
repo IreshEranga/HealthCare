@@ -10,16 +10,16 @@ const dailyRoutineSchema = new mongoose.Schema({
     required: true,
   },
   morning: {
-    type: String,
-    default: '',
+    content: { type: String, default: '' },
+    status: { type: String, default: 'pending..' }, 
   },
   day: {
-    type: String,
-    default: '',
+    content: { type: String, default: '' },
+    status: { type: String, default: 'pending..' }, 
   },
   evening: {
-    type: String,
-    default: '',
+    content: { type: String, default: '' },
+    status: { type: String, default: 'pending..' }, 
   },
 }, { timestamps: true });
 
