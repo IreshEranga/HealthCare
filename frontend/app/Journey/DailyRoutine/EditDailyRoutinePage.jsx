@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { View, TextInput, Alert, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,22 +8,21 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NavBar from '../../../components/NavBar';
 
-
 const EditDailyRoutinePage = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { routine, date } = route.params;
   const [selectedDate, setSelectedDate] = useState(date ? moment(date).toDate() : new Date());
-  const [morning, setMorning] = useState(routine ? routine.morning : '');
-  const [day, setDay] = useState(routine ? routine.day : '');
-  const [evening, setEvening] = useState(routine ? routine.evening : '');
+  const [morning, setMorning] = useState(routine ? routine.morning.content : '');
+  const [day, setDay] = useState(routine ? routine.day.content : '');
+  const [evening, setEvening] = useState(routine ? routine.evening.content : '');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (routine) {
-      setMorning(routine.morning || '');
-      setDay(routine.day || '');
-      setEvening(routine.evening || '');
+      setMorning(routine.morning.content || '');
+      setDay(routine.day.content || '');
+      setEvening(routine.evening.content || '');
     }
   }, [routine]);
 
@@ -33,25 +32,25 @@ const EditDailyRoutinePage = () => {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const userID = storedUser ? JSON.parse(storedUser).userID : null;
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-      
-      // Prepare request payload with fields that have been modified
+
       const updatePayload = {
-        originalDate: routine.date 
+        originalDate: routine.date,
+        morning: { 
+          content: morning, 
+          status: routine.morning.status === 'pending..' && morning !== routine.morning.content ? 'pending..' : routine.morning.status 
+        },
+        day: { 
+          content: day, 
+          status: routine.day.status === 'pending..' && day !== routine.day.content ? 'pending..' : routine.day.status 
+        },
+        evening: { 
+          content: evening, 
+          status: routine.evening.status === 'pending..' && evening !== routine.evening.content ? 'pending..' : routine.evening.status 
+        },
       };
-      
-      if (morning !== routine.morning) updatePayload.morning = morning;
-      if (day !== routine.day) updatePayload.day = day;
-      if (evening !== routine.evening) updatePayload.evening = evening;
-      
-      // Handle case when all fields are empty or unchanged
-      if (Object.keys(updatePayload).length === 1) { 
-        Alert.alert('No Changes', 'No changes have been made to the routine.');
-        setIsSaving(false);
-        return;
-      }
-  
+
       const response = await axios.put(`${apiUrl}/daily-routines/${userID}`, updatePayload);
-      
+
       if (response.status === 200) {
         setIsSaving(false);
         Alert.alert('Success', 'Routine updated successfully');
@@ -64,7 +63,7 @@ const EditDailyRoutinePage = () => {
       console.log('Error updating routine:', error.response ? error.response.data : error);
       Alert.alert('Error', error.response?.data?.message || 'Failed to update routine');
     }
-  };    
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -84,7 +83,8 @@ const EditDailyRoutinePage = () => {
             <Text style={styles.datePickerText}>{moment(selectedDate).format('MMMM Do YYYY')}</Text>
           </TouchableOpacity>
 
-          <Text style={styles.label}>Morning</Text>
+          {/* Morning Section */}
+          <Text style={styles.label}>Morning (Status: {routine.morning.status})</Text>
           <View style={styles.planContainer}>
             <TextInput
               placeholder="Edit morning plan..."
@@ -92,10 +92,12 @@ const EditDailyRoutinePage = () => {
               onChangeText={setMorning}
               style={styles.input}
               multiline={true}
+              editable={routine.morning.status === 'pending..'}
             />
           </View>
 
-          <Text style={styles.label}>Day</Text>
+          {/* Day Section */}
+          <Text style={styles.label}>Day (Status: {routine.day.status})</Text>
           <View style={styles.planContainer}>
             <TextInput
               placeholder="Edit day plan..."
@@ -103,10 +105,12 @@ const EditDailyRoutinePage = () => {
               onChangeText={setDay}
               style={styles.input}
               multiline={true}
+              editable={routine.day.status === 'pending..'}
             />
           </View>
 
-          <Text style={styles.label}>Evening</Text>
+          {/* Evening Section */}
+          <Text style={styles.label}>Evening (Status: {routine.evening.status})</Text>
           <View style={styles.planContainer}>
             <TextInput
               placeholder="Edit evening plan..."
@@ -114,6 +118,7 @@ const EditDailyRoutinePage = () => {
               onChangeText={setEvening}
               style={styles.input}
               multiline={true}
+              editable={routine.evening.status === 'pending..'}
             />
           </View>
         </ScrollView>
@@ -125,6 +130,7 @@ const EditDailyRoutinePage = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container1: {

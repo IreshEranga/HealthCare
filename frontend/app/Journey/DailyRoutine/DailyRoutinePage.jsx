@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'; 
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import moment from 'moment';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import completeGif from '../../../assets/videos/complete.gif'; 
 import NavBar from '../../../components/NavBar';
 
 
@@ -47,7 +48,7 @@ const DailyRoutinePage = () => {
       const response = await axios.get(`${apiUrl}/daily-routines/${userID}?date=${formattedDate}`);
       setRoutine(response.data);
     } catch (error) {
-      console.log('Error fetching routine:', error);
+      //console.log('Error fetching routine:', error);
       setRoutine(null);
     }
   };
@@ -78,6 +79,52 @@ const DailyRoutinePage = () => {
   const editRoutine = () => {
     navigation.navigate('Journey/DailyRoutine/EditDailyRoutinePage', { routine, date: selectedDate });
   };
+
+  const morningEnd = moment().hour(11).minute(59);
+  const dayEnd = moment().hour(17).minute(59);
+  const now = moment();
+
+  // Update Status Function
+  const updateStatus = async (section) => {
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      const formattedDate = selectedDate.format('YYYY-MM-DD');
+      
+      // Update the status for the specified section
+      const updatedRoutine = { ...routine };
+      updatedRoutine[section].status = 'completed'; // Update status locally
+
+      await axios.put(`${apiUrl}/daily-routines/status/${userID}`, {
+        date: formattedDate,
+        section: section,
+        status: 'completed',
+      });
+
+      // Set the updated routine to state
+      setRoutine(updatedRoutine); // Update the local state
+    } catch (error) {
+      //console.log('Error updating status:', error);
+    }
+  }; 
+
+  // Render Done Button for each section
+  const renderDoneButton = (section) => {
+    const activity = routine[section];
+  
+    // Only show the button if the status is not completed
+    if (activity.status === 'completed') {
+      return null; // Do not render the button
+    }
+  
+    return (
+      <TouchableOpacity
+        onPress={updateStatus.bind(null, section)}
+        style={styles.doneButton}
+      >
+        <Text style={styles.doneButtonText}>✅</Text>
+      </TouchableOpacity>
+    );
+  };  
 
   // Render date buttons for past 7 days and future dates
   const renderDateButtons = () => {
@@ -134,8 +181,8 @@ const DailyRoutinePage = () => {
         {routine ? (
           <View style={styles.routineContainer1}>
             <View style={styles.iconsContainer}>
-            <Text style={styles.routineDate}>{selectedDate.format('Do MMMM, YYYY')}</Text>
-            
+              <Text style={styles.routineDate}>{selectedDate.format('Do MMMM, YYYY')}</Text>
+              
               <TouchableOpacity onPress={editRoutine}>
                 <Icon name="edit" size={25} color="#27ae60" style={styles.icon} />
               </TouchableOpacity>
@@ -143,23 +190,59 @@ const DailyRoutinePage = () => {
                 <Icon name="trash" size={25} color="#e74c3c" style={styles.icon} />
               </TouchableOpacity>
             </View>
-            {/*<Text style={styles.routineDate}>{selectedDate.format('Do MMMM, YYYY')}</Text>*/}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Morning</Text>
-              <Text style={styles.sectionContent}>{routine.morning}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Day</Text>
-              <Text style={styles.sectionContent}>{routine.day}</Text>
-            </View>
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Evening</Text>
-              <Text style={styles.sectionContent}>{routine.evening}</Text>
-            </View>
+
+            {/* Morning section */}
+              <View style={styles.section}>
+                <View style={styles.statusContainer}>
+                  <Text style={styles.sectionTitle}>Morning</Text>
+                  {selectedDate.isSame(moment(), 'day') && now.isBefore(morningEnd) ? (
+                    renderDoneButton('morning')
+                  ) : (
+                    <Text style={styles.statusText}>{routine.morning.status}</Text>
+                  )}
+                  {routine.morning.status === 'completed' && (
+                  <Image source={completeGif} style={styles.completeGif} />
+                  )}
+                </View>
+                <Text style={styles.sectionContent}>{routine.morning.content}</Text>               
+              </View>
+
+              {/* Day section */}
+              <View style={styles.section}>
+                <View style={styles.statusContainer}>
+                  <Text style={styles.sectionTitle}>Day</Text>
+                  {selectedDate.isSame(moment(), 'day') && now.isAfter(morningEnd) && now.isBefore(dayEnd) ? (
+                    renderDoneButton('day')
+                  ) : (
+                    <Text style={styles.statusText}>{routine.day.status}</Text>
+                  )}
+                  {routine.day.status === 'completed' && (
+                  <Image source={completeGif} style={styles.completeGif} />
+                )}
+                </View>
+                <Text style={styles.sectionContent}>{routine.day.content}</Text>               
+              </View>
+
+              {/* Evening section */}
+              <View style={styles.section}>
+                <View style={styles.statusContainer}>
+                  <Text style={styles.sectionTitle}>Evening</Text>
+                  {selectedDate.isSame(moment(), 'day') && now.isAfter(dayEnd) ? (
+                    renderDoneButton('evening')
+                  ) : (
+                    <Text style={styles.statusText}>{routine.evening.status}</Text>
+                  )}
+                  {routine.evening.status === 'completed' && (
+                  <Image source={completeGif} style={styles.completeGif} />
+                  )}
+                </View>
+                <Text style={styles.sectionContent}>{routine.evening.content}</Text>
+              </View>
           </View>
         ) : (
           <Text>No routine for this day.</Text>
         )}
+
       </ScrollView>
 
       <TouchableOpacity style={styles.floatingButton} onPress={addRoutine}>
@@ -195,14 +278,45 @@ const styles = StyleSheet.create({
   section: { marginBottom: 15, padding: 15, backgroundColor: '#fff', borderRadius: 10 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#8e44ad' },
   sectionContent: { fontSize: 16, color: '#333' },
+  statusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop:5, // Adjust as needed
+  },
+  statusText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  completeGif: {
+    width: 80, // Adjust as needed
+    height: 35, // Adjust as needed
+    marginTop: -10,
+  },  
+  doneButton: {
+    marginTop: 0,
+    backgroundColor: '#2E4057',
+    padding: 10,
+    borderRadius: 50,
+    alignItems: 'center',
+    marginHorizontal: 0,
+  },
+  disabledDoneButton: {
+    backgroundColor: '#5b8179',
+  },
+  doneButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   floatingButton: {
     position: 'absolute',
     bottom: 80,
     right: 20,
     backgroundColor: '#c0392b',
     borderRadius: 50,
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
