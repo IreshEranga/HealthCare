@@ -11,6 +11,9 @@ const logInRoutes = require("./routes/logInRoutes");
 const MoodCheckInRoutes = require('./routes/MoodCheckInRoutes');
 const JournalRoutes = require('./routes/JournalRoutes');
 //const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
+const foodLogRoutes = require('./routes/foodLogRoutes');
+
+
 
 // express app
 const app = express();
@@ -33,6 +36,7 @@ app.use("/users", logInRoutes);
 app.use('/mood-checks', MoodCheckInRoutes);
 app.use('/journals', JournalRoutes);
 //app.use('/DailyRoutines', DailyRoutineRoutes);
+app.use('/food-log', foodLogRoutes);
 
 // connect to db
 mongoose
