@@ -4,7 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
-import bg2 from '../assets/images/bgsignup.jpg';
+import bg2 from '../assets/images/bg2.jpg';
 
 
 
