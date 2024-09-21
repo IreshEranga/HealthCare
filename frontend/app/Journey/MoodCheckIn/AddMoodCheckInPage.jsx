@@ -128,11 +128,11 @@ const handleSubmit = async () => {
     if (index === 0) {
       moodLabel = moodIcons.find(icon => icon.id === selectedAnswer)?.label || '';
     } else if (index === 1) {
-      feelingsLabel = selectedAnswer; // Make sure this sends the correct text label, not an ID
+      feelingsLabel = selectedAnswer; 
     } else if (index === 2) {
       companyLabel = companyIcons.find(icon => icon.id === selectedAnswer)?.label || '';
     } else if (index === 3) {
-      activityLabel = selectedAnswer; // Make sure this sends the correct text label, not an ID
+      activityLabel = selectedAnswer; 
     } else if (index === 4) {
       locationLabel = locations.find(icon => icon.id === selectedAnswer)?.label || '';
     }
@@ -141,7 +141,7 @@ const handleSubmit = async () => {
   try {
     const response = await axios.post(`${apiUrl}/mood-check-in/add`, {
       userID,
-      date: moment().format('YYYY-MM-DD'), // Proper date format
+      date: moment().format('YYYY-MM-DD'), 
       mood: moodLabel,
       feelings: feelingsLabel ? [feelingsLabel] : [],
       company: companyLabel,

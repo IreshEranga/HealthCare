@@ -62,12 +62,14 @@ const MoodTrackingPage = () => {
 
     return (
       <View style={styles.gridWrapper}>
+        {/* Month Row */}
         <View style={styles.monthsRow}>
           {months.map((month, index) => (
             <Text key={index} style={styles.monthText}>{month}</Text>
           ))}
         </View>
-
+  
+        {/* Day Rows */}
         {Array.from({ length: 31 }).map((_, day) => (
           <View key={day} style={styles.dayRow}>
             <Text style={styles.dayText}>{day + 1}</Text>
@@ -77,13 +79,21 @@ const MoodTrackingPage = () => {
               );
               const moodColor = moodEntry ? moodColors[moodEntry.mood] : '#ecf0f1';
               const moodIcon = moodEntry ? moodIcons[moodEntry.mood] : '';
+  
               return (
-                <View
+                <TouchableOpacity
                   key={`${day}-${month}`}
                   style={[styles.gridCell, { backgroundColor: moodColor }]}
+                  onPress={() => {
+                    if (moodEntry) {
+                      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage', {
+                        moodCheckInData: moodEntry,
+                      });
+                    }
+                  }}
                 >
                   <Text style={styles.emojiText}>{moodIcon}</Text>
-                </View>
+                </TouchableOpacity>
               );
             })}
           </View>

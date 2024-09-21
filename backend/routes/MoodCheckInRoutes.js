@@ -81,17 +81,4 @@ router.get('/:userID/today', async (req, res) => {
   }
 });
 
-// Fetch all mood check-ins for a user
-router.get('/:userID/mood', async (req, res) => {
-  const { userID } = req.params;
-
-  try {
-    const moodCheckIns = await MoodCheckIn.find({ userID }).sort({ date: 1 });
-    res.json(moodCheckIns);
-  } catch (error) {
-    console.error('Error fetching mood check-in data:', error);
-    res.status(500).json({ message: 'Error fetching mood check-in data', error: error.message });
-  }
-});
-
 module.exports = router;
