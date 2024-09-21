@@ -17,6 +17,13 @@ const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
 const MentalFitnessRoutes = require('./routes/MentalFitnessRoutes');
 const QuizRoutes = require('./routes/QuizRoutes');
 
+
+
+
+
+
+const foodLogRoutes = require('./routes/foodLogRoutes');
+
 // express app
 const app = express();
 
@@ -42,6 +49,12 @@ app.use('/daily-routines', DailyRoutineRoutes);
 
 app.use("/users", MentalFitnessRoutes);
 app.use("/users", QuizRoutes);
+
+
+
+app.use('/food-log', foodLogRoutes);
+
+
 
 // connect to db
 mongoose
