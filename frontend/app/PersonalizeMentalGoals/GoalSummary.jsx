@@ -63,6 +63,7 @@ export default function GoalSummary() {
         navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
           goal: duplicateGoal, // Pass the existing goal data
         });
+        console.log("Navigate through existing goal");
         return; // Stop further execution if a duplicate is found
       }
   
@@ -96,6 +97,7 @@ export default function GoalSummary() {
         navigation.navigate('PersonalizeMentalGoals/GoalActivity', {
           goal: saveResponse.data, // Ensure correct naming
         });
+        console.log("Navigation ok");
       }, 3000);
       
     } catch (error) {
