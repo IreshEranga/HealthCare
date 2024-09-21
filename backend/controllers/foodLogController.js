@@ -20,7 +20,8 @@ const addFoodLog = async (req, res) => {
     await newFoodLog.save();
     res.status(201).json({ message: 'Food log added successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Error saving food log' });
+    console.error('Error saving food log to the database:', error);
+    res.status(500).json({ error: `Error saving food log to the database: ${error.message}` });
   }
 };
 
