@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, TouchableOpacit
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import bg2 from '../assets/images/bgsignup.jpg';
+import bg2 from '../assets/images/bg2.jpg';
 
 
 export default function LogInPage() {

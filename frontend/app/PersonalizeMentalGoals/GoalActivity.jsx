@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image ,Animated, Easing} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, Image, Animated, Easing } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LoadingAnimation from '../../assets/videos/square.gif';
 import ErrorAnimation from '../../assets/videos/error.gif';
 import completeGif from '../../assets/videos/complete.gif';
-import * as Progress from 'react-native-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -17,29 +17,48 @@ export default function GoalActivity() {
   const navigation = useNavigation();
   const { goal } = route.params || {};
 
+  const [_id, set_id] = useState('');
   const goalData = goal?.data || goal;
   const [filteredGoalData, setFilteredGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [animatedProgress, setAnimatedProgress] = useState(0);
-  const animatedOverlay = useRef(new Animated.Value(0)).current; // Create animated value for width
+  const animatedOverlay = useRef(new Animated.Value(0)).current;
 
-
-  // Only calculate progress if filteredGoalData is available and has activities
   const totalActivities = filteredGoalData?.activities?.length || 0;
   const completedActivities = filteredGoalData?.activities?.filter(activity => activity.status === 'completed').length || 0;
   const progress = totalActivities > 0 ? completedActivities / totalActivities : 0;
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        console.log('Parsed User:', parsedUser); // Debugging log
+
+        if (parsedUser && parsedUser._id) {
+          set_id(parsedUser._id);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   const handleNavigate = (activity) => {
     navigation.navigate('PersonalizeMentalGoals/GoalDetail', { 
       activity,
-      goalId: filteredGoalData._id // Pass the goal ID
+      goalId: filteredGoalData._id
     });
   };
 
   useEffect(() => {
     const fetchGoals = async () => {
+      console.log("User id in fetch", _id); // Debugging log
+      if (!_id) return; // Don't fetch if user ID is not set
+
       try {
-        const _id = '66deb5a5a1f5bf364dbbc274'; // Replace with actual user ID logic
         const response = await axios.get(`${apiUrl}/users/users/${_id}/goals`);
         const goals = response.data;
 
@@ -54,36 +73,18 @@ export default function GoalActivity() {
     };
 
     fetchGoals();
-  }, [goalData?.name]);
-
-
-  // Update animated progress when the actual progress changes
-  /*
-  useEffect(() => {
-    if (progress !== animatedProgress) {
-      setTimeout(() => {
-        setAnimatedProgress(progress);
-      }, 500); // Add a delay to animate smoothly
-    }
-  }, [progress]);
-  */
+  }, [_id, goalData?.name]); // Add _id to dependencies
 
   useEffect(() => {
     Animated.loop(
       Animated.timing(animatedOverlay, {
         toValue: 1,
-        duration: 1000, // Speed of running bars
+        duration: 1000,
         easing: Easing.linear,
         useNativeDriver: false,
       }),
     ).start();
   }, []);
-
-  // Fix: Define animatedBarPosition with interpolation
-  const animatedBarPosition = animatedOverlay.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-200, 200], // Adjust based on the width of the progress bar
-  });
 
   if (loading) {
     return (
@@ -117,51 +118,17 @@ export default function GoalActivity() {
           <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
         </View>
 
-        {/* Animated Progress Bar */}
-        {/*<View style={styles.progressContainer}>
+        <View style={styles.progressContainer}>
           <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
-          <Progress.Bar 
-            progress={animatedProgress} 
-            width={200} 
-            color="#2E4057" 
-            unfilledColor="#ccc"
-            borderWidth={0}
-            height={30}
-            animated={true} // Enable animation
-            animationType="spring" // Optional: you can set the animation type
-          />
-        </View>*/}
-
-        {/* Static Progress Bar with Moving Overlay */}
-        {/*<View style={styles.progressContainer}>
-          <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
-          
           <View style={styles.progressBarBackground}>
-            
-            
-            <View style={[styles.staticProgressBar, { width: `${progress * 100}%` }]} />
-            
-            
+            <LinearGradient
+              colors={['#73a773', '#42a175', '#508455']}
+              start={[0, 0]}
+              end={[1, 0]}
+              style={[styles.staticProgressBar, { width: `${progress * 100}%` }]}
+            />
           </View>
-        </View>*/}
-
-<View style={styles.progressContainer}>
-  <Text style={styles.progressText}>{Math.round(progress * 100)}% completed</Text>
-  
-  <View style={styles.progressBarBackground}>
-    {/* Static Progress with Gradient */}
-    <LinearGradient
-      colors={['#73a773', '#42a175', '#508455']} // Gradient colors
-      start={[0, 0]} // Start position of the gradient
-      end={[1, 0]}   // End position of the gradient
-      style={[styles.staticProgressBar, { width: `${progress * 100}%` }]} // Apply progress-based width
-    />
-    
-    {/* Optional: Moving Overlay */}
-    {/* <Animated.View style={[styles.movingBars, { left: animatedBarPosition }]} /> */}
-  </View>
-</View>
-
+        </View>
 
         <ScrollView contentContainerStyle={styles.scrollView}>
           <View style={styles.goalDetails}>
@@ -203,7 +170,6 @@ export default function GoalActivity() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -295,9 +261,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#2E4057',
   },
+  errorText : {
+    textAlignVertical:'center',
+    textAlign:'center',
+    marginTop:350
+  },
   errorGif:{
     width:100,
     height:100,
+    position:'absolute',
+    top:240,
+    left:150,
   },
   statusAndStart:{
     flexDirection:'row',
