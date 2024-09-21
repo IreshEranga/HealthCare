@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../../components/NavBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
 const MoodTrackingPage = () => {
-  const [selectedMood, setSelectedMood] = useState(null);
+  const [moodData, setMoodData] = useState([]);
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
 
@@ -16,29 +17,89 @@ const MoodTrackingPage = () => {
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-
-      if (parsedUser /*&& parsedUser.first_name*/ && parsedUser.userID) {
-        //setUserName(parsedUser.first_name);
+      if (parsedUser && parsedUser.userID) {
         setUserID(parsedUser.userID);
+        fetchMoodData(parsedUser.userID);
       }
     } catch (error) {
       console.log('Error fetching user data', error);
     }
   };
-  fetchUserData();
 
-  const moodIcons = [
-    { id: 1, emoji: '😭', color: '#e74c3c' }, // Very Sad
-    { id: 2, emoji: '😟', color: '#e67e22' }, // Sad
-    { id: 3, emoji: '😐', color: '#f1c40f' }, // Neutral
-    { id: 4, emoji: '😊', color: '#2ecc71' }, // Happy
-    { id: 5, emoji: '😄', color: '#27ae60' }, // Very Happy
-  ];
+  const fetchMoodData = async (userID) => {
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      const response = await axios.get(`${apiUrl}/mood-check-in/${userID}/mood`);
+      setMoodData(response.data);
+    } catch (error) {
+      console.error('Error fetching mood data', error);
+    }
+  };
 
-  const gridSize = 23;
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
-  const handleMoodSelect = (moodId) => {
-    setSelectedMood(moodId);
+  const moodColors = {
+    'Very Sad': '#e74c3c',
+    'Sad': '#e67e22',
+    'Neutral': '#f1c40f',
+    'Happy': '#2ecc71',
+    'Very Happy': '#27ae60',
+  };
+
+  const moodIcons = {
+    'Very Sad': '😭',
+    'Sad': '😟',
+    'Neutral': '😐',
+    'Happy': '😊',
+    'Very Happy': '😄',
+  };
+
+  const renderGrid = () => {
+    const daysInMonth = new Array(12).fill(0).map((_, i) => new Date(2024, i + 1, 0).getDate());
+    const months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
+    return (
+      <View style={styles.gridWrapper}>
+        {/* Month Row */}
+        <View style={styles.monthsRow}>
+          {months.map((month, index) => (
+            <Text key={index} style={styles.monthText}>{month}</Text>
+          ))}
+        </View>
+  
+        {/* Day Rows */}
+        {Array.from({ length: 31 }).map((_, day) => (
+          <View key={day} style={styles.dayRow}>
+            <Text style={styles.dayText}>{day + 1}</Text>
+            {Array.from({ length: 12 }).map((_, month) => {
+              const moodEntry = moodData.find(
+                (entry) => new Date(entry.date).getDate() === day + 1 && new Date(entry.date).getMonth() === month
+              );
+              const moodColor = moodEntry ? moodColors[moodEntry.mood] : '#ecf0f1';
+              const moodIcon = moodEntry ? moodIcons[moodEntry.mood] : '';
+  
+              return (
+                <TouchableOpacity
+                  key={`${day}-${month}`}
+                  style={[styles.gridCell, { backgroundColor: moodColor }]}
+                  onPress={() => {
+                    if (moodEntry) {
+                      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage', {
+                        moodCheckInData: moodEntry,
+                      });
+                    }
+                  }}
+                >
+                  <Text style={styles.emojiText}>{moodIcon}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ))}
+      </View>
+    );
   };
 
   return (
@@ -55,39 +116,11 @@ const MoodTrackingPage = () => {
       </View>
 
       {/* Subtitle */}
-      <Text style={styles.subTitle}>Year in pixels</Text>
-
-      {/* Mood Icons */}
-      <View style={styles.moodSelector}>
-        {moodIcons.map((mood) => (
-          <TouchableOpacity
-            key={mood.id}
-            style={[
-              styles.moodIcon,
-              { backgroundColor: selectedMood === mood.id ? mood.color : 'transparent' },
-            ]}
-            onPress={() => handleMoodSelect(mood.id)}
-          >
-            <Text style={styles.emojiText}>{mood.emoji}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Text style={styles.subTitle}>Year in Pixels</Text>
 
       {/* Mood Grid */}
       <ScrollView style={styles.gridContainer}>
-        <View style={styles.grid}>
-          {Array(gridSize)
-            .fill(0)
-            .map((_, rowIndex) => (
-              <View key={rowIndex} style={styles.row}>
-                {Array(gridSize)
-                  .fill(0)
-                  .map((_, colIndex) => (
-                    <View key={colIndex} style={styles.gridCell} />
-                  ))}
-              </View>
-            ))}
-        </View>
+        {renderGrid()}
       </ScrollView>
 
       {/* Floating Button */}
@@ -96,11 +129,10 @@ const MoodTrackingPage = () => {
       </TouchableOpacity>
 
       {/* Nav Bar */}
-      <NavBar  style={styles.navigation}/>
+      <NavBar style={styles.navigation} />
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -112,7 +144,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#f49fb6', 
+    backgroundColor: '#f49fb6',
   },
   headerText: {
     fontSize: 24,
@@ -125,61 +157,60 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: 'black',
   },
-  moodSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  moodIcon: {
-    padding: 10,
-    borderRadius: 50,
-  },
-  emojiText: {
-    fontSize: 24,
-  },
   gridContainer: {
     flex: 1,
     marginVertical: 10,
   },
-  grid: {
-    paddingHorizontal: 15,
+  gridWrapper: {
+    flexDirection: 'column',
   },
-  row: {
+  monthsRow: {
     flexDirection: 'row',
+    justifyContent: 'center',
+    paddingBottom: 10,
+  },
+  monthText: {
+    width: 25, 
+    textAlign: 'center', 
+    fontWeight: 'bold',
+    color: 'black',
+    paddingBottom: 5, 
+    marginLeft:2.4,
+    paddingLeft:12,
+  },  
+  dayRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayText: {
+    width: 25,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'black',
   },
   gridCell: {
     width: 25,
     height: 25,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    margin: 1,
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    borderRadius: 3,
+  },  
+  emojiText: {
+    fontSize: 14,
   },
   floatingButton: {
     position: 'absolute',
     bottom: 80,
     right: 20,
     backgroundColor: '#c0392b',
-    borderRadius: 50, 
-    width: 60,       
+    borderRadius: 50,
+    width: 60,
     height: 60,
     justifyContent: 'center',
-    alignItems: 'center',    
+    alignItems: 'center',
     elevation: 5,
-  },
-  bottomNavigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 15,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderColor: '#ddd',
   },
 });
 
