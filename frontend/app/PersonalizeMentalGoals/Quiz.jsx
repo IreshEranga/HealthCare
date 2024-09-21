@@ -1,11 +1,35 @@
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity, Button } from 'react-native';
-import React, { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import NavBar from '../../components/NavBar';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function Quiz() {
+
+
+
+  const [userID, setUserID] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        if (parsedUser && parsedUser.userID) {
+          setUserID(parsedUser.userID);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   // Sample questions
   const questions = [
     {
@@ -39,25 +63,26 @@ export default function Quiz() {
   ];
 
   const [currentQuestion, setCurrentQuestion] = useState(0); // Track current question index
-  const [selectedAnswer, setSelectedAnswer] = useState(null); // Track selected answer
+  const [selectedAnswers, setSelectedAnswers] = useState([]); // Track selected answers for all questions
   const [error, setError] = useState(''); // Track if an error needs to be shown
 
   const navigation = useNavigation();
 
   // Function to handle answer selection
   const handleAnswerSelect = (answer) => {
-    setSelectedAnswer(answer);
+    const updatedAnswers = [...selectedAnswers];
+    updatedAnswers[currentQuestion] = answer; // Store answer for the current question
+    setSelectedAnswers(updatedAnswers);
     setError(''); // Clear error if an answer is selected
   };
 
   // Function to handle "Next" button
   const handleNext = () => {
-    if (!selectedAnswer) {
+    if (!selectedAnswers[currentQuestion]) {
       setError('Please select an answer');
     } else {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
-        setSelectedAnswer(null); // Reset the selected answer for the next question
         setError(''); // Clear error when moving to the next question
       }
     }
@@ -67,22 +92,53 @@ export default function Quiz() {
   const handleBack = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setSelectedAnswer(null); // Reset the selected answer for the previous question
       setError(''); // Clear error
     }
   };
 
   // Function to handle quiz submission
-  const handleSubmit = () => {
-    if (!selectedAnswer) {
+  const handleSubmit = async () => {
+    if (!selectedAnswers[currentQuestion]) {
       setError('Please select an answer');
     } else {
-      alert("Quiz submitted!");
-      setError('');
+      try {
+        // Gather the answers according to your schema
+        const quizData = {
+          userID: userID,  // Replace with the actual user ID
+          feelings: selectedAnswers[0],  // First question's answer
+          stress: selectedAnswers[1],    // Second question's answer
+          sleep: selectedAnswers[2],     // Third question's answer
+          relax: selectedAnswers[3],     // Fourth question's answer
+          workbalance: selectedAnswers[4], // Fifth question's answer
+          anxious: selectedAnswers[5],    // Sixth question's answer
+          meditation: selectedAnswers[6], // Seventh question's answer
+        };
 
-      setTimeout(() => {
-        navigation.navigate('PersonalizeMentalGoals/Loading');
-      }, 3000);
+        // Send POST request to the backend
+        const response = await fetch(`${apiUrl}/users/quiz`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(quizData),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          alert("Quiz submitted successfully!");
+
+          // Navigate after submission
+          setTimeout(() => {
+            navigation.navigate('PersonalizeMentalGoals/Loading');
+          }, 3000);
+        } else {
+          alert("Failed to submit quiz");
+        }
+      } catch (error) {
+        console.error('Error submitting quiz:', error);
+        alert("An error occurred during quiz submission");
+      }
+      setError('');
     }
   };
 
@@ -115,7 +171,7 @@ export default function Quiz() {
               key={index}
               style={[
                 styles.answerButton,
-                selectedAnswer === answer ? styles.selectedAnswer : null
+                selectedAnswers[currentQuestion] === answer ? styles.selectedAnswer : null
               ]}
               onPress={() => handleAnswerSelect(answer)}
             >

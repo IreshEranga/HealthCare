@@ -25,7 +25,6 @@ const MoodTrackingPage = () => {
       console.log('Error fetching user data', error);
     }
   };
-
   fetchUserData();
 
   const moodIcons = [
@@ -49,7 +48,7 @@ const MoodTrackingPage = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>Mood Stats {userID}</Text>
+        <Text style={styles.headerText}>Mood Stats</Text>
         <TouchableOpacity>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>

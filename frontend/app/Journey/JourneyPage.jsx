@@ -72,15 +72,13 @@ export default function JourneyPage() {
           </View>
 
           {/* Routine Plan */}
-          <Text style={styles.sectionTitle}>Routine Plan</Text>
+          <Text style={styles.sectionTitle}>Daily Reflections</Text>
           <View style={styles.card}>
             <Image source={vector} style={styles.vector} />
             <Text style={styles.cardTitle}>Personalize Your Routines</Text>
-            <Text style={styles.cardDetails}>
-              Take the test and discover daily practices that align with your personality.
-            </Text>
+            <Text style={styles.cardDetails}>Look back on your journey and reflect on your mental health progress..</Text>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Journey/DailyRoutine/DailyRoutinePage')}>
-              <Text style={styles.buttonText}>Take Test</Text>
+              <Text style={styles.buttonText}>Review Progress</Text>
               <Image source={rightArrow} style={styles.buttonIcon} />
             </TouchableOpacity>
           </View>
@@ -122,7 +120,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 150,  // Adjust for navbar
+    paddingBottom: 50,
   },
   sectionTitle: {
     fontSize: 20,
@@ -159,6 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+    padding:10,
   },
   card: {
     backgroundColor: '#fff',
@@ -177,6 +176,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
+    marginTop:20,
   },
   cardDetails: {
     fontSize: 14,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#3A63F4',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 15,

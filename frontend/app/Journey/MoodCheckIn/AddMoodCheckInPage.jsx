@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { LinearGradient } from 'expo-linear-gradient';
 import NavBar from '../../../components/NavBar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import axios from 'axios'; 
 
 
 const AddMoodCheckInPage = () => {
-  const [selectedMood, setSelectedMood] = useState(null);
-  const [selectedFeeling, setSelectedFeeling] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedActivity, setSelectedActivity] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [currentDate, setCurrentDate] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const navigation = useNavigation();
+  const [currentDate, setCurrentDate] = useState(moment().format('Do MMMM, YYYY'));
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [error, setError] = useState('');
+  const [filteredFeelings, setFilteredFeelings] = useState([]); 
   const [userID, setUserID] = useState('');
+  const navigation = useNavigation();
 
   const fetchUserData = async () => {
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-
-      if (parsedUser /*&& parsedUser.first_name */&& parsedUser.userID) {
-        //setUserName(parsedUser.first_name);
+      if (parsedUser && parsedUser.userID) {
         setUserID(parsedUser.userID);
       }
     } catch (error) {
@@ -33,29 +30,24 @@ const AddMoodCheckInPage = () => {
     }
   };
 
-  fetchUserData();
-
-  // Fetch current date and format it
   useEffect(() => {
-    const today = new Date();
-    const date = today.toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-    setCurrentDate(date);
+    fetchUserData();
   }, []);
 
-  // Mood icons with colors for better feedback
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
   const moodIcons = [
-    { id: 1, emoji: '😡', color: '#e74c3c', label: 'Angry' },
+    { id: 1, emoji: '😭', color: '#e74c3c', label: 'Very Sad' },
     { id: 2, emoji: '😟', color: '#e67e22', label: 'Worried' },
-    { id: 3, emoji: '😐', color: '#f1c40f', label: 'Neutral' },
+    { id: 3, emoji: '😐', color: '#f1c40f', label: 'Okay' },
     { id: 4, emoji: '😊', color: '#2ecc71', label: 'Happy' },
-    { id: 5, emoji: '😄', color: '#27ae60', label: 'Excited' },
+    { id: 5, emoji: '😄', color: '#27ae60', label: 'Very Happy' },
   ];
 
-  const feelings = ['Calm', 'Relaxed', 'Tired', 'Energetic', 'Sad', 'Proud', 'Lonely'];
+  const positiveFeelings = ['Joyful', 'Excited', 'Grateful', 'Content', 'Hopeful', 'Energetic', 'Proud', 'Calm'];
+  const negativeFeelings = ['Sad', 'Anxious', 'Frustrated', 'Tired', 'Lonely', 'Overwhelmed', 'Disappointed', 'Angry'];
+  const neutralFeelings = ['Content', 'Neutral', 'Calm', 'Fine', 'Balanced', 'Satisfied', 'Unbothered', 'Relaxed'];
+
   const companyIcons = [
     { id: 1, name: 'user', label: 'Alone' },
     { id: 2, name: 'heart', label: 'Partner' },
@@ -65,204 +57,311 @@ const AddMoodCheckInPage = () => {
   ];
 
   const activities = ['Working', 'Relaxing', 'Studying', 'Socialising', 'Exercising', 'Social Media', 'Housework'];
+
   const locations = [
     { id: 1, name: 'home', label: 'Home' },
     { id: 2, name: 'briefcase', label: 'Work' },
-    { id: 3, name: 'university', label: 'Uni/School' },
-    { id: 4, name: 'globe', label: 'City/Outdoor' },
+    { id: 3, name: 'university', label: 'Institute' },
+    { id: 4, name: 'globe', label: 'Outdoor' },
     { id: 5, name: 'car', label: 'Commuting' },
+    { id: 6, name: 'university', label: 'Institute' },
   ];
 
-  const handleSelection = (item, selectedList, setSelectedList) => {
-    if (selectedList.includes(item)) {
-      setSelectedList(selectedList.filter(i => i !== item));
+  const questions = [
+    { question: "How was your day ?", answers: moodIcons, type: 'icon', iconKey: 'emoji' },
+    { question: "How do you feel today ?", answers: [], type: 'text' }, 
+    { question: "Who are you with today ?", answers: companyIcons, type: 'icon', iconKey: 'name' },
+    { question: "What were you doing ?", answers: activities, type: 'text' },
+    { question: "Where were you today?", answers: locations, type: 'icon', iconKey: 'name' }
+  ];
+
+  const handleAnswerSelect = (answer) => {
+    setSelectedAnswer(answer);
+    setError('');
+
+    if (currentQuestion === 0) {
+      if (answer === 1 || answer === 2) {
+        setFilteredFeelings(negativeFeelings); 
+      } else if (answer === 3) {
+        setFilteredFeelings(neutralFeelings); 
+      } else if (answer === 4 || answer === 5) {
+        setFilteredFeelings(positiveFeelings);
+      }
+    }
+  };
+
+  const handleNext = () => {
+    if (!selectedAnswer) {
+      setError('Please select an answer');
     } else {
-      setSelectedList([...selectedList, item]);
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer(null);
+        setError('');
+      }
     }
   };
 
-  // Save the mood check-in to the backend
-  const handleSave = async () => {
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    console.log(apiUrl);
-
-    if (!selectedMood || !selectedCompany || !selectedLocation) {
-      Alert.alert('Missing Info', 'Please fill in all required sections.');
-      return;
+  const handleBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+      setSelectedAnswer(null);
+      setError('');
     }
+  };
 
-    const moodData = {
-      selectedMood,
-      selectedFeeling,
-      selectedCompany,
-      selectedActivity,
-      selectedLocation,
-      date: currentDate,
-    };
-    setIsSaving(true);
+// In your handleSubmit function on the frontend
 
-    try {
-      await axios.post(`${apiUrl}/mood-checks/add`, moodData);
-      setIsSaving(false); 
-      Alert.alert('Success', 'Mood check-in saved successfully!');
-      resetForm();
+const handleSubmit = async () => {
+  if (!selectedAnswer) {
+    setError('Please select an answer');
+    return;
+  }
+
+  let moodLabel = '';
+  let feelingsLabel = '';
+  let companyLabel = '';
+  let activityLabel = '';
+  let locationLabel = '';
+
+  questions.forEach((question, index) => {
+    if (index === 0) {
+      moodLabel = moodIcons.find(icon => icon.id === selectedAnswer)?.label || '';
+    } else if (index === 1) {
+      feelingsLabel = selectedAnswer; // Make sure this sends the correct text label, not an ID
+    } else if (index === 2) {
+      companyLabel = companyIcons.find(icon => icon.id === selectedAnswer)?.label || '';
+    } else if (index === 3) {
+      activityLabel = selectedAnswer; // Make sure this sends the correct text label, not an ID
+    } else if (index === 4) {
+      locationLabel = locations.find(icon => icon.id === selectedAnswer)?.label || '';
+    }
+  });
+
+  try {
+    const response = await axios.post(`${apiUrl}/mood-check-in/add`, {
+      userID,
+      date: moment().format('YYYY-MM-DD'), // Proper date format
+      mood: moodLabel,
+      feelings: feelingsLabel ? [feelingsLabel] : [],
+      company: companyLabel,
+      activity: activityLabel,
+      location: locationLabel,
+    });
+
+      if (response.status !== 201) {
+        throw new Error('Failed to submit mood check-in');
+      }
+  
+      const result = response.data;
+      console.log('Mood check-in submitted:', result);
+      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage');
     } catch (error) {
-      setIsSaving(false);
-      Alert.alert('Error', 'Failed to save mood check-in. Please try again later.');
+      console.error('Error submitting mood check-in:', error);
+      setError('Error submitting mood check-in. Please try again.');
     }
-  };
-
-  const resetForm = () => {
-    setSelectedMood(null);
-    setSelectedFeeling([]);
-    setSelectedCompany(null);
-    setSelectedActivity([]);
-    setSelectedLocation(null);
-  };
+  };  
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        {/* Header */}
+      <LinearGradient colors={['#E0BBE4', '#aec2b6', '#60768d']} style={styles.background}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name="arrow-back" type="ionicon" color="black" size={30} />
+            <Icon name="arrow-left" color="black" size={30} />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Mood Check-In {userID}</Text>
-          <TouchableOpacity>
-            <Icon name="user" type="font-awesome" color="black" size={30} />
-          </TouchableOpacity>
+          <View>
+            <Text style={styles.topic}>Mood Check-In</Text>
+          </View>
         </View>
 
-        {/* Date */}
-        <Text style={styles.dateText}>{currentDate}</Text>
-
-        {/* How was your day? */}
-        <Text style={styles.sectionTitle}>How was your day?</Text>
-        <View style={styles.moodSelector}>
-          {moodIcons.map((mood) => (
-            <TouchableOpacity
-              key={mood.id}
-              style={[
-                styles.moodIcon,
-                { backgroundColor: selectedMood === mood.id ? mood.color : '#eee' },
-              ]}
-              onPress={() => setSelectedMood(mood.id)}
-            >
-              <Text style={styles.emojiText}>{mood.emoji}</Text>
-              {/*<Text style={styles.emojiLabel}>{mood.label}</Text>*/}
-            </TouchableOpacity>
-          ))}
+        <View style={styles.dateContainer}>
+          <Text style={styles.currentDate}>{currentDate}</Text>
         </View>
 
-        {/* Feelings */}
-        <Text style={styles.sectionTitle}>How do you feel?</Text>
-        <View style={styles.multiSelectContainer}>
-          {feelings.map((feeling) => (
-            <TouchableOpacity
-              key={feeling}
-              style={[
-                styles.multiSelectItem,
-                selectedFeeling.includes(feeling) ? styles.selectedItem : styles.unselectedItem,
-              ]}
-              onPress={() => handleSelection(feeling, selectedFeeling, setSelectedFeeling)}
-            >
-              <Text style={styles.multiSelectText}>{feeling}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <ScrollView contentContainerStyle={styles.quizContainer}>
+          <Text style={styles.question}>{questions[currentQuestion].question}</Text>
 
-        {/* Company */}
-        <Text style={styles.sectionTitle}>Who are you with?</Text>
-        <View style={styles.iconSelector}>
-          {companyIcons.map((company) => (
-            <TouchableOpacity
-              key={company.id}
-              style={[
-                styles.companyIcon,
-                { backgroundColor: selectedCompany === company.id ? '#9b59b6' : '#ddd' },
-              ]}
-              onPress={() => setSelectedCompany(company.id)}
-            >
-              <Icon name={company.name} type="font-awesome" color="white" size={24} />
-              {/*<Text style={styles.companyLabel}>{company.label}</Text>*/}
-            </TouchableOpacity>
-          ))}
-        </View>
+          {questions[currentQuestion].type === 'icon' ? (
+            <View style={styles.iconContainer}>
+              {questions[currentQuestion].answers.map((answer, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.iconButton,
+                    selectedAnswer === answer.id ? styles.selectedIcon : null
+                  ]}
+                  onPress={() => handleAnswerSelect(answer.id)}
+                >
+                  {questions[currentQuestion].iconKey === 'emoji' ? (
+                    <Text style={styles.emojiText}>{answer.emoji}</Text>
+                  ) : (
+                    <Icon name={answer.name} size={24} color="white" />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.multiSelectContainer}>
+              {(currentQuestion === 1 ? filteredFeelings : questions[currentQuestion].answers).map((answer) => (
+                <TouchableOpacity
+                  key={answer}
+                  style={[
+                    styles.multiSelectItem,
+                    selectedAnswer === answer ? styles.selectedItem : styles.unselectedItem,
+                  ]}
+                  onPress={() => handleAnswerSelect(answer)}
+                >
+                  <Text style={styles.multiSelectText}>{answer}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
 
-        {/* Activity */}
-        <Text style={styles.sectionTitle}>What are you doing?</Text>
-        <View style={styles.multiSelectContainer}>
-          {activities.map((activity) => (
-            <TouchableOpacity
-              key={activity}
-              style={[
-                styles.multiSelectItem,
-                selectedActivity.includes(activity) ? styles.selectedItem : styles.unselectedItem,
-              ]}
-              onPress={() => handleSelection(activity, selectedActivity, setSelectedActivity)}
-            >
-              <Text style={styles.multiSelectText}>{activity}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-        {/* Location */}
-        <Text style={styles.sectionTitle}>Where are you?</Text>
-        <View style={styles.iconSelector}>
-          {locations.map((location) => (
-            <TouchableOpacity
-              key={location.id}
-              style={[
-                styles.companyIcon,
-                { backgroundColor: selectedLocation === location.id ? '#2980b9' : '#ddd' },
-              ]}
-              onPress={() => setSelectedLocation(location.id)}
-            >
-              <Icon name={location.name} type="font-awesome" color="white" size={24} />
-              {/*<Text style={styles.companyLabel}>{location.label}</Text>*/}
-            </TouchableOpacity>
-          ))}
-        </View>
+          <View style={styles.navigationButtons}>
+            {currentQuestion > 0 && (
+              <TouchableOpacity style={styles.navButton} onPress={handleBack}>
+                <Icon name="arrow-left" size={16} color="white" />
+                <Text style={styles.navButtonText}>Back</Text>
+              </TouchableOpacity>
+            )}
 
-        {/* Save Button */}
-        <TouchableOpacity
-          style={styles.saveButton}
-          onPress={handleSave}
-          disabled={isSaving}
-        >
-          <Text style={styles.saveButtonText}>
-            {isSaving ? 'Saving...' : 'Save'}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-
-       {/* Nav Bar */}
-       <NavBar  style={styles.navigation}/>
+            {currentQuestion < questions.length - 1 ? (
+              <TouchableOpacity style={styles.navButton} onPress={handleNext}>
+                <Text style={styles.navButtonText}>Next</Text>
+                <Icon name="arrow-right" size={16} color="white" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.navButton} onPress={handleSubmit}>
+                <Text style={styles.navButtonText}>Submit</Text>
+                <Icon name="check" size={16} color="white" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </ScrollView>
+        <NavBar style={styles.navigation} />
+      </LinearGradient>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9c8e6' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15, backgroundColor: '#f49fb6' },
-  headerText: { fontSize: 24, fontWeight: 'bold', color: 'black' },
-  dateText: { textAlign: 'center', fontSize: 18, marginVertical: 10, color: 'black' },
-  sectionTitle: { fontSize: 18, marginLeft: 15, marginVertical: 10, color: 'black' },
-  moodSelector: { flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 15, backgroundColor: '#fff', borderRadius: 10 },
-  moodIcon: { padding: 10, borderRadius: 50, alignItems: 'center' },
-  emojiText: { fontSize: 24 },
-  emojiLabel: { fontSize: 14, color: '#444', marginTop: 5 },
-  multiSelectContainer: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: 15 },
-  multiSelectItem: { padding: 10, margin: 5, borderRadius: 20 },
-  selectedItem: { backgroundColor: '#27ae60', color: '#fff' },
-  unselectedItem: { backgroundColor: '#f1f1f1' },
-  multiSelectText: { fontSize: 16 },
-  iconSelector: { flexDirection: 'row', justifyContent: 'space-around', marginHorizontal: 20, paddingVertical: 10 },
-  companyIcon: { padding: 10, borderRadius: 50, alignItems: 'center' },
-  companyLabel: { fontSize: 14, color: '#444', marginTop: 5 },
-  saveButton: { backgroundColor: '#9b59b6', padding: 15, borderRadius: 10, marginHorizontal: 20, marginTop: 30, alignItems: 'center', marginBottom: 50},
-  saveButtonText: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  container: {
+    backgroundColor: '#0e1138',
+    flex: 1,
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 85,
+    paddingLeft:20,
+  },
+  topic: {
+    color: '#2E4057',
+    fontWeight: 'bold',
+    fontSize: 30,
+    marginTop: 60,
+    marginBottom:20,
+  },
+  dateContainer: {
+    marginBottom: -20,
+    alignItems: 'center'
+  },
+  currentDate: {
+    fontSize: 18,
+    color: '#2E4057',
+  },
+  quizContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  question: {
+    color: 'white',
+    fontSize: 24,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginBottom: 40,
+  },
+  iconButton: {
+    margin: 10,
+    padding: 15,
+    borderRadius: 50,
+    backgroundColor: '#8b8b8b',
+  },
+  emojiText: {
+    fontSize: 30,
+  },
+  selectedIcon: {
+    backgroundColor: '#4c7f7f',
+  },
+  multiSelectContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  multiSelectItem: {
+    padding: 10,
+    borderRadius: 20,
+    margin: 5,
+    borderWidth: 1,
+  },
+  selectedItem: {
+    backgroundColor: '#4c7f7f',
+    borderColor: 'white',
+  },
+  unselectedItem: {
+    backgroundColor: 'transparent',
+    borderColor: '#4c7f7f',
+  },
+  multiSelectText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  navigationButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginTop: 20,
+  },
+  navButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2c3e50',
+    padding: 10,
+    borderRadius: 5,
+  },
+  navButtonText: {
+    color: 'white',
+    fontSize: 16,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginTop: 10,
+  },
+  navigation: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+  }
 });
 
 export default AddMoodCheckInPage;

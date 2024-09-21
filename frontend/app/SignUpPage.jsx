@@ -3,12 +3,12 @@ import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaV
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { useNavigation } from '@react-navigation/native';
 import bg2 from '../assets/images/bg2.jpg';
 
 
 
-const SignUp = () => {
+const SignUpPage = () => {
 
   
 
@@ -29,7 +29,7 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [signUp, setSignUp] = useState([]);
 
-  const navigation = useNavigation(); // Use navigation hook
+  const navigation = useNavigation(); 
 
   const handleSignUp = async () => {
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -74,7 +74,7 @@ const SignUp = () => {
 
         // Navigate to login page after 2 seconds (or immediately)
         setTimeout(() => {
-          navigation.navigate('LogInPage'); // Navigate to Login screen
+          navigation.navigate('LogInPage');
         }, 2000);
         
       } catch (error) {
@@ -227,4 +227,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default SignUpPage;

@@ -1,34 +1,41 @@
 const mongoose = require('mongoose');
 
-const moodCheckInSchema = new mongoose.Schema({
+const quizSchema = new mongoose.Schema({
   userID: {
     type: String,
     required: true,
   },
-  date: {
-    type: String,
-    required: true,
-  },
-  mood: {
-    type: String,
-    required: true,
-  },
   feelings: {
-    type: [String],
-    default: [],
+    type: String,
+    required: true,
   },
-  company: {
+  stress: {
+    type: String,
+    required: true,
+  },
+  sleep: {
+    type: String,
+    required: true,
+  },
+  relax: {
     type: String,
     default: '',
   },
-  activity: {
+  workbalance: {
     type: String,
     default: '',
   },
-  location: {
+  anxious: {
     type: String,
     default: '',
   },
+  meditation: {
+    type: String,
+    default: '',
+  },
+},
+{ 
+  timestamps: true 
 });
 
-module.exports = mongoose.model('MoodCheckIn', moodCheckInSchema);
+module.exports = mongoose.model('Quiz', quizSchema);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+//import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -11,23 +12,23 @@ const NavBar = () => {
     <View style={styles.navBar}>
       <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Home/Welcome')}>
         <Icon name="home-outline" size={24} color="white" />
-        <Text style={styles.navText}>Home</Text>
+        <Text style={styles.navText}>{/*Home*/}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton}>
-        <Icon name="search-outline" size={24} color="white" />
-        <Text style={styles.navText}>Search</Text>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('PersonalizeMentalGoals/Suggestions')}>
+        <Icon name="fitness-outline" size={24} color="white" />
+        <Text style={styles.navText}>{/**Mental Fitness */}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.navButton}>
-        <Icon name="notifications-outline" size={24} color="white" />
-        <Text style={styles.navText}>Notifications</Text>
+      <TouchableOpacity style={styles.navButton} onPress={() => navigation.navigate('Journey/JourneyPage')}>
+        <Icon name="book-outline" size={24} color="white" />
+        <Text style={styles.navText}>{/**Journey */}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
         <Icon name="person-outline" size={24} color="white" onPress={() => navigation.navigate('ProfilePage')}/>
-        <Text style={styles.navText}>Profile</Text>
+        <Text style={styles.navText}>{/**Profile */}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
         <Icon name="settings-outline" size={24} color="white" />
-        <Text style={styles.navText}>Settings</Text>
+        <Text style={styles.navText}>{/**Settings */}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: '#0e1138',
-    paddingVertical: 10,
+    paddingVertical: 5,
     position: 'absolute',
     bottom: 0,
     width: '100%',
@@ -48,6 +49,8 @@ const styles = StyleSheet.create({
   },
   navButton: {
     alignItems: 'center',
+    marginTop:2,
+    top:10,
   },
   navText: {
     color: 'white',

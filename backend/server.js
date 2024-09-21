@@ -10,10 +10,12 @@ const userRoutes = require("./routes/userRoutes");
 const logInRoutes = require("./routes/logInRoutes");
 const MoodCheckInRoutes = require('./routes/MoodCheckInRoutes');
 const JournalRoutes = require('./routes/JournalRoutes');
-//const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
-const foodLogRoutes = require('./routes/foodLogRoutes');
+const DailyRoutineRoutes = require('./routes/DailyRoutineRoutes');
 
 
+
+const MentalFitnessRoutes = require('./routes/MentalFitnessRoutes');
+const QuizRoutes = require('./routes/QuizRoutes');
 
 // express app
 const app = express();
@@ -33,10 +35,13 @@ app.use(cors());
 
 app.use("/users", userRoutes);
 app.use("/users", logInRoutes);
-app.use('/mood-checks', MoodCheckInRoutes);
+app.use('/mood-check-in', MoodCheckInRoutes);
 app.use('/journals', JournalRoutes);
-//app.use('/DailyRoutines', DailyRoutineRoutes);
-app.use('/food-log', foodLogRoutes);
+app.use('/daily-routines', DailyRoutineRoutes);
+
+
+app.use("/users", MentalFitnessRoutes);
+app.use("/users", QuizRoutes);
 
 // connect to db
 mongoose
