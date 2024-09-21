@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const foodLogSchema = new mongoose.Schema({
   userID: {
     type: String,
-    required: true,
   },
   date: { 
     type: String, 
