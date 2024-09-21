@@ -1,13 +1,35 @@
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import NavBar from '../../components/NavBar';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function Quiz() {
+
+
+
+  const [userID, setUserID] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        if (parsedUser && parsedUser.userID) {
+          setUserID(parsedUser.userID);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   // Sample questions
   const questions = [
     {
@@ -82,7 +104,7 @@ export default function Quiz() {
       try {
         // Gather the answers according to your schema
         const quizData = {
-          userID: "1",  // Replace with the actual user ID
+          userID: userID,  // Replace with the actual user ID
           feelings: selectedAnswers[0],  // First question's answer
           stress: selectedAnswers[1],    // Second question's answer
           sleep: selectedAnswers[2],     // Third question's answer
