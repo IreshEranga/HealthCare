@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+import { View, Text, Button, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 
@@ -38,20 +38,66 @@ export default function NutritionHome() {
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Nutrition Tracker</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Nutrition Tracker</Text>
 
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <Text style={{ fontSize: 20, marginBottom: 20 }}>
+        <Text style={styles.caloriesText}>
           Total Calories for Today: {totalCalories} kcal
         </Text>
       )}
 
-      <Button title="Log Food" onPress={() => router.push('/Nutritions/addFood')} />
-      <Button title="View Food" onPress={() => router.push('/Nutritions/dailyNutrition')} />
-      <Button title="Set Nutrition Goals" onPress={() => router.push('/Nutritions/nutritionGoals')} style={{ marginTop: 10 }} />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/addFood')}>
+          <Text style={styles.buttonText}>Log Food</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/dailyNutrition')}>
+          <Text style={styles.buttonText}>View Food</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/nutritionGoals')}>
+          <Text style={styles.buttonText}>Calculate BMI</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+  },
+  caloriesText: {
+    fontSize: 24,
+    marginBottom: 40,
+    color: '#555',
+  },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 5,
+    width: '80%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
