@@ -51,7 +51,6 @@ export default function NutritionHome() {
 
       <Button title="Log Food" onPress={() => router.push('/Nutritions/addFood')} />
       <Button title="View Food" onPress={() => router.push('/Nutritions/dailyNutrition')} />
-      <Button title="View Recipes" onPress={() => router.push('/Nutritions/recipes')} style={{ marginTop: 10 }} />
       <Button title="Set Nutrition Goals" onPress={() => router.push('/Nutritions/nutritionGoals')} style={{ marginTop: 10 }} />
     </View>
   );
