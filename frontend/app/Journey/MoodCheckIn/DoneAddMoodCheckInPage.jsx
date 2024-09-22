@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { useNavigation, useRoute } from '@react-navigation/native'; // Import useRoute to get params
 import NavBar from '../../../components/NavBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 
+// Icons mapping
 const companyIcons = {
   Alone: 'user',
   Partner: 'heart',
@@ -24,24 +25,52 @@ const locationIcons = {
   Commuting: 'car',
 };
 
+const moodIcons = {
+  'Very Sad': '😭',
+  'Worried': '😟',
+  'Okay': '😐',
+  'Happy': '😊',
+  'Very Happy': '😄',
+};
+
 const DoneAddMoodCheckInPage = () => {
   const [moodCheckInData, setMoodCheckInData] = useState(null);
+  const route = useRoute(); 
   const navigation = useNavigation();
   const [userID, setUserID] = useState('');
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      navigation.navigate('Journey/MoodCheckIn/MoodTrackingPage'); 
+      //console.log("Naviagtion success")
+    }, 4000);
+
+    return () => clearTimeout(timeout);
+  }, [navigation]);
+  useEffect(() => {
+    if (route.params?.moodCheckInData) {
+      setMoodCheckInData(route.params.moodCheckInData);
+    } else {
+      fetchUserData();
+    }
+  }, [route.params]);
+
+  // Fetch user data in case we need to fetch from the API
   const fetchUserData = async () => {
     try {
       const storedUser = await AsyncStorage.getItem('loggedInUser');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
       if (parsedUser && parsedUser.userID) {
         setUserID(parsedUser.userID);
+        fetchMoodCheckInData(parsedUser.userID);
       }
     } catch (error) {
       console.log('Error fetching user data', error);
     }
   };
 
-  const fetchMoodCheckInData = async () => {
+  // Fetch data from API if no params were passed
+  const fetchMoodCheckInData = async (userID) => {
     try {
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       const response = await axios.get(`${apiUrl}/mood-check-in/${userID}/today`);
@@ -53,30 +82,7 @@ const DoneAddMoodCheckInPage = () => {
     }
   };
 
-  useEffect(() => {
-    // Set a timeout to navigate after 5 seconds
-    const timeout = setTimeout(() => {
-      navigation.navigate('Journey/MoodCheckIn/MoodTrackingPage'); 
-      console.log("Naviagtion success")
-    }, 4000);
-
-    // Clean up the timeout when the component unmounts
-    return () => clearTimeout(timeout);
-  }, [navigation]);
-  
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    const { moodCheckInData } = navigation.getState().routes[navigation.getState().index].params || {};
-    if (moodCheckInData) {
-      setMoodCheckInData(moodCheckInData);
-    } else if (userID) {
-      fetchMoodCheckInData();
-    }
-  }, [userID, navigation]);
-
+  // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -95,14 +101,12 @@ const DoneAddMoodCheckInPage = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.headerText}>Mood Check-In</Text>
-        <Text style={styles.dateText}>{moodCheckInData ? formatDate(moodCheckInData.date) : ''}</Text>
+        <Text style={styles.dateText}>{formatDate(moodCheckInData.date)}</Text>
 
         {moodCheckInData && (
           <>
             <View style={styles.emojiContainer}>
-              <Text style={styles.emoji}>
-                {moodCheckInData.mood === 'Very Sad' ? '😭' : moodCheckInData.mood === 'Happy' ? '😊' : '😐'}
-              </Text>
+              <Text style={styles.emoji}>{moodIcons[moodCheckInData.mood]}</Text>
             </View>
 
             <Text style={styles.moodLabel}>Feeling:</Text>
@@ -120,6 +124,7 @@ const DoneAddMoodCheckInPage = () => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: { 

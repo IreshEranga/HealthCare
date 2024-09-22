@@ -17,6 +17,11 @@ const AddMoodCheckInPage = () => {
   const [filteredFeelings, setFilteredFeelings] = useState([]); 
   const [userID, setUserID] = useState('');
   const navigation = useNavigation();
+  const [moodAnswer, setMoodAnswer] = useState(null);
+  const [feelingsAnswer, setFeelingsAnswer] = useState(null);
+  const [companyAnswer, setCompanyAnswer] = useState(null);
+  const [activityAnswer, setActivityAnswer] = useState(null);
+  const [locationAnswer, setLocationAnswer] = useState(null);
 
   const fetchUserData = async () => {
     try {
@@ -69,26 +74,11 @@ const AddMoodCheckInPage = () => {
 
   const questions = [
     { question: "How was your day ?", answers: moodIcons, type: 'icon', iconKey: 'emoji' },
-    { question: "How do you feel today ?", answers: [], type: 'text' }, 
+    { question: "How do you feel today ?", answers: filteredFeelings, type: 'text' }, 
     { question: "Who are you with today ?", answers: companyIcons, type: 'icon', iconKey: 'name' },
     { question: "What were you doing ?", answers: activities, type: 'text' },
     { question: "Where were you today?", answers: locations, type: 'icon', iconKey: 'name' }
   ];
-
-  const handleAnswerSelect = (answer) => {
-    setSelectedAnswer(answer);
-    setError('');
-
-    if (currentQuestion === 0) {
-      if (answer === 1 || answer === 2) {
-        setFilteredFeelings(negativeFeelings); 
-      } else if (answer === 3) {
-        setFilteredFeelings(neutralFeelings); 
-      } else if (answer === 4 || answer === 5) {
-        setFilteredFeelings(positiveFeelings);
-      }
-    }
-  };
 
   const handleNext = () => {
     if (!selectedAnswer) {
@@ -110,58 +100,69 @@ const AddMoodCheckInPage = () => {
     }
   };
 
-// In your handleSubmit function on the frontend
-
-const handleSubmit = async () => {
-  if (!selectedAnswer) {
-    setError('Please select an answer');
-    return;
-  }
-
-  let moodLabel = '';
-  let feelingsLabel = '';
-  let companyLabel = '';
-  let activityLabel = '';
-  let locationLabel = '';
-
-  questions.forEach((question, index) => {
-    if (index === 0) {
-      moodLabel = moodIcons.find(icon => icon.id === selectedAnswer)?.label || '';
-    } else if (index === 1) {
-      feelingsLabel = selectedAnswer; 
-    } else if (index === 2) {
-      companyLabel = companyIcons.find(icon => icon.id === selectedAnswer)?.label || '';
-    } else if (index === 3) {
-      activityLabel = selectedAnswer; 
-    } else if (index === 4) {
-      locationLabel = locations.find(icon => icon.id === selectedAnswer)?.label || '';
+  const handleAnswerSelect = (answer) => {
+    setSelectedAnswer(answer);
+    setError('');
+  
+    // Set answers based on the current question
+    if (currentQuestion === 0) {
+      setMoodAnswer(answer);
+      if (answer === 1 || answer === 2) { 
+        setFilteredFeelings(negativeFeelings);
+      } else if (answer === 3) { 
+        setFilteredFeelings(neutralFeelings);
+      } else if (answer === 4 || answer === 5) { 
+        setFilteredFeelings(positiveFeelings);
+      }
+    } else if (currentQuestion === 1) {
+      setFeelingsAnswer(answer);
+    } else if (currentQuestion === 2) {
+      setCompanyAnswer(answer);
+    } else if (currentQuestion === 3) {
+      setActivityAnswer(answer);
+    } else if (currentQuestion === 4) {
+      setLocationAnswer(answer);
     }
-  });
+  };  
 
-  try {
-    const response = await axios.post(`${apiUrl}/mood-check-in/add`, {
-      userID,
-      date: moment().format('YYYY-MM-DD'), 
-      mood: moodLabel,
-      feelings: feelingsLabel ? [feelingsLabel] : [],
-      company: companyLabel,
-      activity: activityLabel,
-      location: locationLabel,
-    });
-
+  const handleSubmit = async () => {
+    if (!selectedAnswer) {
+      setError('Please select an answer');
+      return;
+    }
+  
+    try {
+      const moodLabel = moodIcons.find(icon => icon.id === moodAnswer)?.label || '';
+      const companyLabel = companyIcons.find(icon => icon.id === companyAnswer)?.label || '';
+      const locationLabel = locations.find(icon => icon.id === locationAnswer)?.label || '';
+  
+      const data = {
+        userID,
+        date: moment().format('YYYY-MM-DD'),
+        mood: moodLabel,
+        feelings: feelingsAnswer ? [feelingsAnswer] : [], 
+        company: companyLabel,
+        activity: activityAnswer,
+        location: locationLabel,
+      };
+  
+      console.log('Data being sent:', data);
+  
+      const response = await axios.post(`${apiUrl}/mood-check-in/add`, data);
+  
       if (response.status !== 201) {
         throw new Error('Failed to submit mood check-in');
       }
   
-      const result = response.data;
-      console.log('Mood check-in submitted:', result);
-      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage');
+      console.log('Mood check-in submitted:', response.data);
+      navigation.navigate('Journey/MoodCheckIn/DoneAddMoodCheckInPage', { moodCheckInData: data });
+  
     } catch (error) {
       console.error('Error submitting mood check-in:', error);
       setError('Error submitting mood check-in. Please try again.');
     }
-  };  
-
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#E0BBE4', '#aec2b6', '#60768d']} style={styles.background}>
@@ -202,19 +203,19 @@ const handleSubmit = async () => {
             </View>
           ) : (
             <View style={styles.multiSelectContainer}>
-              {(currentQuestion === 1 ? filteredFeelings : questions[currentQuestion].answers).map((answer) => (
-                <TouchableOpacity
-                  key={answer}
-                  style={[
-                    styles.multiSelectItem,
-                    selectedAnswer === answer ? styles.selectedItem : styles.unselectedItem,
-                  ]}
-                  onPress={() => handleAnswerSelect(answer)}
-                >
-                  <Text style={styles.multiSelectText}>{answer}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            {questions[currentQuestion].answers.map((answer) => (
+              <TouchableOpacity
+                key={answer}
+                style={[
+                  styles.multiSelectItem,
+                  selectedAnswer === answer ? styles.selectedItem : styles.unselectedItem,
+                ]}
+                onPress={() => handleAnswerSelect(answer)}
+              >
+                <Text style={styles.multiSelectText}>{answer}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
           )}
 
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
