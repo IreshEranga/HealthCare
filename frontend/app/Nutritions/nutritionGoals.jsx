@@ -19,6 +19,7 @@ export default function NutritionGoals() {
     }
   };
 
+
   const calculateCalorieGoal = (bmi) => {
     let bmr;
 

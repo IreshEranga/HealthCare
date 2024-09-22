@@ -1,71 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import axios from 'axios';
 
-export default function NutritionToday() {
-  const [foodLogs, setFoodLogs] = useState({
-    breakfast: [],
-    lunch: [],
-    dinner: [],
-    snacks: [],
-  });
+const DisplayFoodLog = () => {
+  const [foodLogs, setFoodLogs] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchFoodLogs = async () => {
       try {
-        const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/food-log/logs/today`);
-        const logs = response.data;
-
-        // Organize logs by meal type
-        const organizedLogs = {
-          breakfast: logs.filter(log => log.mealType === 'Breakfast'),
-          lunch: logs.filter(log => log.mealType === 'Lunch'),
-          dinner: logs.filter(log => log.mealType === 'Dinner'),
-          snacks: logs.filter(log => log.mealType === 'Snacks'),
-        };
-        
-        setFoodLogs(organizedLogs);
-      } catch (error) {
-        console.error('Error fetching food logs:', error);
+        const response = await axios.get('http://192.168.8.148:8000/food-log/today'); // Ensure the correct port is used
+        setFoodLogs(response.data);
+      } catch (err) {
+        setError('Error fetching food logs');
+        console.error('Error fetching food logs:', err);
       }
     };
 
     fetchFoodLogs();
   }, []);
 
+  const renderMealType = (mealType) => (
+    foodLogs
+      .filter(log => log.mealType === mealType)
+      .map((log, index) => (
+        <View key={index} style={styles.foodItem}>
+          <Text>{log.foodItems[0].name} - {log.foodItems[0].calories} kcal</Text>
+        </View>
+      ))
+  );
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Today's Food Log</Text>
+      {error ? <Text>{error}</Text> : null}
 
-      <MealSection title="Breakfast" foodItems={foodLogs.breakfast} />
-      <MealSection title="Lunch" foodItems={foodLogs.lunch} />
-      <MealSection title="Dinner" foodItems={foodLogs.dinner} />
-      <MealSection title="Snacks" foodItems={foodLogs.snacks} />
+      <Text style={styles.heading}>Breakfast</Text>
+      {renderMealType('Breakfast')}
+
+      <Text style={styles.heading}>Lunch</Text>
+      {renderMealType('Lunch')}
+
+      <Text style={styles.heading}>Dinner</Text>
+      {renderMealType('Dinner')}
+
+      <Text style={styles.heading}>Snacks</Text>
+      {renderMealType('Snacks')}
     </ScrollView>
   );
-}
-
-function MealSection({ title, foodItems }) {
-  return (
-    <View style={styles.mealSection}>
-      <Text style={styles.mealTitle}>{title}</Text>
-      {foodItems.length > 0 ? (
-        foodItems.map((item, index) => (
-          <Text key={index} style={styles.foodItem}>
-            {item.name} - {item.calories} kcal
-          </Text>
-        ))
-      ) : (
-        <Text>No items added for {title.toLowerCase()}.</Text>
-      )}
-    </View>
-  );
-}
+};
 
 const styles = StyleSheet.create({
-  container: { padding: 20 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  mealSection: { marginBottom: 20 },
-  mealTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-  foodItem: { fontSize: 16, marginBottom: 5 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  foodItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
 });
+
+export default DisplayFoodLog;
