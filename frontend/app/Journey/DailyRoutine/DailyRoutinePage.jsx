@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; 
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Alert, Image, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import moment from 'moment';
@@ -14,6 +14,7 @@ const DailyRoutinePage = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [routine, setRoutine] = useState(null);
   const [userID, setUserID] = useState('');
+  const [searchDate, setSearchDate] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -39,6 +40,16 @@ const DailyRoutinePage = () => {
       fetchRoutine(selectedDate);
     }
   }, [userID, selectedDate]);
+
+  const handleSearchDateChange = (input) => {
+    setSearchDate(input);
+    const date = moment(input, 'YYYY-MM-DD', true); // Parse input in 'YYYY-MM-DD' format
+    if (date.isValid()) {
+      setSelectedDate(date); // Set valid date
+    } else {
+      Alert.alert("Invalid Date", "Please enter a valid date in the format: YYYY-MM-DD");
+    }
+  };
 
   // Get All Routines Function
   const fetchRoutine = async (date) => {
@@ -89,8 +100,7 @@ const DailyRoutinePage = () => {
     try {
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       const formattedDate = selectedDate.format('YYYY-MM-DD');
-      
-      // Update the status for the specified section
+
       const updatedRoutine = { ...routine };
       updatedRoutine[section].status = 'completed'; 
 
@@ -100,7 +110,6 @@ const DailyRoutinePage = () => {
         status: 'completed',
       });
 
-      // Set the updated routine to state
       setRoutine(updatedRoutine); 
     } catch (error) {
       //console.log('Error updating status:', error);
@@ -112,25 +121,25 @@ const DailyRoutinePage = () => {
     const activity = routine[section];
 
     if (activity.status === 'completed') {
-      return null; // Do not render the button if already completed
+        return null; 
     }
 
     const isPastSection = selectedDate.isBefore(moment(), 'day') || 
-                          (selectedDate.isSame(moment(), 'day') && moment().isAfter(morningEnd));
+        (selectedDate.isSame(moment(), 'day') && moment().isAfter((section === 'morning') ? morningEnd : dayEnd));
 
     const isCurrentSection = (section === 'morning' && selectedDate.isSame(moment(), 'day') && now.isBefore(morningEnd)) ||
-                            (section === 'day' && selectedDate.isSame(moment(), 'day') && now.isAfter(morningEnd) && now.isBefore(dayEnd)) ||
+                            (section === 'day' && selectedDate.isSame(moment(), 'day') && now.isBetween(morningEnd, dayEnd)) ||
                             (section === 'evening' && selectedDate.isSame(moment(), 'day') && now.isAfter(dayEnd));
 
-    if (isPastSection || isCurrentSection) {
-      return (
-        <TouchableOpacity
-          onPress={updateStatus.bind(null, section)}
-          style={styles.doneButton}
-        >
-          <Text style={styles.doneButtonText}>✅</Text>
-        </TouchableOpacity>
-      );
+    if (isPastSection || (isCurrentSection && selectedDate.isSame(moment(), 'day'))) {
+        return (
+            <TouchableOpacity
+                onPress={updateStatus.bind(null, section)}
+                style={styles.doneButton}
+            >
+                <Text style={styles.doneButtonText}>✅</Text>
+            </TouchableOpacity>
+        );
     }
 
     return null; 
@@ -178,18 +187,34 @@ const DailyRoutinePage = () => {
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Daily Plans</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
           <Icon name="user" size={30} color="black" />
         </TouchableOpacity>
       </View>
 
+      <View style={styles.dateContainer}>
+        <Text style={styles.currentDateText}>{selectedDate.format('Do MMMM, YYYY')}</Text>
+      </View>
+
+      {/* Search Bar with Search Icon */}
+      <View style={styles.searchBarContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search by date (e.g., 2024-09-22)"
+          value={searchDate}
+          onChangeText={handleSearchDateChange}
+          placeholderTextColor="#666"
+        />
+        <Icon name="search" size={20} color="gray" style={styles.searchIcon} />
+      </View>
+      
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dateScrollView}>
         {renderDateButtons()}
       </ScrollView>
 
-      <ScrollView style={styles.routineContainer}>
+      <ScrollView>
         {routine ? (
-          <View style={styles.routineContainer1}>
+          <View style={styles.allContainer}>
             <View style={styles.iconsContainer}>
               <Text style={styles.routineDate}>{selectedDate.format('Do MMMM, YYYY')}</Text>
               
@@ -226,7 +251,7 @@ const DailyRoutinePage = () => {
             })}
           </View>
         ) : (
-          <Text>No routine for this day.</Text>
+          <Text style={{textAlign:'center'}}>No routine for this day.</Text>
         )}
 
       </ScrollView>
@@ -234,58 +259,154 @@ const DailyRoutinePage = () => {
       <TouchableOpacity style={styles.floatingButton} onPress={addRoutine}>
         <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
-
-      {/* Fixed Navigation Bar */}
-      <View style={styles.navbarContainer}>
-        <NavBar />
-      </View>
+      
+      <NavBar />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f9c8e6' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15 },
-  headerText: { fontSize: 24, fontWeight: 'bold', color: 'black' },
-  dateScrollView: { paddingBottom: 0, paddingTop: 20 },
-  dateButton: { marginHorizontal: 5, padding: 10, backgroundColor: '#fff', borderRadius: 10, height: 50 },
-  todayDateButton: { backgroundColor: '#c0392b' },
-  selectedDateButton: { backgroundColor: '#2980b9' },
-  dateText: { fontSize: 16, color: '#333' },
-  todayDateText: { color: '#fff' },
-  selectedDateText: { color: '#fff' },
-  //routineContainer: { padding: 50, backgroundColor: '#8e44ad', margin: 10, borderRadius: 10 },
-  routineContainer: { padding: 20, backgroundColor: '#8e44ad', margin: 15, borderRadius: 10 },
-  iconsContainer: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 20, alignSelf: 'center', marginTop:10 },
-  routineContainer1: { padding: 0, backgroundColor: '#8e44ad', margin: 0, borderRadius: 10 },
-  //iconsContainer: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 30, marginLeft:0, alignSelf:'center'},
-  icon: { marginHorizontal: 10 },
-  routineDate: { fontSize: 18, fontWeight: 'bold', color: '#fff', textAlign: 'center' },
-  section: { marginBottom: 15, padding: 15, backgroundColor: '#fff', borderRadius: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#8e44ad' },
-  sectionContent: { fontSize: 16, color: '#333' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#f9c8e6' 
+  },
+  header: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    padding: 20, 
+    marginTop: -50, 
+    backgroundColor: '#f49fb6'
+  },
+  headerText: { 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    color: 'black' 
+  },
+  dateScrollView: { 
+    paddingBottom: 0, 
+    paddingTop: 5, 
+    paddingLeft: 10 
+  },
+  dateButton: { 
+    marginHorizontal: 4, 
+    padding: 8, 
+    backgroundColor: '#fff', 
+    borderRadius: 10, 
+    height: 38, 
+  },
+  todayDateButton: { 
+    backgroundColor: '#c0392b' 
+  },
+  selectedDateButton: { 
+    backgroundColor: '#2980b9' 
+  },
+  dateText: { 
+    fontSize: 16, 
+    color: '#333' 
+  },
+  searchBarContainer: {
+    height: 50,
+    flexDirection: 'row', 
+    alignItems: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    marginHorizontal: 15,
+  },
+  searchBar: { 
+    flex: 1, 
+    fontSize: 16, 
+    color: '#333' 
+  },
+  searchIcon: { 
+    marginRight: 10 
+  },
+  currentDateText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    padding: 8,
+  },
+  todayDateText: { 
+    color: '#fff' 
+  },
+  dateContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  currentDate: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 10,
+  },
+  selectedDateText: { 
+    color: '#fff' 
+  },
+  allContainer: { 
+    padding: 20, 
+    backgroundColor: '#8e44ad', 
+    marginHorizontal: 15, 
+    borderRadius: 10, 
+    marginTop: 0
+  },
+  iconsContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginBottom: 20, 
+  },
+  icon: { 
+    marginHorizontal: 10 
+  },
+  routineDate: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#fff', 
+    textAlign: 'center' 
+  },
+  section: { 
+    marginBottom: 15, 
+    padding: 15, 
+    backgroundColor: '#fff', 
+    borderRadius: 10 
+  },
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    marginBottom: 10, 
+    color: '#8e44ad' 
+  },
+  sectionContent: { 
+    fontSize: 16, 
+    color: '#333' 
+  },
   statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop:5, // Adjust as needed
+    marginTop: 0,
   },
   statusText: {
     fontSize: 16,
     color: '#333',
   },
   completeGif: {
-    width: 80, // Adjust as needed
-    height: 35, // Adjust as needed
+    width: 80, 
+    height: 35,
     marginTop: -10,
+    marginRight:-15
   },  
   doneButton: {
-    marginTop: 0,
     backgroundColor: '#2E4057',
-    padding: 10,
+    padding: 8,
     borderRadius: 50,
     alignItems: 'center',
-    marginHorizontal: 0,
+    marginRight:6,
   },
   disabledDoneButton: {
     backgroundColor: '#5b8179',
