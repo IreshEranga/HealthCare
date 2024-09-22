@@ -27,6 +27,7 @@ const addFoodLog = async (req, res) => {
 
 // Fetch all food logs for the current day
 const getTodayFoodLogs = async (req, res) => {
+  //console.log('Request received for today\'s food logs'); // Add this line
   const today = new Date().toISOString().split('T')[0]; // Get today's date (YYYY-MM-DD format)
 
   try {
