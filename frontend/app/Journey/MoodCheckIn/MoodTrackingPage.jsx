@@ -34,7 +34,7 @@ const MoodTrackingPage = () => {
       console.log('Mood Data Response:', response.data);
       setMoodData(response.data);
     } catch (error) {
-      console.error('Error fetching mood data:', error);
+      //console.error('Error fetching mood data:', error);
       setMoodData([]);
     } finally {
       setLoading(false);
