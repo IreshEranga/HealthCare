@@ -11,6 +11,7 @@ import axios from 'axios';
 const MoodTrackingPage = () => {
   const [moodData, setMoodData] = useState([]);
   const [userID, setUserID] = useState('');
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   const fetchUserData = async () => {
@@ -30,9 +31,13 @@ const MoodTrackingPage = () => {
     try {
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       const response = await axios.get(`${apiUrl}/mood-check-in/${userID}/mood`);
+      console.log('Mood Data Response:', response.data);
       setMoodData(response.data);
     } catch (error) {
-      console.error('Error fetching mood data', error);
+      //console.error('Error fetching mood data:', error);
+      setMoodData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,26 +55,27 @@ const MoodTrackingPage = () => {
 
   const moodIcons = {
     'Very Sad': '😭',
-    'Sad': '😟',
-    'Neutral': '😐',
+    'Worried': '😟',
+    'Okay': '😐',
     'Happy': '😊',
     'Very Happy': '😄',
   };
 
   const renderGrid = () => {
-    const daysInMonth = new Array(12).fill(0).map((_, i) => new Date(2024, i + 1, 0).getDate());
+    if (loading) {
+      return <Text style={{textAlign:'center'}}>Loading...</Text>;
+    }
+
     const months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
 
     return (
       <View style={styles.gridWrapper}>
-        {/* Month Row */}
         <View style={styles.monthsRow}>
           {months.map((month, index) => (
             <Text key={index} style={styles.monthText}>{month}</Text>
           ))}
         </View>
-  
-        {/* Day Rows */}
+
         {Array.from({ length: 31 }).map((_, day) => (
           <View key={day} style={styles.dayRow}>
             <Text style={styles.dayText}>{day + 1}</Text>
@@ -77,9 +83,9 @@ const MoodTrackingPage = () => {
               const moodEntry = moodData.find(
                 (entry) => new Date(entry.date).getDate() === day + 1 && new Date(entry.date).getMonth() === month
               );
-              const moodColor = moodEntry ? moodColors[moodEntry.mood] : '#ecf0f1';
+              const moodColor = moodEntry ? moodColors[moodEntry.mood] : '#ecf0f1'; 
               const moodIcon = moodEntry ? moodIcons[moodEntry.mood] : '';
-  
+
               return (
                 <TouchableOpacity
                   key={`${day}-${month}`}
@@ -104,31 +110,29 @@ const MoodTrackingPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Mood Stats</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
-      {/* Subtitle */}
-      <Text style={styles.subTitle}>Year in Pixels</Text>
+      <Text style={styles.subTitle}>365 Mood Map</Text>
 
-      {/* Mood Grid */}
       <ScrollView style={styles.gridContainer}>
         {renderGrid()}
       </ScrollView>
 
-      {/* Floating Button */}
-      <TouchableOpacity style={styles.floatingButton} onPress={() => navigation.navigate('Journey/MoodCheckIn/AddMoodCheckInPage')}>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => navigation.navigate('Journey/MoodCheckIn/AddMoodCheckInPage')}
+      >
         <Icon name="plus" color="white" size={30} />
       </TouchableOpacity>
 
-      {/* Nav Bar */}
       <NavBar style={styles.navigation} />
     </SafeAreaView>
   );
@@ -143,8 +147,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 20,
     backgroundColor: '#f49fb6',
+    marginTop:-50,
   },
   headerText: {
     fontSize: 24,
@@ -156,6 +161,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
     color: 'black',
+    fontFamily: 'Georgia',
   },
   gridContainer: {
     flex: 1,
@@ -170,14 +176,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   monthText: {
-    width: 25, 
-    textAlign: 'center', 
+    width: 25,
+    textAlign: 'center',
     fontWeight: 'bold',
     color: 'black',
-    paddingBottom: 5, 
-    marginLeft:2.4,
-    paddingLeft:12,
-  },  
+    marginLeft: 2.4,
+    paddingLeft: 12,
+  },
   dayRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -193,10 +198,10 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     margin: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 3,
-  },  
+  },
   emojiText: {
     fontSize: 14,
   },
