@@ -115,12 +115,12 @@ const MoodTrackingPage = () => {
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Mood Stats</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.subTitle}>Year in Pixels</Text>
+      <Text style={styles.subTitle}>365 Mood Map</Text>
 
       <ScrollView style={styles.gridContainer}>
         {renderGrid()}
@@ -147,8 +147,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 20,
     backgroundColor: '#f49fb6',
+    marginTop:-50,
   },
   headerText: {
     fontSize: 24,
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
     color: 'black',
+    fontFamily: 'Georgia',
   },
   gridContainer: {
     flex: 1,

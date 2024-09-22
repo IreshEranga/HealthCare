@@ -54,7 +54,7 @@ export default function JourneyPage() {
       >
         <View style={styles.header}>
           <Text style={styles.greeting}>Hi 👋 {greetingMessage}, {userName || 'Guest'}</Text>
-          <Icon name="user" size={30} color="black" style={styles.profileIcon} />
+          <Icon name="user" size={30} color="black" style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage')}/>
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     padding:10,
+    fontFamily: 'Times New Roman',
   },
   card: {
     backgroundColor: '#fff',
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     marginTop:20,
+    fontFamily: 'Times New Roman',
   },
   cardDetails: {
     fontSize: 14,
@@ -195,12 +197,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     marginRight: 10,
+    fontFamily: 'Times New Roman',
   },
   buttonIcon: {
-    width: 15,
+    width: 8,
     height: 15,
   },
   navbarContainer: {
