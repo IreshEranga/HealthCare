@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput  } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,7 @@ const JournalingPage = () => {
   const [selectedDate, setSelectedDate] = useState(moment());
   const [currentDate, setCurrentDate] = useState(moment().format('Do MMMM, YYYY'));
   const [userID, setUserID] = useState('');
+  const [searchDate, setSearchDate] = useState('');
   const navigation = useNavigation();
 
   const fetchUserData = async () => {
@@ -77,13 +78,24 @@ const JournalingPage = () => {
     try {
       const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       await axios.delete(`${apiUrl}/journals/${journalID}`);
-      fetchJournals(selectedDate); // Refresh journals after deletion
+      fetchJournals(selectedDate); 
       Alert.alert('Success', 'Journal entry deleted successfully.');
     } catch (error) {
       console.log('Error deleting journal:', error);
       Alert.alert('Error', 'Failed to delete journal. Please try again later.');
     }
   };
+
+  const handleSearch = () => {
+    const parsedDate = moment(searchDate, 'YYYY-MM-DD', true); 
+    if (parsedDate.isValid()) {
+      setSelectedDate(parsedDate); 
+      setCurrentDate(parsedDate.format('Do MMMM, YYYY'));
+      fetchJournals(parsedDate);
+    } else {
+      Alert.alert('Invalid Date', 'Please enter a valid date in YYYY-MM-DD format.');
+    }
+  };  
 
   const renderDateButtons = () => {
     const today = moment();
@@ -93,23 +105,28 @@ const JournalingPage = () => {
     let currentDate = today;
 
     while (currentDate.isAfter(lastYear)) {
-      dates.push(currentDate.clone());
-      currentDate = currentDate.subtract(1, 'day');
+        dates.push(currentDate.clone());
+        currentDate = currentDate.subtract(1, 'day');
     }
 
     return dates.map((date, index) => {
-      const formattedDate = date.format('ddd DD MMM');
-      const isSelected = date.isSame(selectedDate, 'day');
+        const formattedDate = date.format('ddd DD MMM');
+        const isSelected = date.isSame(selectedDate, 'day');
+        const isToday = date.isSame(moment(), 'day'); 
 
-      return (
-        <TouchableOpacity
-          key={index}
-          style={[styles.dateButton, isSelected ? styles.selectedDateButton : null]}
-          onPress={() => setSelectedDate(date)}
-        >
-          <Text style={styles.dateText}>{formattedDate}</Text>
-        </TouchableOpacity>
-      );
+        return (
+            <TouchableOpacity
+                key={index}
+                style={[
+                    styles.dateButton,
+                    isSelected ? styles.selectedDateButton : null,
+                    isToday ? styles.highlightedDateButton : null, 
+                ]}
+                onPress={() => setSelectedDate(date)}
+            >
+                <Text style={styles.dateText}>{formattedDate}</Text>
+            </TouchableOpacity>
+        );
     });
   };
 
@@ -120,13 +137,25 @@ const JournalingPage = () => {
           <Icon name="arrow-left" color="black" size={30} />
         </TouchableOpacity>
         <Text style={styles.headerText}>Journaling</Text>
-        <TouchableOpacity>
-          <Icon name="user" size={30} color="black" style={styles.profileIcon} />
+        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
+          <Icon name="user" size={30} color="black" style={styles.profileIcon}/>
         </TouchableOpacity>
       </View>
 
       <View style={styles.dateContainer}>
         <Text style={styles.currentDate}>{currentDate}</Text>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search by date (YYYY-MM-DD)"
+          value={searchDate}
+          onChangeText={setSearchDate}
+          onSubmitEditing={handleSearch}
+          returnKeyType="search"
+        />
+        <Icon name="search" size={20} color="gray" style={styles.searchIcon} />
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
@@ -184,14 +213,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 20,
     backgroundColor: '#f49fb6',
+    marginTop:-50,
   },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'black',
   },
+  searchContainer: {
+    height: 50,
+    flexDirection: 'row', alignItems: 'center',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    color: 'black',
+    margin:15,
+  },
+  searchBar: { flex: 1, fontSize: 16, color: '#333' },
+  searchIcon: { marginRight: 10 },
   dateContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -201,6 +245,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    marginTop:10,
   },
   dateSelector: {
     flexDirection: 'row',
@@ -208,17 +253,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   dateButton: {
-    marginHorizontal: 8,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
+    marginHorizontal: 4,
+    padding: 8, 
     backgroundColor: '#fff',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#ddd',
-    height: 50,
+    height: 38,
   },
   selectedDateButton: {
     backgroundColor: '#d3a4ff',
+  },
+  highlightedDateButton: {
+    backgroundColor: '#2980b9',
   },
   dateText: {
     fontSize: 16,
@@ -227,7 +274,7 @@ const styles = StyleSheet.create({
   journalList: {
     flex: 1,
     paddingHorizontal: 10,
-    marginTop: 0, // Adjusted margin
+    marginTop: -450, 
   },
   noJournals: {
     textAlign: 'center',
@@ -235,7 +282,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   journalEntry: {
-    backgroundColor: '#fff',
+    backgroundColor: '#e3e3e3',
     padding: 15,
     marginBottom: 10,
     borderRadius: 10,
@@ -280,6 +327,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 5,
   },
+  
 });
 
 export default JournalingPage;
