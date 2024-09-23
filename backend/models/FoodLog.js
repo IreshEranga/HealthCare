@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 
 const foodLogSchema = new mongoose.Schema({
-  userID: {
-    type: String,
-  },
   date: { 
     type: String, 
     required: true 
@@ -14,7 +11,8 @@ const foodLogSchema = new mongoose.Schema({
   },
   foodItems: [
     {
-      name: { type: String, 
+      name: { 
+        type: String, 
         required: true 
       },
       calories: { 
