@@ -6,21 +6,19 @@ export default function AddFood() {
   const [query, setQuery] = useState('');
   const [foodResults, setFoodResults] = useState([]);
 
+  const API_KEY = 'VrcT9RDOlvlDus5BlnfPM4gQbxiPHrkE3bAsQvGE';
+
   // Function to search food using EDAMAM API
   const searchFood = async () => {
     try {
       const response = await axios.get(
-        `https://api.edamam.com/api/food-database/v2/parser`, {
-          params: {
-            ingr: query,
-            app_id: '3fcbe5a2', 
-            app_key: '0d8c0ee2175219689825f74f9f3dead0',
-          }
-        }
+        `https://api.nal.usda.gov/fdc/v1/foods/search?query=${query}&api_key=${'VrcT9RDOlvlDus5BlnfPM4gQbxiPHrkE3bAsQvGE'}`
+          
       );
-      setFoodResults(response.data.hints);
+
+      setFoodResults(response.data.foods);
     } catch (error) {
-      console.error(error);
+      console.error('Error searching food:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -52,12 +50,16 @@ export default function AddFood() {
       <FlatList
         data={foodResults}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={{ padding: 10 }}>
-            <Text>{item.food.label} - {item.food.nutrients.ENERC_KCAL} kcal</Text>
+        renderItem={({ item }) => {
+          // Extract calories (nutrientId 1008 = Calories)
+          const calories = item.foodNutrients.find(nutrient => nutrient.nutrientId === 1008)?.value || 0;
+
+          return (<View style={{ padding: 10 }}>
+            <Text>{item.description}</Text>
+            <Text>{calories} kcal per serving</Text>
             <Button title="Add to Log" onPress={() => addFoodToLog(item)} />
-          </View>
-        )}
+          </View>)
+        }}
       />
     </View>
   );

@@ -5,6 +5,23 @@ import axios from 'axios';
 const DisplayFoodLog = () => {
   const [foodLogs, setFoodLogs] = useState([]);
   const [error, setError] = useState('');
+  const [userID, setUserID] = useState('');
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+      if (parsedUser && parsedUser.userID) {
+        setUserID(parsedUser.userID);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const fetchFoodLogs = async () => {

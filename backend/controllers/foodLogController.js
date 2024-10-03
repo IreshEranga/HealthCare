@@ -4,13 +4,17 @@ const FoodLog = require('../models/FoodLog');
 const addFoodLog = async (req, res) => {
   const { foodItem } = req.body;
 
+  // Log the incoming data to see its structure
+  console.log('Request Body:', req.body);
+  console.log('Food Item:', foodItem);
+
   const foodData = {
     date: new Date().toISOString().split('T')[0],
     mealType: 'Lunch', // You can modify this dynamically
     foodItems: [
       {
-        name: foodItem.food.label,
-        calories: foodItem.food.nutrients.ENERC_KCAL,
+        name: foodItem.description,
+        calories: foodItem.foodNutrients.find(nutrient => nutrient.nutrientName === "Energy")?.value || 0, // Get calorie value using 'foodNutrients'
       },
     ],
   };
