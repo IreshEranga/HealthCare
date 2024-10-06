@@ -24,6 +24,12 @@ const QuizRoutes = require('./routes/QuizRoutes');
 
 const foodLogRoutes = require('./routes/foodLogRoutes');
 
+
+
+
+
+const WorkoutRoutes = require('./routes/WorkoutRoutes');
+
 // express app
 const app = express();
 
@@ -53,6 +59,10 @@ app.use("/users", QuizRoutes);
 
 
 app.use('/food-log', foodLogRoutes);
+
+
+
+app.use("/workoutlog", WorkoutRoutes);
 
 
 
