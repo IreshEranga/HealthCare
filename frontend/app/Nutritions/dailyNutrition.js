@@ -26,7 +26,7 @@ const DisplayFoodLog = () => {
   useEffect(() => {
     const fetchFoodLogs = async () => {
       try {
-        const response = await axios.get('http://192.168.8.148:8000/food-log/today'); // Ensure the correct port is used
+        const response = await axios.get('http://192.168.8.147:8000/food-log/today'); // Ensure the correct port is used
         setFoodLogs(response.data);
       } catch (err) {
         setError('Error fetching food logs');
