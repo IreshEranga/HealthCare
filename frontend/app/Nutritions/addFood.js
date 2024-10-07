@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, FlatList, Text, Alert, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, TextInput, Button, FlatList, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,7 +10,7 @@ import axios from 'axios';
 export default function AddFood() {
   const [query, setQuery] = useState('');
   const [foodResults, setFoodResults] = useState([]);
-  const [selectedMealType, setSelectedMealType] = useState('Click Here To Select Meal Type');
+  const [selectedMealType, setSelectedMealType] = useState('Breakfast');
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
@@ -82,19 +82,19 @@ export default function AddFood() {
 
 
        {/* Meal Type Selector */}
-      <Picker
-        selectedValue={selectedMealType}
-        style={{ height: 50, width: 140, marginBottom: 20}}
-        onValueChange={(itemValue) => {
-          console.log('Selected meal type changed to:', itemValue);
-          setSelectedMealType(itemValue);
-        }}
-      >
-        <Picker.Item label="Breakfast" value="Breakfast" />
-        <Picker.Item label="Lunch" value="Lunch" />
-        <Picker.Item label="Dinner" value="Dinner" />
-        <Picker.Item label="Snack" value="Snack" />
-      </Picker>
+       <Picker
+          selectedValue={selectedMealType}
+          style={{ height: 50, width: 140, marginBottom: 20 }}
+          onValueChange={(itemValue) => {
+            console.log('Selected meal type changed to:', itemValue);
+            setSelectedMealType(itemValue);
+          }}
+        >
+          <Picker.Item label="Breakfast" value="Breakfast" />
+          <Picker.Item label="Lunch" value="Lunch" />
+          <Picker.Item label="Dinner" value="Dinner" />
+          <Picker.Item label="Snack" value="Snack" />
+        </Picker>
       </View>
 
       <FlatList
@@ -104,10 +104,20 @@ export default function AddFood() {
           // Extract calories (nutrientId 1008 = Calories)
           const calories = item.foodNutrients.find(nutrient => nutrient.nutrientId === 1008)?.value || 0;
 
-          return (<View style={{ padding: 10 }}>
-            <Text>{item.description}</Text>
-            <Text>{calories} kcal per serving</Text>
-            <Button title="Add to Log" onPress={() => addFoodToLog(item)} />
+          return (
+          <View style={{ padding: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View>
+              <Text>{item.description}</Text>
+              <Text>{calories} kcal per serving</Text>
+            </View>
+
+            <TouchableOpacity onPress={() => addFoodToLog(item)}>
+              <Text>
+                <Icon name="plus" size={24} color="#8BC34A" />
+              </Text>
+          </TouchableOpacity>
+
+            
           </View>)
         }}
       />

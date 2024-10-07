@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity  } from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 const DisplayFoodLog = () => {
   const [foodLogs, setFoodLogs] = useState([]);
   const [error, setError] = useState('');
   const [userID, setUserID] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [collapsedSections, setCollapsedSections] = useState({
+    breakfast: true,
+    lunch: true,
+    dinner: true,
+    snacks: true,
+  });
+  const navigation = useNavigation();
 
   const fetchUserData = async () => {
     try {
@@ -27,17 +38,35 @@ const DisplayFoodLog = () => {
     const fetchFoodLogs = async () => {
       try {
         const response = await axios.get('http://192.168.8.147:8000/food-log/today'); // Ensure the correct port is used
+        console.log('Fetched Food Logs:', JSON.stringify(response.data, null, 2));
         setFoodLogs(response.data);
+        setLoading(false);
       } catch (err) {
         setError('Error fetching food logs');
         console.error('Error fetching food logs:', err);
+        setLoading(false);
       }
     };
 
     fetchFoodLogs();
   }, []);
 
-  const renderMealType = (mealType) => (
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />; // Display a loading indicator while data is being fetched
+  }
+
+  if (error) {
+    return <Text>{error}</Text>; // Display error if it exists
+  }
+
+  const toggleSection = (section) => {
+    setCollapsedSections((prevState) => ({
+      ...prevState,
+      [section]: !prevState[section],
+    }));
+  };
+
+  /*const renderMealType = (mealType) => (
     foodLogs
       .filter(log => log.mealType === mealType)
       .map((log, index) => (
@@ -45,42 +74,125 @@ const DisplayFoodLog = () => {
           <Text>{log.foodItems[0].name} - {log.foodItems[0].calories} kcal</Text>
         </View>
       ))
-  );
+  );*/
+
+  // Function to render food items for each meal type
+  const renderFoodItems = (mealType) => {
+    const filteredLogs = foodLogs.filter(log => log.mealType.toLowerCase() === mealType.toLowerCase());
+
+    if (filteredLogs.length === 0) {
+      return <Text>No food items logged for {mealType}.</Text>;
+    }
+
+    return filteredLogs.map((log, index) => (
+      <View key={index} style={styles.card}>
+        {log.foodItems.map((food, idx) => (
+          <View key={idx} style={styles.foodItemContainer}>
+            <Text style={styles.foodName}>{food.name}</Text>
+            <Text style={styles.foodCalories}>{food.calories} kcal</Text>
+        </View>
+        ))}
+      </View>
+    ));
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      {error ? <Text>{error}</Text> : null}
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
+          <Icon name="arrow-left" size={24} color="#8BC34A" />
+        </TouchableOpacity>
+      </View>
+    <ScrollView style={styles.scrollContainer}>
+      {/* Breakfast Section */}
+      <TouchableOpacity onPress={() => toggleSection('breakfast')} style={styles.headingContainer}>
+        <Text style={styles.heading}>Breakfast</Text>
+        <Text style={styles.arrow}>{collapsedSections.breakfast ? '▼' : '▲'}</Text>
+      </TouchableOpacity>
+      {!collapsedSections.breakfast && renderFoodItems('Breakfast')}
 
-      <Text style={styles.heading}>Breakfast</Text>
-      {renderMealType('Breakfast')}
+      {/* Lunch Section */}
+      <TouchableOpacity onPress={() => toggleSection('lunch')} style={styles.headingContainer}>
+        <Text style={styles.heading}>Lunch</Text>
+        <Text style={styles.arrow}>{collapsedSections.lunch ? '▼' : '▲'}</Text>
+      </TouchableOpacity>
+      {!collapsedSections.lunch && renderFoodItems('Lunch')}
 
-      <Text style={styles.heading}>Lunch</Text>
-      {renderMealType('Lunch')}
+      {/* Dinner Section */}
+      <TouchableOpacity onPress={() => toggleSection('dinner')} style={styles.headingContainer}>
+        <Text style={styles.heading}>Dinner</Text>
+        <Text style={styles.arrow}>{collapsedSections.dinner ? '▼' : '▲'}</Text>
+      </TouchableOpacity>
+      {!collapsedSections.dinner && renderFoodItems('Dinner')}
 
-      <Text style={styles.heading}>Dinner</Text>
-      {renderMealType('Dinner')}
-
-      <Text style={styles.heading}>Snacks</Text>
-      {renderMealType('Snacks')}
+      {/* Snacks Section */}
+      <TouchableOpacity onPress={() => toggleSection('snacks')} style={styles.headingContainer}>
+        <Text style={styles.heading}>Snacks</Text>
+        <Text style={styles.arrow}>{collapsedSections.snacks ? '▼' : '▲'}</Text>
+      </TouchableOpacity>
+      {!collapsedSections.snacks && renderFoodItems('Snack')}
     </ScrollView>
+    </View>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
+  },
+  headerContainer: {
+    flexDirection: 'row',          // Align items in a row
+    justifyContent: 'space-between',  // Distribute items with space between them
+    alignItems: 'center',          // Align items vertically centered
+    paddingHorizontal: 20,         // Add some horizontal padding
+    paddingVertical: 10,           // Add some vertical padding
+    backgroundColor: '#FFFDE7',
+    marginBottom: 15,
+    backgroundColor: 'white',
+  },
+  scrollContainer: {
+    paddingBottom: 50,
+  },
+  headingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Align heading and arrow at opposite ends
+    alignItems: 'center',
+    backgroundColor: 'rgba(71, 127, 73, 0.35)', // Optional: Add a background to the header to make it stand out
     padding: 20,
-    backgroundColor: '#fff',
+    marginVertical: 30,
+    borderRadius: 5,
+    margin: 20,
   },
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 10,
   },
-  foodItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    marginLeft: 30,
+    marginRight: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  foodItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 5,
+  },
+  foodName: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  foodCalories: {
+    fontSize: 16,
+    color: '#888',
   },
 });
 
