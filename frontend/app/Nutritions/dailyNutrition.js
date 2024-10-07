@@ -5,11 +5,28 @@ import axios from 'axios';
 const DisplayFoodLog = () => {
   const [foodLogs, setFoodLogs] = useState([]);
   const [error, setError] = useState('');
+  const [userID, setUserID] = useState('');
+
+  const fetchUserData = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+      if (parsedUser && parsedUser.userID) {
+        setUserID(parsedUser.userID);
+      }
+    } catch (error) {
+      console.log('Error fetching user data', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const fetchFoodLogs = async () => {
       try {
-        const response = await axios.get('http://192.168.8.148:8000/food-log/today'); // Ensure the correct port is used
+        const response = await axios.get('http://192.168.8.147:8000/food-log/today'); // Ensure the correct port is used
         setFoodLogs(response.data);
       } catch (err) {
         setError('Error fetching food logs');
