@@ -120,9 +120,9 @@ export default function Welcome() {
           <View style={styles.card}>
             <Image source={vector} style={styles.vector} />
             <Text style={styles.cardTitle}>Personalize your Goals.</Text>
-            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+            <Text style={styles.cardDetails}>Discover personalized fitness routines designed to fit your unique lifestyle!</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => { /* Handle Task */ }}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Fitness/FitnessPlan')}>
               <Text style={styles.buttonText}>
                 Take Task <Image source={rightArrow} />
               </Text>
