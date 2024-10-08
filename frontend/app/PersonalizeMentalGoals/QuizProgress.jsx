@@ -29,6 +29,7 @@ export default function QuizProgress() {
   const [totalScore, setTotalScore] = useState(0); // State for total score
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState(''); // State for feedback message
+  const [message1, setMessage1] = useState(''); // State for feedback message
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -62,11 +63,11 @@ export default function QuizProgress() {
 
         // If today's quiz is not found, show message
         if (!todayQuiz) {
-          setMessage('You have not completed today\'s quiz. Please do the quiz!');
+          setMessage1('You have not completed today\'s quiz. Please do the quiz!');
         } else if (todayQuiz.totalScore >= (quizzes[quizzes.length - 1]?.totalScore || 0)) {
-          setMessage('Great job! Your score today is greater than or equal to last day\'s score.');
+          setMessage('Great job! Your score today is greater than  to last day\'s score.');
         } else {
-          setMessage('Keep it up! Try to score higher than yesterday.');
+          setMessage1('You Have to try more Mental Fitness Exercices.');
         }
       } catch (error) {
         console.error('Error fetching quiz data:', error);
@@ -87,8 +88,11 @@ export default function QuizProgress() {
           <Text style={styles.loadingText}>Loading...</Text>
         ) : (
           <>
-            <Text style={styles.totalScoreText}>Total Score: {totalScore}</Text>
-            <Text style={styles.messageText}>{message}</Text>
+            
+            <View style={styles.messageContainer}>
+              <Text style={styles.messageText}>{message}</Text>
+              <Text style={styles.messageText1}>{message1}</Text>
+            </View>
             <FlatList
               data={quizData}
               renderItem={({ item }) => <QuizCard quiz={item} />}
@@ -145,11 +149,27 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginVertical: 15,
   },
+  messageContainer: {
+    backgroundColor: '#ffffff', // Background color for message container
+    borderRadius: 10,
+    padding: 15,
+    marginVertical: 10,
+    marginHorizontal: 30,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 3,
+  },
   messageText: {
     textAlign: 'center',
     fontSize: 16,
-    color: '#ffffff',
-    marginVertical: 10,
+    color: '#333333', // Darker text color for contrast
+  },
+  messageText1: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#ff0000', // Darker text color for contrast
   },
   loadingText: {
     textAlign: 'center',
