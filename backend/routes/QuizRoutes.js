@@ -9,5 +9,7 @@ router.post('/quiz', QuizController.createQuiz);
 // Route to update activity status to completed
 //router.put('/goals/:goalId/activities/:activityId/complete', completeActivityStatus);
 
+// Route for fetching all quizzes by userID
+router.get('/quiz/:userID', QuizController.getQuizzesByUserID);
 
 module.exports = router;
