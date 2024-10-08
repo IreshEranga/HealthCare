@@ -30,7 +30,7 @@ import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 import GoalSummary from './app/PersonalizeMentalGoals/GoalSummary';
 import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
 import GoalDetail from './app/PersonalizeMentalGoals/GoalDetail';
-
+import QuizProgress from './app/PersonalizeMentalGoals/QuizProgress';
 
 
 
@@ -225,6 +225,10 @@ export default function App() {
           <Stack.Screen  name="RestScreen"
           component={RestScreen}
           options={{ title: 'RestScreen' }}
+        />
+        <Stack.Screen  name="QuizProgress"
+          component={QuizProgress}
+          options={{ title: 'QuizProgress' }}
         />
          
       </Stack.Navigator>
