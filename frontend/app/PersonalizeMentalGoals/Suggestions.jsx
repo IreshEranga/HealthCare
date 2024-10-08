@@ -234,6 +234,11 @@ export default function Suggestions() {
     navigation.navigate('PersonalizeMentalGoals/GoalSummary', { goal, goalType });
   };
 
+  const handleQuizProgress = ()=>{
+    console.log("Handle clicked");
+    navigation.navigate('PersonalizeMentalGoals/QuizProgress');
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -253,6 +258,14 @@ export default function Suggestions() {
             Here are some goals that may be helpful for you. Select a goal and start the activities in it. After finishing one goal, you can proceed to the next.
           </Text>
         </View>
+
+        <View>
+          <TouchableOpacity style={styles.qprogress} onPress={handleQuizProgress}>
+            <Text style={styles.progressText}>Quiz Progress</Text>
+            <Icon name="arrow-right" size={16} color="white" style={styles.progressIcon} />
+          </TouchableOpacity>
+        </View>
+
 
         {/* Display goal types and goals */}
         <ScrollView style={styles.scrollContainer}>
@@ -351,5 +364,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  qprogress: {
+    flexDirection: 'row', // To place the text and icon horizontally
+    alignItems: 'center', // To align them vertically
+    backgroundColor: '#60768d',
+    padding: 10,
+    borderRadius: 15,
+    width:'40%',
+    marginLeft:20,
+  },
+  progressText: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  progressIcon: {
+    marginLeft: 10, // Add some space between the text and the icon
   },
 });
