@@ -1,10 +1,10 @@
-import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
-
+import Premium from '../../assets/images/prem.png';
 
 
 // Sample goal data
@@ -129,6 +129,7 @@ const goalData = [
         id: 1,
         name: 'Reduce Work Stress',
         summary: 'This goal is focused on helping you manage and reduce work-related stress by incorporating daily activities that promote relaxation and mindfulness. Over 10 days, you\'ll engage in practices such as deep breathing, taking breaks to walk, and reflecting on stressors. Each activity is designed to be simple, practical, and easy to integrate into your workday, helping you build habits that contribute to overall stress reduction and mental well-being.',
+        isPremium: false,
         activities: [
           { day: 1, instruction: 'Start your day with 5 minutes of deep breathing exercises.', image:'https://cdn.painscale.com/cms/imgs/a3fdad40-d477-11eb-80b1-dda9a4b176e4.jpg', status: 'pending' },
           { day: 2, instruction: 'Take a 10-minute walk during your lunch break.', image: 'https://media.istockphoto.com/id/1317323736/photo/a-view-up-into-the-trees-direction-sky.jpg?s=612x612&w=0&k=20&c=i4HYO7xhao7CkGy7Zc_8XSNX_iqG0vAwNsrH1ERmw2Q=', status: 'pending' },
@@ -146,6 +147,7 @@ const goalData = [
         id: 2,
         name: 'Mindful Breathing',
         summary: 'This goal is designed to enhance your mindfulness and focus through various breathing techniques. Over 10 days, you\'ll practice different methods of breathing and relaxation to help reduce stress and increase overall well-being.',
+        isPremium: true,
         activities: [
           { day: 1, instruction: 'Spend 10 minutes focusing on your breath, counting each inhale and exhale.', image: 'https://example.com/day1_image_breathing.jpg', status: 'pending' },
           { day: 2, instruction: 'Practice box breathing (inhale for 4 seconds, hold for 4, exhale for 4, and hold for 4).', image: 'https://example.com/day2_image_breathing.jpg', status: 'pending' },
@@ -168,6 +170,7 @@ const goalData = [
         id: 3,
         name: 'Daily Journaling',
         summary: 'This goal encourages you to explore and express your emotions through daily journaling. Over 10 days, you\'ll reflect on various aspects of your emotional experiences and reactions, which can help improve emotional awareness and resilience.',
+        isPremium: true,
         activities: [
           { day: 1, instruction: 'Write about your emotions today and what triggered them.', image: 'https://example.com/day1_image_journaling.jpg', status: 'pending' },
           { day: 2, instruction: 'Reflect on a difficult situation and how you handled it.', image: 'https://example.com/day2_image_journaling.jpg', status: 'pending' },
@@ -185,6 +188,7 @@ const goalData = [
         id: 4,
         name: 'Gratitude Practice',
         summary: 'This goal focuses on cultivating a sense of gratitude through daily practices. Over 10 days, you\'ll engage in activities designed to help you recognize and appreciate the positive aspects of your life, fostering a greater sense of well-being and positivity.',
+        isPremium: false,
         activities: [
           { day: 1, instruction: 'Write down 3 things you are grateful for today.', image: 'https://example.com/day1_image_gratitude.jpg', status: 'pending' },
           { day: 2, instruction: 'Send a message to someone you appreciate, expressing gratitude.', image: 'https://example.com/day2_image_gratitude.jpg', status: 'pending' },
@@ -207,6 +211,7 @@ const goalData = [
         id: 5,
         name: 'Establish a Healthy Routine',
         summary: 'This goal aims to help you create and maintain a healthy daily routine over 10 days. By incorporating various self-care practices into your daily life, you can improve your overall well-being and create a more balanced lifestyle.',
+        isPremium: false,
         activities: [
           { day: 1, instruction: 'Start your day with a nutritious breakfast.', image: 'https://example.com/day1_image_routine.jpg', status: 'pending' },
           { day: 2, instruction: 'Set aside 30 minutes for physical exercise.', image: 'https://example.com/day2_image_routine.jpg', status: 'pending' },
@@ -278,6 +283,12 @@ export default function Suggestions() {
               {goalType.goals.map((goal) => (
                 <View key={goal.id} style={styles.goalItem}>
                   <Text style={styles.goalName}>{goal.name}</Text>
+                  {goal.isPremium && (
+                  <Image
+                    source={Premium} // Replace with your premium image URL
+                    style={styles.premiumImage}
+                  />
+                )}
                   <TouchableOpacity
                     style={styles.rightButton}
                     onPress={() => handleGoalSelect(goal, goalType.type)}
@@ -380,5 +391,10 @@ const styles = StyleSheet.create({
   },
   progressIcon: {
     marginLeft: 10, // Add some space between the text and the icon
+  },
+  premiumImage: {
+    width: 50,
+    height: 50,
+    marginBottom: 10,
   },
 });
