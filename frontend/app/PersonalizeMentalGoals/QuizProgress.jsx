@@ -11,14 +11,14 @@ const QuizCard = ({ quiz }) => {
   return (
     <View style={styles.card}>
       <Text style={styles.cardTitle}>Quiz Date: {new Date(quiz.createdAt).toLocaleDateString()}</Text>
-      <Text>Feelings: {quiz.feelings}</Text>
-      <Text>Stress: {quiz.stress}</Text>
-      <Text>Sleep: {quiz.sleep}</Text>
-      <Text>Relax: {quiz.relax}</Text>
-      <Text>Work Balance: {quiz.workbalance}</Text>
-      <Text>Anxious: {quiz.anxious}</Text>
-      <Text>Meditation: {quiz.meditation}</Text>
-      <Text style={styles.progressText}>Progress: {quiz.progress}%</Text>
+      <Text>Feelings: {quiz.feelings} (Score: {quiz.feelingsScore})</Text>
+      <Text>Stress: {quiz.stress} (Score: {quiz.stressScore})</Text>
+      <Text>Sleep: {quiz.sleep} (Score: {quiz.sleepScore})</Text>
+      <Text>Relax: {quiz.relax} (Score: {quiz.relaxScore})</Text>
+      <Text>Work Balance: {quiz.workbalance} (Score: {quiz.workbalanceScore})</Text>
+      <Text>Anxious: {quiz.anxious} (Score: {quiz.anxiousScore})</Text>
+      <Text>Meditation: {quiz.meditation} (Score: {quiz.meditationScore})</Text>
+      <Text style={styles.progressText}>Total Score: {quiz.totalScore}</Text>
     </View>
   );
 };
@@ -26,6 +26,7 @@ const QuizCard = ({ quiz }) => {
 export default function QuizProgress() {
   const [userID, setUserID] = useState('');
   const [quizData, setQuizData] = useState([]);
+  const [totalScore, setTotalScore] = useState(0); // State for total score
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +50,8 @@ export default function QuizProgress() {
     const fetchQuizData = async () => {
       try {
         const response = await axios.get(`${apiUrl}/users/quiz/${userID}`);
-        setQuizData(response.data.data);
+        setQuizData(response.data.results); // Set quiz results
+        setTotalScore(response.data.totalScore); // Set total score
       } catch (error) {
         console.error('Error fetching quiz data:', error);
       } finally {
@@ -68,17 +70,18 @@ export default function QuizProgress() {
         {loading ? (
           <Text style={styles.loadingText}>Loading...</Text>
         ) : (
-            
-          <FlatList
-            data={quizData}
-            renderItem={({ item }) => <QuizCard quiz={item} />}
-            keyExtractor={(item) => item._id}
-            contentContainerStyle={styles.listContent}
-            //ListFooterComponent={<NavBar />} // Move NavBar here
-          />
+          <>
+            <Text style={styles.totalScoreText}>Total Score: {totalScore}</Text>
+            <FlatList
+              data={quizData}
+              renderItem={({ item }) => <QuizCard quiz={item} />}
+              keyExtractor={(item) => item.id} // Use id from the quiz
+              contentContainerStyle={styles.listContent}
+            />
+          </>
         )}
       </LinearGradient>
-      <NavBar/>
+      <NavBar />
     </SafeAreaView>
   );
 }
@@ -105,8 +108,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 2,
     elevation: 3,
-    marginLeft:30,
-    marginRight:30,
+    marginLeft: 30,
+    marginRight: 30,
   },
   cardTitle: {
     fontWeight: 'bold',
@@ -117,6 +120,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontWeight: 'bold',
     color: '#60768d',
+  },
+  totalScoreText: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginVertical: 15,
   },
   loadingText: {
     textAlign: 'center',
