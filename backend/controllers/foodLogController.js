@@ -1,6 +1,5 @@
 const FoodLog = require('../models/FoodLog');
 
-
 const addFoodLog = async (req, res) => {
   const { foodItem, mealType } = req.body;
 
@@ -50,5 +49,34 @@ const getTodayFoodLogs = async (req, res) => {
   }
 };
 
+/*const deleteFoodItem = async (logId, foodItemId) => {
+  try {
+    // Replace the URL with your backend endpoint that expects both IDs
+    const response = await axios.delete(`http://192.168.255.115:8000/food-log/delete/${logId}/${foodItemId}`);
+
+    // Confirm successful deletion
+    if (response.status === 200) {
+      console.log('Deleted food item:', foodItemId);
+
+      // Update the food logs in the state after deletion
+      const updatedLogs = foodLogs.map(log => {
+        if (log._id === logId) {
+          return {
+            ...log,
+            foodItems: log.foodItems.filter(food => food._id !== foodItemId),
+          };
+        }
+        return log;
+      });
+      setFoodLogs(updatedLogs); // Update the state with the filtered logs
+    }
+  } catch (err) {
+    console.error('Error deleting food item:', err);
+    Alert.alert('Error', 'Could not delete the food item. Please try again.');
+  }
+};*/
+
+
 
 module.exports = { addFoodLog, getTodayFoodLogs };
+

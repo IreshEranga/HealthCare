@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity  } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, Alert  } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
@@ -66,6 +66,42 @@ const DisplayFoodLog = () => {
     }));
   };
 
+  /*const deleteFoodItem = async (logId, foodItemId) => {
+    try {
+      const response = await axios.delete(`http://192.168.8.147:8000/food-log/delete/${logId}/${foodItemId}`);
+      console.log('Attempting to delete item with ID:', foodItemId);
+  
+      const updatedLogs = foodLogs.map(log => ({
+        ...log,
+        foodItems: log.foodItems.filter(food => food._id !== foodItemId),
+      }));
+      setFoodLogs(updatedLogs);
+    } catch (err) {
+      console.error('Error deleting food item:', err);
+      Alert.alert('Error', 'Could not delete the food item. Please try again.');
+    }
+  };
+  
+
+  const confirmDelete = (logId, foodItemId) => {
+    Alert.alert(
+      "Delete Food Item",
+      "Are you sure you want to delete this food item?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => deleteFoodItem(logId, foodItemId)
+        }
+      ]
+    );
+  };*/
+  
+
+
   /*const renderMealType = (mealType) => (
     foodLogs
       .filter(log => log.mealType === mealType)
@@ -79,22 +115,25 @@ const DisplayFoodLog = () => {
   // Function to render food items for each meal type
   const renderFoodItems = (mealType) => {
     const filteredLogs = foodLogs.filter(log => log.mealType.toLowerCase() === mealType.toLowerCase());
-
+  
     if (filteredLogs.length === 0) {
       return <Text>No food items logged for {mealType}.</Text>;
     }
-
+  
     return filteredLogs.map((log, index) => (
       <View key={index} style={styles.card}>
         {log.foodItems.map((food, idx) => (
           <View key={idx} style={styles.foodItemContainer}>
             <Text style={styles.foodName}>{food.name}</Text>
             <Text style={styles.foodCalories}>{food.calories} kcal</Text>
-        </View>
+            {/* Correctly pass log._id and food._id to confirmDelete */}
+            {/*<TouchableOpacity onPress={() => confirmDelete(log._id, food._id)} style={styles.deleteButton}></TouchableOpacity>*/}
+          </View>
         ))}
       </View>
     ));
   };
+  
 
   return (
     <View style={styles.container}>
@@ -104,6 +143,9 @@ const DisplayFoodLog = () => {
         </TouchableOpacity>
       </View>
     <ScrollView style={styles.scrollContainer}>
+
+    <Text style={styles.title}>FOOD DIARY</Text>
+
       {/* Breakfast Section */}
       <TouchableOpacity onPress={() => toggleSection('breakfast')} style={styles.headingContainer}>
         <Text style={styles.heading}>Breakfast</Text>
@@ -152,6 +194,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: 'white',
   },
+  title: {
+    fontSize: 28,
+    color: '#8BC34A', // Your green color
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   scrollContainer: {
     paddingBottom: 50,
   },
@@ -193,6 +242,16 @@ const styles = StyleSheet.create({
   foodCalories: {
     fontSize: 16,
     color: '#888',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    padding: 5,
+    marginLeft: 10,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 

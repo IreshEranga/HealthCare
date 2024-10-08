@@ -65,6 +65,7 @@ export default function AddFood() {
         </TouchableOpacity>
       </View>   
 
+      <Text style={styles.title}>SEARCH FOOD</Text>
       
       <View style={styles.searchContainer}>
       <TextInput
@@ -141,6 +142,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFDE7',
     marginBottom: 25,
     backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 28,
+    color: '#8BC34A', // Your green color
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   searchContainer: {
     paddingTop: 5,

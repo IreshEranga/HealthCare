@@ -73,6 +73,9 @@ export default function NutritionGoals() {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>  
+
+      <Text style={styles.title}>YOUR GOALS</Text>
+
         <View style={styles.goalContainer}>
           <Text style={styles.label}>Enter Weight (kg):</Text>
           <TextInput
@@ -162,6 +165,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     padding: 20,
+  },
+  title: {
+    fontSize: 28,
+    color: '#8BC34A', // Your green color
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   goalContainer: {
     marginTop: 20,
