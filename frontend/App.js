@@ -30,7 +30,7 @@ import Suggestions from './app/PersonalizeMentalGoals/Suggestions';
 import GoalSummary from './app/PersonalizeMentalGoals/GoalSummary';
 import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
 import GoalDetail from './app/PersonalizeMentalGoals/GoalDetail';
-
+import QuizProgress from './app/PersonalizeMentalGoals/QuizProgress';
 
 
 
@@ -44,11 +44,34 @@ import GoalDetail from './app/PersonalizeMentalGoals/GoalDetail';
 import NutritionHome from './app/Nutritions/nutritionHome';
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+import FitnessPlan from './app/Fitness/FitnessPlan';
+import PersonalizedWorkout from './app/Fitness/PersonalizedWorkout';
+import FitnessHome from './app/Fitness/FitnessHome';
+import FitScreen from './app/Fitness/FitScreen';
+import RestScreen from './app/Fitness/RestScreen';
+
+
+
+
 const Stack = createStackNavigator();
 
 
 export default function App() {
   return (
+  
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -174,8 +197,43 @@ export default function App() {
           component={GoalDetail}
           options={{ title: 'GoalDetail' }}
         />
+        
+        <Stack.Screen  name="FitnessPlan"
+            component={FitnessPlan}
+            options={{ title: 'FitnessPlan' }}
+        />
+        <Stack.Screen  name="PersonalizedWorkout"
+            component={PersonalizedWorkout}
+            options={{ title: 'PersonalizedWorkout' }}
+        /> 
+        <Stack.Screen  name="WorkoutLog"
+            component={WorkoutLog}
+            options={{ title: 'WorkoutLog' }}
+        /> 
+        <Stack.Screen  name="FitnessHome"
+          component={FitnessHome}
+          options={{ title: 'FitnessHome' }}
+        />
+        <Stack.Screen  name="WorkoutScreen"
+          component={WorkoutScreen}
+          options={{ title: 'WorkoutScreen' }}
+        />
+        <Stack.Screen  name="FitScreen"
+          component={FitScreen}
+          options={{ title: 'FitScreen' }}
+        />
+          <Stack.Screen  name="RestScreen"
+          component={RestScreen}
+          options={{ title: 'RestScreen' }}
+        />
+        <Stack.Screen  name="QuizProgress"
+          component={QuizProgress}
+          options={{ title: 'QuizProgress' }}
+        />
+         
       </Stack.Navigator>
       
     </NavigationContainer>
+  
   );
 }

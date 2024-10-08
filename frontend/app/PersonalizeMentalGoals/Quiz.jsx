@@ -1,6 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import NavBar from '../../components/NavBar';
 import { useNavigation } from '@react-navigation/native';
@@ -9,10 +8,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function Quiz() {
-
-
-
   const [userID, setUserID] = useState('');
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [error, setError] = useState('');
+  const [score, setScore] = useState(0);
+
+ 
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -30,91 +34,128 @@ export default function Quiz() {
 
     fetchUserData();
   }, []);
-  // Sample questions
+
+  // Sample questions with answers and their respective scores
   const questions = [
     {
       question: "How are you feeling today?",
-      answers: ["Great", "Good", "Okay", "Bad"]
+      answers: [
+        { text: "Great", score: 5 },
+        { text: "Good", score: 4 },
+        { text: "Okay", score: 3 },
+        { text: "Bad", score: 1 },
+      ]
     },
     {
       question: "How often do you feel stressed?",
-      answers: ["Rarely", "Sometimes", "Often", "Always"]
+      answers: [
+        { text: "Rarely", score: 5 },
+        { text: "Sometimes", score: 3 },
+        { text: "Often", score: 2 },
+        { text: "Always", score: 1 },
+      ]
     },
     {
       question: "How well do you sleep at night?",
-      answers: ["Very well", "Well", "Not great", "Terribly"]
+      answers: [
+        { text: "Very well", score: 5 },
+        { text: "Well", score: 4 },
+        { text: "Not great", score: 2 },
+        { text: "Terribly", score: 1 },
+      ]
     },
     {
       question: "How often do you take time to relax?",
-      answers: ["Daily", "A few times a week", "Rarely", "Never"]
+      answers: [
+        { text: "Daily", score: 5 },
+        { text: "A few times a week", score: 4 },
+        { text: "Rarely", score: 2 },
+        { text: "Never", score: 1 },
+      ]
     },
     {
       question: "How satisfied are you with your work-life balance?",
-      answers: ["Very satisfied", "Satisfied", "Neutral", "Not satisfied"]
+      answers: [
+        { text: "Very satisfied", score: 5 },
+        { text: "Satisfied", score: 4 },
+        { text: "Neutral", score: 3 },
+        { text: "Not satisfied", score: 1 },
+      ]
     },
     {
       question: "How often do you feel anxious or overwhelmed?",
-      answers: ["Rarely", "Sometimes", "Often", "Always"]
+      answers: [
+        { text: "Rarely", score: 5 },
+        { text: "Sometimes", score: 3 },
+        { text: "Often", score: 2 },
+        { text: "Always", score: 1 },
+      ]
     },
     {
       question: "Do you practice mindfulness or meditation?",
-      answers: ["Yes, regularly", "Sometimes", "Rarely", "Never"]
+      answers: [
+        { text: "Yes, regularly", score: 5 },
+        { text: "Sometimes", score: 3 },
+        { text: "Rarely", score: 2 },
+        { text: "Never", score: 1 },
+      ]
     },
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0); // Track current question index
-  const [selectedAnswers, setSelectedAnswers] = useState([]); // Track selected answers for all questions
-  const [error, setError] = useState(''); // Track if an error needs to be shown
-
-  const navigation = useNavigation();
-
-  // Function to handle answer selection
   const handleAnswerSelect = (answer) => {
     const updatedAnswers = [...selectedAnswers];
-    updatedAnswers[currentQuestion] = answer; // Store answer for the current question
+    updatedAnswers[currentQuestion] = answer;
     setSelectedAnswers(updatedAnswers);
-    setError(''); // Clear error if an answer is selected
+    setError('');
   };
 
-  // Function to handle "Next" button
   const handleNext = () => {
     if (!selectedAnswers[currentQuestion]) {
       setError('Please select an answer');
     } else {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
-        setError(''); // Clear error when moving to the next question
+        setError('');
       }
     }
   };
 
-  // Function to handle "Back" button
   const handleBack = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      setError(''); // Clear error
+      setError('');
     }
   };
 
-  // Function to handle quiz submission
+  const calculateTotalScore = () => {
+    let totalScore = 0;
+    selectedAnswers.forEach(answer => {
+      totalScore += answer?.score || 0;
+    });
+    setScore(totalScore);
+    console.log(totalScore);
+    return totalScore;
+  };
+/*
   const handleSubmit = async () => {
     if (!selectedAnswers[currentQuestion]) {
       setError('Please select an answer');
     } else {
+      const currentTotalScore = calculateTotalScore();
+
       try {
-        // Gather the answers according to your schema
         const quizData = {
-          userID: userID,  // Replace with the actual user ID
-          feelings: selectedAnswers[0],  // First question's answer
-          stress: selectedAnswers[1],    // Second question's answer
-          sleep: selectedAnswers[2],     // Third question's answer
-          relax: selectedAnswers[3],     // Fourth question's answer
-          workbalance: selectedAnswers[4], // Fifth question's answer
-          anxious: selectedAnswers[5],    // Sixth question's answer
-          meditation: selectedAnswers[6], // Seventh question's answer
+          userID: userID,
+          feelings: selectedAnswers[0].text,
+          stress: selectedAnswers[1].text,
+          sleep: selectedAnswers[2].text,
+          relax: selectedAnswers[3].text,
+          workbalance: selectedAnswers[4].text,
+          anxious: selectedAnswers[5].text,
+          meditation: selectedAnswers[6].text,
+          totalScore: currentTotalScore,
         };
 
-        // Send POST request to the backend
         const response = await fetch(`${apiUrl}/users/quiz`, {
           method: 'POST',
           headers: {
@@ -125,9 +166,55 @@ export default function Quiz() {
 
         if (response.ok) {
           const result = await response.json();
-          alert("Quiz submitted successfully!");
-
-          // Navigate after submission
+          alert("Quiz submitted successfully! Your score is: " + currentTotalScore);
+          setSelectedAnswers([]);
+          setCurrentQuestion(0);
+          setTimeout(() => {
+            navigation.navigate('PersonalizeMentalGoals/Loading');
+          }, 3000);
+        } else {
+          alert("Failed to submit quiz");
+        }
+      } catch (error) {
+        console.error('Error submitting quiz:', error);
+        alert("An error occurred during quiz submission");
+      }
+      setError('');
+    }
+  };*/
+  const handleSubmit = async () => {
+    if (!selectedAnswers[currentQuestion]) {
+      setError('Please select an answer');
+    } else {
+      const currentTotalScore = calculateTotalScore();
+  
+      // Prepare quiz data with scores
+      const quizData = {
+        userID: userID,
+        feelings: selectedAnswers[0],
+        stress: selectedAnswers[1],
+        sleep: selectedAnswers[2],
+        relax: selectedAnswers[3],
+        workbalance: selectedAnswers[4],
+        anxious: selectedAnswers[5],
+        meditation: selectedAnswers[6],
+        totalScore: currentTotalScore,
+      };
+  
+      try {
+        const response = await fetch(`${apiUrl}/users/quiz`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(quizData),
+        });
+  
+        if (response.ok) {
+          const result = await response.json();
+          alert("Quiz submitted successfully! Your score is: " + currentTotalScore);
+          setSelectedAnswers([]);
+          setCurrentQuestion(0);
           setTimeout(() => {
             navigation.navigate('PersonalizeMentalGoals/Loading');
           }, 3000);
@@ -141,77 +228,44 @@ export default function Quiz() {
       setError('');
     }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient 
-        colors={['#E0BBE4','#aec2b6', '#60768d']}
-        style={styles.background}
-      >
-        <View>
-          <Text style={styles.topic}>Personalize Goals</Text>
-        </View>
-
-        <View>
-          <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
-        </View>
-
-        <View>
-          <Text style={styles.details}>
-            First fill the form to get an idea about your mental condition. Then we will suggest a set of goals for you.
-          </Text>
-        </View>
-
-        <ScrollView contentContainerStyle={styles.quizContainer}>
-          <Text style={styles.question}>{questions[currentQuestion].question}</Text>
-
-          {/* Render answers as buttons */}
-          {questions[currentQuestion].answers.map((answer, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.answerButton,
-                selectedAnswers[currentQuestion] === answer ? styles.selectedAnswer : null
-              ]}
-              onPress={() => handleAnswerSelect(answer)}
-            >
-              <Text style={styles.answerText}>{answer}</Text>
-            </TouchableOpacity>
-          ))}
-
-          {/* Display error message */}
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-          <View style={styles.navigationButtons}>
-            {/* Back button with icon */}
-            {currentQuestion > 0 && (
-              <TouchableOpacity style={styles.navButton} onPress={handleBack}>
-                <Icon name="arrow-left" size={16} color="white" />
-                <Text style={styles.navButtonText}>Back</Text>
-              </TouchableOpacity>
-            )}
-
-            {/* Next/Submit button with icon */}
-            {currentQuestion < questions.length - 1 ? (
+      <LinearGradient colors={['#ffffff', '#D7E1E8']} style={styles.gradient}>
+        <NavBar title="Quiz" />
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>{questions[currentQuestion].question}</Text>
+            {questions[currentQuestion].answers.map((answer, index) => (
               <TouchableOpacity
-                style={styles.navButton}
-                onPress={handleNext}
+                key={index}
+                style={[
+                  styles.answerButton,
+                  selectedAnswers[currentQuestion]?.text === answer.text && styles.selectedAnswer,
+                ]}
+                onPress={() => handleAnswerSelect(answer)}
               >
-                <Text style={styles.navButtonText}>Next</Text>
-                <Icon name="arrow-right" size={16} color="white" />
+                <Text style={styles.answerText}>{answer.text}</Text>
               </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.navButton}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.navButtonText}>Submit</Text>
-                <Icon name="check" size={16} color="white" />
-              </TouchableOpacity>
-            )}
+            ))}
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
           </View>
         </ScrollView>
-        <NavBar  style={styles.navigation}/>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleBack}>
+            <Text style={styles.buttonText}>Back</Text>
+          </TouchableOpacity>
+          {currentQuestion < questions.length - 1 ? (
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+              <Text style={styles.buttonText}>Next</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </LinearGradient>
     </SafeAreaView>
   );
@@ -219,88 +273,53 @@ export default function Quiz() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0e1138',
-    flex: 1, // Ensure the container takes full height
+    flex: 1,
   },
-  background: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    height: '100%',
+  gradient: {
+    flex: 1,
   },
-  usericon: {
-    marginLeft: 340,
-    marginTop: -30,
+  scrollView: {
+    marginBottom: 60,
   },
-  topic: {
-    color: '#2E4057',
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 30,
-    textAlign: 'center',
-  },
-  details: {
-    color: 'black',
-    fontSize: 18,
+  questionContainer: {
     padding: 20,
-    textAlign: 'center',
-    marginTop: 20
   },
-  quizContainer: {
-    padding: 25,
-    alignItems: 'center',
-    backgroundColor: 'white',
-    marginTop: 30,
-    marginLeft: 20,
-    marginRight: 20,
-    borderRadius: 20,
-    shadowColor: '#00e9e9',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 3.84,
-    elevation: 50,
-  },
-  question: {
-    fontSize: 20,
-    color: '#2E4057',
-    marginBottom: 20,
+  questionText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   answerButton: {
-    backgroundColor: '#d3d3d3',
     padding: 15,
-    marginVertical: 10,
-    borderRadius: 10,
-    width: '100%',
-    alignItems: 'center',
+    backgroundColor: '#D7E1E8',
+    borderRadius: 5,
+    marginVertical: 5,
   },
   selectedAnswer: {
-    backgroundColor: '#60768d',
+    backgroundColor: '#6C94C4', // Highlighted color
   },
   answerText: {
-    fontSize: 18,
-    color: '#2E4057',
+    fontSize: 16,
   },
   errorText: {
     color: 'red',
     marginTop: 10,
   },
-  navigationButtons: {
-    marginTop: 20,
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-  navButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2E4057',
+  button: {
+    backgroundColor: '#007BFF',
+    borderRadius: 5,
     padding: 10,
-    borderRadius: 10,
-  },
-  navButtonText: {
-    color: 'white',
+    flex: 1,
     marginHorizontal: 5,
-    fontSize: 16,
-  }
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
 });

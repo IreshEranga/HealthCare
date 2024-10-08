@@ -49,6 +49,7 @@ router.get("/profile/:_id", async (req, res) => {
             mobile: user.mobile,
             profession: user.profession,
             gender: user.gender,
+            type:user.type,
         });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });

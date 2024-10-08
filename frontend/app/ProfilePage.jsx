@@ -14,6 +14,7 @@ const ProfilePage = () => {
     mobile: '',
     profession: '',
     gender: '',
+    type:'',
   });
   
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -112,6 +113,13 @@ const ProfilePage = () => {
           value={userData.gender || ''}
           editable={false}
           placeholder="Gender :"
+        />
+        <Text style={styles.label}>User Type:</Text>
+        <TextInput
+          style={styles.input}
+          value={userData.type || ''}
+          editable={false}
+          placeholder="Type :"
         />
       </View>
       </ScrollView>
