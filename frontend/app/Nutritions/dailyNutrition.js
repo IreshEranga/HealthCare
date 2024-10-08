@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import NutriNavBar from '../../components/NutriNavBar';
 import axios from 'axios';
 
 const DisplayFoodLog = () => {
@@ -138,13 +139,18 @@ const DisplayFoodLog = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
-          <Icon name="arrow-left" size={24} color="#8BC34A" />
-        </TouchableOpacity>
-      </View>
-    <ScrollView style={styles.scrollContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
+              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          </TouchableOpacity>
 
-    <Text style={styles.title}>FOOD DIARY</Text>
+          <Text style={styles.title}>FOOD DIARY</Text>
+
+          <TouchableOpacity>
+            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+          </TouchableOpacity>
+        </View> 
+
+    <ScrollView style={styles.scrollContainer}>
 
       {/* Breakfast Section */}
       <TouchableOpacity onPress={() => toggleSection('breakfast')} style={styles.headingContainer}>
@@ -174,6 +180,7 @@ const DisplayFoodLog = () => {
       </TouchableOpacity>
       {!collapsedSections.snacks && renderFoodItems('Snack')}
     </ScrollView>
+    <NutriNavBar style={styles.navigation} />
     </View>
     
   );
@@ -198,7 +205,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#8BC34A', // Your green color
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
   },
   scrollContainer: {

@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 //import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import NutriNavBar from '../../components/NutriNavBar';
 import axios from 'axios';
 
 
@@ -59,13 +60,17 @@ export default function AddFood() {
   return (
     <View style={styles.container}>
 
-      <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
-            <Icon name="arrow-left" size={24} color="#8BC34A" />
-        </TouchableOpacity>
-      </View>   
+        <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
+              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          </TouchableOpacity>
 
-      <Text style={styles.title}>SEARCH FOOD</Text>
+          <Text style={styles.title}>SEARCH FOOD</Text>
+
+          <TouchableOpacity>
+            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+          </TouchableOpacity>
+        </View>  
       
       <View style={styles.searchContainer}>
       <TextInput
@@ -124,6 +129,7 @@ export default function AddFood() {
       />
 
       </View>
+      <NutriNavBar style={styles.navigation} />
     </View>
   );
 }
@@ -147,7 +153,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#8BC34A', // Your green color
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
   },
   searchContainer: {
