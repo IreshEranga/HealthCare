@@ -28,6 +28,7 @@ export default function QuizProgress() {
   const [quizData, setQuizData] = useState([]);
   const [totalScore, setTotalScore] = useState(0); // State for total score
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState(''); // State for feedback message
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,8 +51,23 @@ export default function QuizProgress() {
     const fetchQuizData = async () => {
       try {
         const response = await axios.get(`${apiUrl}/users/quiz/${userID}`);
-        setQuizData(response.data.results); // Set quiz results
+        const quizzes = response.data.results;
+
+        setQuizData(quizzes); // Set quiz results
         setTotalScore(response.data.totalScore); // Set total score
+
+        // Check for today's quiz and compare scores
+        const today = new Date().toLocaleDateString();
+        const todayQuiz = quizzes.find(quiz => new Date(quiz.createdAt).toLocaleDateString() === today);
+
+        // If today's quiz is not found, show message
+        if (!todayQuiz) {
+          setMessage('You have not completed today\'s quiz. Please do the quiz!');
+        } else if (todayQuiz.totalScore >= (quizzes[quizzes.length - 1]?.totalScore || 0)) {
+          setMessage('Great job! Your score today is greater than or equal to last day\'s score.');
+        } else {
+          setMessage('Keep it up! Try to score higher than yesterday.');
+        }
       } catch (error) {
         console.error('Error fetching quiz data:', error);
       } finally {
@@ -72,6 +88,7 @@ export default function QuizProgress() {
         ) : (
           <>
             <Text style={styles.totalScoreText}>Total Score: {totalScore}</Text>
+            <Text style={styles.messageText}>{message}</Text>
             <FlatList
               data={quizData}
               renderItem={({ item }) => <QuizCard quiz={item} />}
@@ -127,6 +144,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     marginVertical: 15,
+  },
+  messageText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#ffffff',
+    marginVertical: 10,
   },
   loadingText: {
     textAlign: 'center',
