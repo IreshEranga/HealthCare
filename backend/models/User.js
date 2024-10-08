@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema(
     profession: { type: String, required: false }, // Optional profession field
     gender: { type: String }, // Field for gender
     password: { type: String, required: true },
+    type: { 
+      type: String, 
+      default: 'normal', 
+      enum: ['normal', 'premium'], 
+    },
   },
   {
     timestamps: true, // Automatically creates 'createdAt' and 'updatedAt'
