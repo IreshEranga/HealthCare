@@ -1,11 +1,11 @@
 import { SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import Premium from '../../assets/images/prem.png';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Sample goal data
 /*
@@ -231,6 +231,29 @@ const goalData = [
 
 
 export default function Suggestions() {
+  const [userID, setUserID] = useState('');
+  const [userType, setUsertype] = useState('');
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        if (parsedUser && parsedUser.userID && parsedUser.type) {
+          setUserID(parsedUser.userID);
+          setUsertype(parsedUser.type);
+          console.log("user ID : ", userID);
+          console.log("User Type : ", userType);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    
+
+    fetchUserData();
+  }, []);
   const navigation = useNavigation();
 
   // Function to handle goal selection
@@ -289,12 +312,20 @@ export default function Suggestions() {
                     style={styles.premiumImage}
                   />
                 )}
+                {!(goal.isPremium && userType === 'normal') && (
                   <TouchableOpacity
                     style={styles.rightButton}
                     onPress={() => handleGoalSelect(goal, goalType.type)}
                   >
                     <Text style={styles.buttonText}>Start</Text>
                   </TouchableOpacity>
+                )}
+                  {/* <TouchableOpacity
+                    style={styles.rightButton}
+                    onPress={() => handleGoalSelect(goal, goalType.type)}
+                  >
+                    <Text style={styles.buttonText}>Start</Text>
+                  </TouchableOpacity> */}
                 </View>
               ))}
             </View>
