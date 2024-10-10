@@ -1,7 +1,8 @@
 import { Text, StyleSheet, View, Image, TouchableOpacity, Button } from 'react-native';
 import React, { Component } from 'react';
 import medication from '../assets/images/medi.png';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from '@react-navigation/native'; 
+
 
 export default function LogIn() {
   const navigation = useNavigation();
@@ -10,14 +11,10 @@ export default function LogIn() {
     navigation.navigate('LogInPage');
   };
 
-  handleSignUp = () => {
-    // Navigate to the LogIn screen after 5 seconds
-    
-    navigation.navigate('SignUp');
-    
+  handleSignUp = () => {  
+    navigation.navigate('SignUp');    
   };
-
-  
+ 
     return (
       <View >
         <Image source={medication} style={styles.image} />
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 300,
-    marginTop: 80,
+    marginTop: 100,
     marginLeft:40
   },
   name: {
@@ -54,16 +51,16 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   button: {
-    backgroundColor: '#7B9F31', // Button background color
+    backgroundColor: '#7B9F31', 
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    marginTop: 130,
+    marginTop: 100,
     width:150,
     marginLeft:120,
   },
   buttonText: {
-    color: '#fff', // Button text color
+    color: '#fff', 
     fontSize: 20,
     textAlign: 'center',
     fontStyle:'bold',
@@ -71,10 +68,10 @@ const styles = StyleSheet.create({
   },
   signup: {
     textAlign: 'center',
-    marginTop: 30, // Adjusted for better spacing
+    marginTop: 30,
   },
   signupLink: {
-    color: '#007BFF', // Color for the sign-up link
+    color: '#007BFF',
     fontSize: 16,
     fontWeight: 'bold',
   },

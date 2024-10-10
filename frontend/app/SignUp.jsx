@@ -3,15 +3,11 @@ import { View, Text, TextInput, Button, StyleSheet, Image, ScrollView, SafeAreaV
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { useNavigation } from '@react-navigation/native'; 
 import bg2 from '../assets/images/bg2.jpg';
 
 
-
 const SignUp = () => {
-
-  
-
   const data = [
     { key: '1', value: 'Male' },
     { key: '2', value: 'Female' },
@@ -28,8 +24,11 @@ const SignUp = () => {
   const [retypePassword, setRetypePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [signUp, setSignUp] = useState([]);
+  const navigation = useNavigation(); 
 
-  const navigation = useNavigation(); // Use navigation hook
+  handleLogin = () => {
+    navigation.navigate('LogInPage');
+  };
 
   const handleSignUp = async () => {
     const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -74,7 +73,7 @@ const SignUp = () => {
 
         // Navigate to login page after 2 seconds (or immediately)
         setTimeout(() => {
-          navigation.navigate('LogInPage'); // Navigate to Login screen
+          navigation.navigate('LogInPage'); 
         }, 2000);
         
       } catch (error) {
@@ -156,6 +155,13 @@ const SignUp = () => {
 
           <Button title="Sign Up" onPress={handleSignUp} />
         </View>
+
+        <Text style={styles.signup}>
+          Have an Account ?{'  '}
+          <Text style={styles.signupLink} onPress={this.handleLogin}>
+             Login
+          </Text>
+        </Text>
       </ScrollView>
 
       {/* Toast Message */}
@@ -224,6 +230,15 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 12,
     textAlign: 'center',
+  },
+  signup: {
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  signupLink: {
+    color: '#007BFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

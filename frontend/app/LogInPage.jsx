@@ -1,20 +1,23 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import bg2 from '../assets/images/bg2.jpg';
 
 
 export default function LogInPage() {
   const navigation = useNavigation();
-  const [username, setUsername] = useState(''); // Add state for username
-  const [password, setPassword] = useState(''); // Add state for password
+  const [username, setUsername] = useState(''); 
+  const [password, setPassword] = useState(''); 
 
+  handleSignUp = () => {
+    navigation.navigate('SignUp');    
+  };
   
   // React Native LogInPage Component
   const handleLogIn = async () => {
 
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   console.log(apiUrl);
     if (username && password) {
       console.log("Username and password typed");
@@ -45,7 +48,7 @@ export default function LogInPage() {
           navigation.navigate('Home/Welcome');
           console.log(user);
         } else {
-          alert(result.message || 'Login failed'); // Display error message
+          alert(result.message || 'Login failed'); 
         }
       } catch (error) {
         console.log('Login error', error);
@@ -70,7 +73,7 @@ export default function LogInPage() {
         <TextInput
           style={styles.input}
           placeholder='User Name'
-          value={username} // Bind input to username state
+          value={username} 
           onChangeText={setUsername} // Update state on input change
         />
 
@@ -78,7 +81,7 @@ export default function LogInPage() {
           style={styles.input}
           placeholder="Password"
           secureTextEntry
-          value={password} // Bind input to password state
+          value={password} 
           onChangeText={setPassword} // Update state on input change
         />
 
@@ -86,6 +89,14 @@ export default function LogInPage() {
         <TouchableOpacity style={styles.logbtn} onPress={handleLogIn}>
           <Text style={styles.btnText}>Log In</Text>
         </TouchableOpacity>
+
+        <Text style={styles.signup}>
+          New to FitPro?{'  '}
+          <Text style={styles.signupLink} onPress={this.handleSignUp}>
+             Sign Up
+          </Text>
+        </Text>
+
       </View>
     </SafeAreaView>
   );
@@ -97,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     textAlign: 'center',
     marginTop: 20,
-    marginBottom: 80
+    marginBottom: 40
   },
   container: {
     backgroundColor: '#fff',
@@ -111,7 +122,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   formContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slightly transparent white background
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', 
     borderRadius: 30,
     padding: 16,
     marginTop: 190,
@@ -139,5 +150,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  signup: {
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom:10,
+  },
+  signupLink: {
+    color: '#007BFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
