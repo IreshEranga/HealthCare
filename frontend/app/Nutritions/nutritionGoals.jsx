@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Import Picker
 import Icon from 'react-native-vector-icons/FontAwesome';
+import NutriNavBar from '../../components/NutriNavBar';
 import { useNavigation } from '@react-navigation/native';
 
 export default function NutritionGoals() {
@@ -67,12 +68,19 @@ export default function NutritionGoals() {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
-          <Icon name="arrow-left" size={24} color="#8BC34A" />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
+              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>YOUR GOALS</Text>
+
+          <TouchableOpacity>
+            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+          </TouchableOpacity>
+        </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>  
+
         <View style={styles.goalContainer}>
           <Text style={styles.label}>Enter Weight (kg):</Text>
           <TextInput
@@ -153,6 +161,7 @@ export default function NutritionGoals() {
           )}
         </View>
       </ScrollView>
+      <NutriNavBar style={styles.navigation} />
     </View>
   );
 }
@@ -161,7 +170,23 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
-    padding: 20,
+    paddingBottom: 30,
+  },
+  headerContainer: {
+    flexDirection: 'row',          // Align items in a row
+    justifyContent: 'space-between',  // Distribute items with space between them
+    alignItems: 'center',          // Align items vertically centered
+    paddingHorizontal: 20,         // Add some horizontal padding
+    paddingVertical: 10,           // Add some vertical padding
+    backgroundColor: '#FFFDE7',
+    marginBottom: 15,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 28,
+    color: '#8BC34A', // Your green color
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   goalContainer: {
     marginTop: 20,
