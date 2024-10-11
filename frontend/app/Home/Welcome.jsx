@@ -8,6 +8,7 @@ import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
 import NavBar from '../../components/NavBar';
 import Premium from '../../assets/images/premeum.png';
+import Diet from '../../assets/images/diet.png';
 
 export default function Welcome() {
   const [greetingMessage, setGreetingMessage] = useState('');
@@ -108,9 +109,9 @@ export default function Welcome() {
           <Text style={styles.topic1}>Personalize Diet Plan 🍴</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
           <View style={styles.card}>
-            <Image source={vector} style={styles.vector} />
-            <Text style={styles.cardTitle}>Personalize your Goals..</Text>
-            <Text style={styles.cardDetails}>Take the test and discover daily practices that align with your personality.</Text>
+            <Image source={Diet} style={styles.diet} />
+            <Text style={styles.cardTitle}>Personalize Your Daily Meal...</Text>
+            <Text style={styles.cardDetails}>Log your daily food diary and maintain calorie goal to practice a healthy lifestyle</Text>
 
             {/*<TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
               <Text style={styles.buttonText}>
@@ -237,6 +238,11 @@ const styles = StyleSheet.create({
   },
   mental: {
     marginLeft: 110,
+  },
+  diet: {
+    height: 80,
+    width: 80,
+    margin: 'auto',
   },
   button: {
     backgroundColor: '#3A63F4',

@@ -29,7 +29,7 @@ export default function NutritionGoals() {
 
   const getBMICategoryAndColor = () => {
     if (bmi < 18.5) return { category: 'Underweight', color: '#FFD54F' };
-    if (bmi < 25) return { category: 'Normal weight', color: '#8BC34A' };
+    if (bmi < 25) return { category: 'Normal weight', color: '#191952' };
     if (bmi < 30) return { category: 'Overweight', color: '#FF9800' };
     return { category: 'Obesity', color: '#FF7043' };
   };
@@ -70,14 +70,14 @@ export default function NutritionGoals() {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
-              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
+              <Icon name="arrow-left" size={24} color="#191952" />
           </TouchableOpacity>
 
           <Text style={styles.title}>YOUR GOALS</Text>
 
           <TouchableOpacity>
-            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+            <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
           </TouchableOpacity>
         </View>
 
@@ -187,14 +187,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#8BC34A', // Your green color
+    color: '#191952', // Your green color
     fontWeight: 'bold',
     textAlign: 'center',
   },
   goalContainer: {
     marginTop: 20,
     padding: 20,
-    backgroundColor: 'rgba(71, 127, 73, 0.35)',
+    backgroundColor: 'rgba(128, 128, 235, 0.50)',
     borderRadius: 10,
     marginLeft: 30,
     marginRight: 30,
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   buttonText: {
-    color: '#477F49',
+    color: '#191952',
     fontSize: 16,
     textAlign: 'center',
     fontWeight: 'bold',

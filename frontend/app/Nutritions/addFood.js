@@ -37,6 +37,7 @@ export default function AddFood() {
       foodItem, // The food item selected
       mealType: selectedMealType,
     };
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
     console.log('Food Data to be sent:', foodData);
 
@@ -49,7 +50,7 @@ export default function AddFood() {
         return; // Exit the function if meal type is not selected
       }
 
-      const response = await axios.post('http://192.168.65.63:8000/food-log/add', foodData); // Your backend URL
+      const response = await axios.post(`${apiUrl}/food-log/add`, foodData); // Your backend URL
       Alert.alert(response.data.message);
     } catch (error) {
       console.error(error);
@@ -61,14 +62,14 @@ export default function AddFood() {
     <View style={styles.container}>
 
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
-              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
+              <Icon name="arrow-left" size={24} color="#191952" />
           </TouchableOpacity>
 
           <Text style={styles.title}>SEARCH FOOD</Text>
 
           <TouchableOpacity>
-            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+            <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
           </TouchableOpacity>
         </View>  
       
@@ -119,7 +120,7 @@ export default function AddFood() {
 
             <TouchableOpacity onPress={() => addFoodToLog(item)}>
               <Text>
-                <Icon name="plus" size={24} color="#8BC34A" />
+                <Icon name="plus" size={24} color="#191952" />
               </Text>
           </TouchableOpacity>
 
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#8BC34A', // Your green color
+    color: '#191952', // Your green color
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -162,7 +163,7 @@ const styles = StyleSheet.create({
   },
     searchButton: {
       backgroundColor: 'transparent',
-      borderColor: '#8BC34A', 
+      borderColor: '#191952', 
       borderWidth: 5, 
       borderRadius: 20, 
       color: '#3B3B3B', 
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     buttonText: {
       fontSize: 16,
       fontWeight: '600',
-      color: '#8BC34A',
+      color: '#191952',
       textAlign: 'center',
     },
     searchButtonDisabled: {
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     },  
   mealTypeButton: {
     width: 150,
-    backgroundColor: '#8BC34A',
+    backgroundColor: '#191952',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
   },
   closeButtonText: {
     fontSize: 16,
-    color: '#8BC34A',
+    color: '#191952',
     fontWeight: 'bold',
   },
 });
