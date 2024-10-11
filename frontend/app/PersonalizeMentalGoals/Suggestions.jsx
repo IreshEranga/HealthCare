@@ -151,7 +151,7 @@ export default function Suggestions() {
         console.log("Id get");
         try {
           const response = await axios.get(`${apiUrl}/users/users/${_id}/type`);
-          setUserType(response.data.type); // Assuming the response has a 'type' field
+          setUserType(response.data.type); 
         } catch (error) {
           console.error('Error fetching user type:', error);
         }
