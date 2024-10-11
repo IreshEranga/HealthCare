@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 //import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -59,16 +59,20 @@ const RecipeDetails = () => {
                     <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
                 </TouchableOpacity>
             </View>
+
+            <ScrollView style={styles.scrollContainer}>
+
+            <View style={styles.detailsContainer}>
             
             {recipeDetails ? (
                 <>
                     <Text style={styles.title}>{recipeDetails.title}</Text>
                     <Image source={{ uri: recipeDetails.image }} style={styles.image} />
-                    <Text>Ready in: {recipeDetails.readyInMinutes} minutes</Text>
-                    <Text>Servings: {recipeDetails.servings}</Text>
-                    <Text>Ingredients:</Text>
+                    <Text style={styles.timeText}>Ready in: {recipeDetails.readyInMinutes} minutes</Text>
+                    <Text style={styles.timeText}>Servings: {recipeDetails.servings}</Text>
+                    <Text style={styles.timeText}>Ingredients:</Text>
                     {recipeDetails.extendedIngredients.map((ingredient) => (
-                        <Text key={ingredient.id}>{ingredient.original}</Text>
+                        <Text key={ingredient.id} style={styles.timeText}>{ingredient.original}</Text>
                     ))}
                     <Text>Instructions:</Text>
                     <Text>{recipeDetails.instructions}</Text>
@@ -76,6 +80,8 @@ const RecipeDetails = () => {
             ) : (
                 <Text>No recipe details available</Text>
             )}
+            </View>
+            </ScrollView>
         </View>
     );
 };
@@ -84,6 +90,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
         flex: 1,
+      },
+      scrollContainer: {
+        paddingBottom: 50,
       },
       headerContainer: {
         flexDirection: 'row',          // Align items in a row
@@ -117,6 +126,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginVertical: 5,
         color: '#555',
+        marginBottom: 20,
     },
     sectionTitle: {
         fontSize: 20,
@@ -138,6 +148,12 @@ const styles = StyleSheet.create({
         lineHeight: 22,
         textAlign: 'justify',
     },
+    detailsContainer: {
+        padding: 40,
+    },
+    timeText: {
+        marginBottom: 20,
+    }
 });
 
 export default RecipeDetails;
