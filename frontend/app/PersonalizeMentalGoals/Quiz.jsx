@@ -232,9 +232,13 @@ export default function Quiz() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#ffffff', '#D7E1E8']} style={styles.gradient}>
+      <LinearGradient
+        colors={['#E0BBE4', '#aec2b6', '#60768d']}
+        style={styles.background}
+      >
         <NavBar title="Quiz" />
         <ScrollView style={styles.scrollView}>
+          <Text style={styles.quizz}>Quiz</Text>
           <View style={styles.questionContainer}>
             <Text style={styles.questionText}>{questions[currentQuestion].question}</Text>
             {questions[currentQuestion].answers.map((answer, index) => (
@@ -251,8 +255,7 @@ export default function Quiz() {
             ))}
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
           </View>
-        </ScrollView>
-        <View style={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleBack}>
             <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
@@ -266,6 +269,8 @@ export default function Quiz() {
             </TouchableOpacity>
           )}
         </View>
+        </ScrollView>
+        
       </LinearGradient>
     </SafeAreaView>
   );
@@ -278,11 +283,25 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
+  quizz : {
+    textAlign:'center',
+    fontSize:22,
+    marginTop:40,
+    fontWeight:'900'
+  },
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: '100%',
+  },
   scrollView: {
     marginBottom: 60,
   },
   questionContainer: {
     padding: 20,
+    marginTop:80,
   },
   questionText: {
     fontSize: 18,
