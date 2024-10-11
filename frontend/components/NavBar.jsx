@@ -23,12 +23,12 @@ const NavBar = () => {
         <Text style={styles.navText}>{/**Journey */}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
-        <Icon name="person-outline" size={24} color="white" onPress={() => navigation.navigate('ProfilePage')}/>
-        <Text style={styles.navText}>{/**Profile */}</Text>
+        <Icon name="walk" size={24} color="white" onPress={() => navigation.navigate('Fitness/FitnessPlan')}/>
+        <Text style={styles.navText}>{/**Meals */}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.navButton}>
-        <Icon name="settings-outline" size={24} color="white" />
-        <Text style={styles.navText}>{/**Settings */}</Text>
+        <Icon name="fast-food" size={24} color="white" onPress={() => navigation.navigate('Nutritions/nutritionHome')}/>
+        <Text style={styles.navText}>{/**Physical fitness */}</Text>
       </TouchableOpacity>
     </View>
   );

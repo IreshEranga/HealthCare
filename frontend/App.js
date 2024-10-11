@@ -22,7 +22,7 @@ import EditJournalPage from './app/Journey/Journaling/EditJournalPage';
 import MoodTrackingPage from './app/Journey/MoodCheckIn/MoodTrackingPage';
 import AddMoodCheckInPage from './app/Journey/MoodCheckIn/AddMoodCheckInPage';
 import DoneAddMoodCheckInPage from './app/Journey/MoodCheckIn/DoneAddMoodCheckInPage';
-
+import HealthSuggestions from './app/Journey/Suggestions/HealthSuggestions';
 
 import Quiz from './app/PersonalizeMentalGoals/Quiz';
 import Loading from './app/PersonalizeMentalGoals/Loading';
@@ -32,19 +32,12 @@ import GoalActivity from './app/PersonalizeMentalGoals/GoalActivity';
 import GoalDetail from './app/PersonalizeMentalGoals/GoalDetail';
 import QuizProgress from './app/PersonalizeMentalGoals/QuizProgress';
 
-
-
-
-
-
-
-
-
-
 import NutritionHome from './app/Nutritions/nutritionHome';
+
 import AddFood from './app/Nutritions/addFood';
 import DisplayFoodLog from './app/Nutritions/nutritionHome';
 import NutritionGoals from './app/Nutritions/nutritionGoals';
+
 
 
 
@@ -170,6 +163,11 @@ export default function App() {
           name="DoneAddMoodCheckInPage"
           component={DoneAddMoodCheckInPage}
           options={{ title: 'DoneAddMoodCheckInPage' }}
+        />
+        <Stack.Screen
+          name="HealthSuggestions"
+          component={HealthSuggestions}
+          options={{ title: 'HealthSuggestions' }}
         />
         <Stack.Screen  name="Quiz"
           component={Quiz}

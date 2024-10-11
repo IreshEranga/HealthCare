@@ -8,15 +8,18 @@ import moodCheckInImage from '../../assets/images/moodCheckIn.png';
 import journalingImage from '../../assets/images/journaling.png';
 import vector from '../../assets/images/Vector.png';
 import rightArrow from '../../assets/images/rightArrow.png';
+import Premium from '../../assets/images/prem.png';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function JourneyPage() {
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
+  const [userType, setUserType] = useState('');
   const navigation = useNavigation();
 
-  useEffect(() => {
+    // Modify the useEffect to fetch and set userType
+    useEffect(() => {
     const fetchUserData = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('loggedInUser');
@@ -24,6 +27,7 @@ export default function JourneyPage() {
 
         if (parsedUser && parsedUser.first_name) {
           setUserName(parsedUser.first_name);
+          setUserType(parsedUser.type); 
         }
       } catch (error) {
         console.log('Error fetching user data', error);
@@ -69,6 +73,21 @@ export default function JourneyPage() {
               <Image source={journalingImage} style={styles.favoriteImage} />
               <Text style={styles.favoriteText}>Journaling</Text>
             </TouchableOpacity>
+          </View>
+
+          {/* Mental Health Suggestions Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Mental Health Suggestions<Image source={Premium} style={styles.premiumImage}/></Text>
+            <Text style={styles.cardDetails}>Explore tips, quotes, vlogs, and audios to uplift your mental health.</Text>
+            
+            {userType === 'premium' ? (  
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Journey/Suggestions/HealthSuggestions')}>
+                <Text style={styles.buttonText}>Explore Suggestions</Text>
+                <Image source={rightArrow} style={styles.buttonIcon} />
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.premiumText}>Upgrade to Premium to explore suggestions.</Text> 
+            )}
           </View>
 
           {/* Routine Plan */}
@@ -126,8 +145,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000',
-    marginTop: 25,
-    marginBottom:15,
+    marginTop: 20,
+    marginBottom:10,
     alignSelf:'center',
   },
   favoritesContainer: {
@@ -177,7 +196,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-    marginTop:20,
+    marginTop:15,
+    marginBottom:10,
     fontFamily: 'Times New Roman',
   },
   cardDetails: {
@@ -186,6 +206,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
   },
+  premiumImage: {
+    width: 50,
+    height: 50,
+    marginBottom:-20,
+  },
+  premiumText: {
+    color: 'red',
+  },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -193,7 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 20,
-    marginTop: 15,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
