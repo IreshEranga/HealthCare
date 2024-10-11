@@ -5,7 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import NavBar from '../../components/NavBar';
+import NutriNavBar from '../../components/NutriNavBar';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 export default function NutritionHome() {
@@ -87,82 +87,82 @@ export default function NutritionHome() {
     <SafeAreaView style={styles.container}>
       <View>
         <View style={styles.headerContainer}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
-            <Icon name="arrow-left" size={24} color="#8BC34A" />
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
+              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          </TouchableOpacity>
 
-        <Text style={styles.greeting}>
-          {greetingMessage}, {userName ? userName : 'Guest'}
-        </Text>
-        <TouchableOpacity>
-          <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.greeting}>
+            {greetingMessage}, {userName ? userName : 'Guest'}
+          </Text>
+          <TouchableOpacity>
+            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+          </TouchableOpacity>
+        </View>
 
-      <Text style={styles.title}>NUTRITION TRACKER</Text>
+        <Text style={styles.title}>NUTRITION TRACKER</Text>
 
-      
-
-      {/*{loading ? (
+        {/*{loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
+        ) : (
         <Text style={styles.caloriesText}>
           Total Calories for Today: {totalCalories} kcal
         </Text>
-      )}*/}
+          )}*/}
 
-<ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-  {/* Gauge (Circular Dial) for calories */}
-  <View style={styles.gaugeContainer}>
-        <Text style={styles.gaugeTitleText}>
-          Your Goal
-        </Text>
-          <AnimatedCircularProgress
-            size={200}
-            width={15}
-            fill={fillPercentage}
-            tintColor="#FFDD00"
-            backgroundColor="#FFFDE7"
-            rotation={0}  // Start from the top
-          >
-            {() => (
+          {/* Gauge (Circular Dial) for calories */}
+          <View style={styles.gaugeContainer}>
+            <Text style={styles.gaugeTitleText}>
+              Your Goal
+            </Text>
+            <AnimatedCircularProgress
+              size={200}
+              width={15}
+              fill={fillPercentage}
+              tintColor="#FFDD00"
+              backgroundColor="#FFFDE7"
+              rotation={0}  // Start from the top
+            >
+              {() => (
               
-              <Text style={styles.gaugeText}>
-                {totalCalories} / {calorieGoal} kcal
-              </Text>
-            )}
-          </AnimatedCircularProgress>
+                <Text style={styles.gaugeText}>
+                  {totalCalories} / {calorieGoal} kcal
+                </Text>
+              )}
+            </AnimatedCircularProgress>
+          </View>
+
+          <View style={styles.card}>
+            <Icon name="heartbeat" size={30} color="#FFDD00" />
+            <Text style={styles.cardTitle}>Calculate BMI and Calorie Goal</Text>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/nutritionGoals')}>
+              <Text style={styles.buttonText}>Calculate</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.card}>
+            <Icon name="cutlery" size={30} color="#FFDD00" />
+            <Text style={styles.cardTitle}>Log Your Meal</Text>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/addFood')}>
+              <Text style={styles.buttonText}>Log Food</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.card}>
+            <Icon name="book" size={30} color="#FFDD00" />
+            <Text style={styles.cardTitle}>View Your Meal Diary</Text>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/dailyNutrition')}>
+              <Text style={styles.buttonText}>View</Text>
+            </TouchableOpacity>
+          </View>
+
+          </ScrollView>
+
         </View>
 
-      <View style={styles.card}>
-          <Icon name="heartbeat" size={30} color="#FFDD00" />
-        <Text style={styles.cardTitle}>Calculate BMI and Calorie Goal</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/nutritionGoals')}>
-          <Text style={styles.buttonText}>Calculate</Text>
-        </TouchableOpacity>
-      </View>
+        <NutriNavBar style={styles.navigation} />
 
-      <View style={styles.card}>
-        <Icon name="cutlery" size={30} color="#FFDD00" />
-        <Text style={styles.cardTitle}>Log Your Meal</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/addFood')}>
-            <Text style={styles.buttonText}>Log Food</Text>
-          </TouchableOpacity>
-      </View>
-
-      <View style={styles.card}>
-        <Icon name="book" size={30} color="#FFDD00" />
-      <Text style={styles.cardTitle}>View Your Meal Diary</Text>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/Nutritions/dailyNutrition')}>
-          <Text style={styles.buttonText}>View</Text>
-        </TouchableOpacity>
-      </View>
-
-      </ScrollView>
-
-      <NavBar  style={styles.navigation}/>
-      </View>
     </SafeAreaView>
   );
 }
@@ -322,6 +322,6 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   navigation : {
-    marginTop:-150,
+    marginTop:-100,
   },
 });

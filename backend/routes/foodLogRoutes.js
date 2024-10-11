@@ -8,4 +8,6 @@ router.post('/add', addFoodLog); // `addFoodLog` is now the correct callback fun
 
 router.get('/today', getTodayFoodLogs);
 
+//router.delete('/delete/:logId/:foodItemId', deleteFoodItem);
+
 module.exports = router;

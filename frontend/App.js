@@ -34,6 +34,24 @@ import QuizProgress from './app/PersonalizeMentalGoals/QuizProgress';
 
 import NutritionHome from './app/Nutritions/nutritionHome';
 
+import AddFood from './app/Nutritions/addFood';
+import DisplayFoodLog from './app/Nutritions/nutritionHome';
+import NutritionGoals from './app/Nutritions/nutritionGoals';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import FitnessPlan from './app/Fitness/FitnessPlan';
 import PersonalizedWorkout from './app/Fitness/PersonalizedWorkout';
 import FitnessHome from './app/Fitness/FitnessHome';
@@ -211,6 +229,18 @@ export default function App() {
         <Stack.Screen  name="QuizProgress"
           component={QuizProgress}
           options={{ title: 'QuizProgress' }}
+        />
+        <Stack.Screen  name="AddFood"
+          component={AddFood}
+          options={{ title: 'AddFood' }}
+        />
+        <Stack.Screen  name="FoodDiary"
+          component={DisplayFoodLog}
+          options={{ title: 'FoodDiary' }}
+        />
+        <Stack.Screen  name="BMICalculator"
+          component={NutritionGoals}
+          options={{ title: 'BMICalculator' }}
         />
          
       </Stack.Navigator>
