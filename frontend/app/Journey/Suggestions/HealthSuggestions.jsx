@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView, View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import YoutubeIframe from 'react-native-youtube-iframe';
@@ -16,9 +16,11 @@ const vlogs = [
 ];
 
 const audios = [
-  { id: 1, title: 'Hopes and Dreams', url: 'https://on.soundcloud.com/Dnw3SeZmVvVL4k3WA' },
-  { id: 2, title: 'Relaxing Audio for Mental Clarity and Focus', url: 'https://on.soundcloud.com/5QzcComHUWANmnSh8' },
-  { id: 3, title: 'Whispers of the heart', url: 'https://on.soundcloud.com/fsuTmVEXsGZVMaSL8' },
+  { id: 4, title: 'Stress Relief', url: 'https://open.spotify.com/playlist/37i9dQZF1DWXe9gFZP0gtP?si=5ro37Cg4SPycNEZSn4gsIA&pi=a-sDRqY4hPR9-z' },
+  { id: 5, title: 'Healing Rhythms', url: 'https://open.spotify.com/playlist/37i9dQZF1DX3SEFZskKvKB?si=sM3mnqH-Rfe4HAXnuXV-6w' },
+  { id: 6, title: 'Yoga & Meditation', url: 'https://open.spotify.com/playlist/37i9dQZF1DX9uKNf5jGX6m?si=6qwtqd0nS8iJA_fFty3f7w&pi=a-Jh5Hs-hWSoe_' },
+  { id: 7, title: 'Calming Nature Music', url: 'https://open.spotify.com/playlist/37i9dQZF1DX1KVBf2zZZ2X?si=SIbRCJZBSOer7UWPLjGMhg' },
+  { id: 8, title: 'Peaceful Meditation', url: 'https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u?si=YYX94oFNR9-pKGemk2M3ag&pi=a-ctoN5PneTiCk' },
 ];
 
 const quotes = [
@@ -30,8 +32,8 @@ const quotes = [
 ];
 
 const videos = [
-  { id: 1, title: 'TED Talk: There\'s No Shame in Taking Care of Your Mental Health', videoId: '3QIfkeA6HBY' },
-  { id: 2, title: 'Mental Health Documentary: The Mind Explained', videoId: 'o18I23HCQtE' },
+  { id: 1, title: 'Tom Talk: About Mental Health & Overcoming Social Anxiety', videoId: 'GOqEl4ADyVk' },
+  { id: 2, title: 'Mental Health Documentary: Mentality', videoId: 'Te8DnpcA4-A' },
 ];
 
 const HealthSuggestions = () => {
@@ -78,16 +80,6 @@ const HealthSuggestions = () => {
             ))}
           </View>
 
-          {/* Audios Section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionHeader}>Audios</Text>
-            {audios.map((audio) => (
-              <TouchableOpacity key={audio.id} style={styles.audioCard} onPress={() => Linking.openURL(audio.url)}>
-                <Text style={styles.cardTitle}>{audio.title}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
           {/* Quotes Section */}
           <View style={styles.section}>
             <Text style={styles.sectionHeader}>Quotes</Text>
@@ -115,6 +107,17 @@ const HealthSuggestions = () => {
               </View>
             ))}
           </View>
+
+          {/* Audios Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionHeader}>Audios</Text>
+            {audios.map((audio) => (
+              <TouchableOpacity key={audio.id} style={styles.audioCard} onPress={() => Linking.openURL(audio.url)}>
+                <Text style={styles.cardTitle}>{audio.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          
         </ScrollView>
 
         {/* Fixed Navigation Bar */}
