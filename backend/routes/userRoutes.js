@@ -84,5 +84,9 @@ router.get('/users/:_id/goals', async (req, res) => {
 
 
 
+router.put('/users/:id/type/premium', UserController.updateUserTypeToPremium);
+
+router.get('/users/:id/type', UserController.getUserType);
+
 // Export the router to use it in your main app
 module.exports = router;
