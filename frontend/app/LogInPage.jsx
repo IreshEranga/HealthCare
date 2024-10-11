@@ -1,26 +1,24 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import bg2 from '../assets/images/bg2.jpg';
 
-
 export default function LogInPage() {
   const navigation = useNavigation();
   const [username, setUsername] = useState(''); 
   const [password, setPassword] = useState(''); 
+  const [loading, setLoading] = useState(false); // Loading state
 
-  handleSignUp = () => {
+  const handleSignUp = () => {
     navigation.navigate('SignUp');    
   };
   
-  // React Native LogInPage Component
   const handleLogIn = async () => {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  console.log(apiUrl);
     if (username && password) {
-      console.log("Username and password typed");
+      setLoading(true);  // Show loading spinner
       try {
         // Make a POST request to the backend
         const response = await fetch(`${apiUrl}/users/logIn`, {
@@ -35,24 +33,21 @@ export default function LogInPage() {
         });
 
         const result = await response.json(); // Parse the JSON response
-        console.log(result);
 
         if (response.ok) {
-          // Handle successful login (e.g., save the token or user data)
-          const user = result.user; // Or result.token, depending on what the backend sends
-
           // Save user data or token in AsyncStorage
+          const user = result.user; // Or result.token, depending on what the backend sends
           await AsyncStorage.setItem('loggedInUser', JSON.stringify(user));
 
           // Navigate to the home/welcome screen
           navigation.navigate('Home/Welcome');
-          console.log(user);
         } else {
           alert(result.message || 'Login failed'); 
         }
       } catch (error) {
-        console.log('Login error', error);
         alert('An error occurred. Please try again.');
+      } finally {
+        setLoading(false); // Hide loading spinner
       }
     } else {
       alert('Please enter both username and password.');
@@ -62,19 +57,16 @@ export default function LogInPage() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Background Image */}
-      <Image
-        source={bg2}
-        style={styles.backgroundImage}
-      />
+      <Image source={bg2} style={styles.backgroundImage} />
 
       <View style={styles.formContainer}>
         <Text style={styles.logintxt}>LogIn</Text>
 
         <TextInput
           style={styles.input}
-          placeholder='User Name'
+          placeholder="User Name"
           value={username} 
-          onChangeText={setUsername} // Update state on input change
+          onChangeText={setUsername}
         />
 
         <TextInput
@@ -82,21 +74,24 @@ export default function LogInPage() {
           placeholder="Password"
           secureTextEntry
           value={password} 
-          onChangeText={setPassword} // Update state on input change
+          onChangeText={setPassword}
         />
 
-        {/* Submit Button */}
-        <TouchableOpacity style={styles.logbtn} onPress={handleLogIn}>
-          <Text style={styles.btnText}>Log In</Text>
-        </TouchableOpacity>
+        {/* Show loading spinner or Log In button based on loading state */}
+        {loading ? (
+          <ActivityIndicator size="large" color="#007bff" />
+        ) : (
+          <TouchableOpacity style={styles.logbtn} onPress={handleLogIn}>
+            <Text style={styles.btnText}>Log In</Text>
+          </TouchableOpacity>
+        )}
 
         <Text style={styles.signup}>
           New to FitPro?{'  '}
-          <Text style={styles.signupLink} onPress={this.handleSignUp}>
+          <Text style={styles.signupLink} onPress={handleSignUp}>
              Sign Up
           </Text>
         </Text>
-
       </View>
     </SafeAreaView>
   );
