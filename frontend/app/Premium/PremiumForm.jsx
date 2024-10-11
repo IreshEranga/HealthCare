@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ToastAndroid } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 export default function PremiumForm() {
   const navigation = useNavigation();
@@ -9,6 +11,31 @@ export default function PremiumForm() {
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [name, setName] = useState('');
+  const [_id, set_id] = useState('');
+
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        console.log('Parsed User:', parsedUser); // Debugging log
+
+        if (parsedUser && parsedUser._id) {
+          set_id(parsedUser._id);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Replace with the actual user ID (you can get this from your app's state or context)
+  
 
   const validateForm = () => {
     if (!cardNumber || cardNumber.length !== 16) {
@@ -30,10 +57,22 @@ export default function PremiumForm() {
     return true;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      ToastAndroid.show('Payment Successful!', ToastAndroid.SHORT);
-      navigation.navigate('Home/Welcome');  // Navigate to Home page
+      try {
+        // Make the API call to update the user type to premium
+        const response = await axios.put(`${apiUrl}/users/users/${_id}/type/premium`);
+        
+        if (response.status === 200) {
+          ToastAndroid.show('Payment Successful! User upgraded to Premium.', ToastAndroid.SHORT);
+          navigation.navigate('Home/Welcome');  // Navigate to Home page after success
+        } else {
+          ToastAndroid.show('Failed to upgrade to Premium. Try again.', ToastAndroid.SHORT);
+        }
+      } catch (error) {
+        console.error('Error upgrading to premium:', error);
+        ToastAndroid.show('Error processing payment. Please try again.', ToastAndroid.SHORT);
+      }
     }
   };
 
