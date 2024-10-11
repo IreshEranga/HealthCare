@@ -7,7 +7,7 @@ import vector from '../../assets/images/Vector.png';
 import rightArrow from '../../assets/images/rightArrow.png';
 import mental from '../../assets/images/mentalFit2.png';
 import NavBar from '../../components/NavBar';
-
+import Premium from '../../assets/images/premeum.png';
 
 export default function Welcome() {
   const [greetingMessage, setGreetingMessage] = useState('');
@@ -134,10 +134,26 @@ export default function Welcome() {
             </TouchableOpacity>*/}
           </View>
           </TouchableOpacity>
+
+          <Text style={styles.topic1}>Upgrade Membership </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Premium/PremiumSummary')}>
+          <View style={styles.card}>
+            <View style={styles.imgborder}><Image source={Premium} style={styles.premImg} /></View>
+            <Text style={styles.cardTitle}>Personalize your Goals..</Text>
+            <Text style={styles.cardDetailsPrem}>Unlock exclusive fitness plans, expert guidance, and more with our Premium Membership!</Text>
+
+
+            {/*<TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Fitness/FitnessPlan')}>
+              <Text style={styles.buttonText}>
+                Take Task <Image source={rightArrow} />
+              </Text>
+            </TouchableOpacity>*/}
+          </View>
+          </TouchableOpacity>
         </ScrollView>
     
         {/* Add NavBar after ScrollView */}
-        <Text style={styles.test}>Hi</Text>
+        <Text style={styles.test}></Text>
         <NavBar  style={styles.navigation}/>
       </View>
     </SafeAreaView>
@@ -210,6 +226,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
   },
+  cardDetailsPrem:{
+    fontSize: 20,
+    color: '#ad0303',
+    textAlign: 'center',
+    marginTop: 5,
+  },
   vector: {
     marginLeft: 135,
   },
@@ -236,6 +258,20 @@ const styles = StyleSheet.create({
   },
   test : {
     marginTop:-150
+  },
+  premImg : {
+    width:100,
+    height:100,
+    left:5,
+    borderWidth:10,
+    borderColor:'#0000'
+  },
+  imgborder:{
+    backgroundColor:'rgb(137, 106, 1)',
+    padding:20,
+    width:150,
+    left:80,
+    borderRadius:100,
   }
   
 });

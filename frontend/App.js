@@ -9,6 +9,7 @@ import LogInPage from './app/LogInPage';
 import HomePage from './app/Home/HomePage';
 import Welcome from './app/Home/Welcome';
 import ProfilePage from './app/ProfilePage';
+import PremiumForm from './app/Premium/PremiumForm';
 
 import JourneyPage from './app/Journey/JourneyPage';
 import DailyRoutinePage from './app/Journey/DailyRoutine/DailyRoutinePage';
@@ -241,6 +242,10 @@ export default function App() {
         <Stack.Screen  name="BMICalculator"
           component={NutritionGoals}
           options={{ title: 'BMICalculator' }}
+        />
+        <Stack.Screen  name="PremiumForm"
+          component={PremiumForm}
+          options={{ title: 'PremiumForm' }}
         />
          
       </Stack.Navigator>
