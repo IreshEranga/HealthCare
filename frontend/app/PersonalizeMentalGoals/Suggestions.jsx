@@ -186,7 +186,7 @@ export default function Suggestions() {
         </View>
 
         <View>
-          <Icon style={styles.usericon} name="user" size={34} color="#2E4057" />
+          <Icon style={styles.usericon} name="user" size={34} color="#2E4057" onPress={() => navigation.navigate('ProfilePage')} />
         </View>
 
         <View>
