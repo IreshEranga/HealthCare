@@ -1,19 +1,27 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import FitnessCards from "../../components/FitnessCards";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native"; // Import useNavigation
+
+// Import Ionicons for the back arrow icon
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const FitnessHome = () => {
   const route = useRoute();
+  const navigation = useNavigation(); // Initialize navigation
+
   const { completedWorkouts, totalCalories, totalMinutes, totalWorkouts } = route.params || {};
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>WORKOUT</Text>
+          {/* Back Button */}
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Fitness/FitnessPlan')}>
+            <Icon name="arrow-back-outline" size={24} color="white" />
+          </TouchableOpacity>
 
-          
+          <Text style={styles.headerText}>WORKOUT</Text>
 
           <View style={styles.imageContainer}>
             <Image
@@ -40,11 +48,18 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "100%",
   },
+  backButton: {
+    position: "absolute",
+    left: 10,
+    top: 10,
+    zIndex: 1, // Ensure it's on top of other elements
+  },
   headerText: {
     color: "white",
     fontWeight: "bold",
     fontSize: 24, // Increased font size
     marginBottom: 10,
+    textAlign: "center", // Center align the header text
   },
   statsContainer: {
     flexDirection: "row",
@@ -70,7 +85,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
-    
   },
   headerImage: {
     width: "95%", // Increased width for larger display
