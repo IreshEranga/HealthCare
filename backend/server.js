@@ -23,7 +23,7 @@ const QuizRoutes = require('./routes/QuizRoutes');
 
 
 const foodLogRoutes = require('./routes/foodLogRoutes');
-
+const recipeRoutes = require('./routes/recipeRoutes');
 
 
 
@@ -59,7 +59,7 @@ app.use("/users", QuizRoutes);
 
 
 app.use('/food-log', foodLogRoutes);
-
+app.use('/api', recipeRoutes);
 
 
 app.use("/workoutlog", WorkoutRoutes);
