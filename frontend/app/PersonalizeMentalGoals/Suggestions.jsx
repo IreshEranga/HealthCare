@@ -6,120 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import NavBar from '../../components/NavBar';
 import Premium from '../../assets/images/prem.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// Sample goal data
-/*
-const goalData = [
-  {
-    type: 'Stress Management',
-    goals: [
-      {
-        id: 1,
-        name: 'Reduce Work Stress',
-        summary:'This goal is focused on helping you manage and reduce work-related stress by incorporating daily activities that promote relaxation and mindfulness. Over three days, you"ll engage in practices such as deep breathing, taking a break to walk, and reflecting on stressors. Each activity is designed to be simple, practical, and easy to integrate into your workday, helping you build habits that contribute to overall stress reduction and mental well-being.',
-
-        activities: [
-          {
-            day: 1,
-            instruction: 'Start your day with 5 minutes of deep breathing exercises.',
-            image: require('../../assets/images/breathing.png'),
-            status: 'pending',
-          },
-          {
-            day: 2,
-            instruction: 'Take a 10-minute walk during your lunch break.',
-            image: 'https://example.com/day2_image.jpg',
-            status: 'pending',
-          },
-          {
-            day: 3,
-            instruction: 'Write down 3 things that stressed you today and how you handled them.',
-            image: 'https://example.com/day3_image.jpg',
-            status: 'pending',
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: 'Mindful Breathing',
-        activities: [
-          {
-            day: 1,
-            instruction: 'Spend 10 minutes focusing on your breath, counting each inhale and exhale.',
-            image: 'https://example.com/day1_image_breathing.jpg',
-            status: 'pending',
-          },
-          {
-            day: 2,
-            instruction: 'Practice box breathing (inhale for 4 seconds, hold for 4, exhale for 4, and hold for 4).',
-            image: 'https://example.com/day2_image_breathing.jpg',
-            status: 'pending',
-          },
-          {
-            day: 3,
-            instruction: 'Do a body scan meditation, focusing on relaxing each part of your body.',
-            image: 'https://example.com/day3_image_breathing.jpg',
-            status: 'pending',
-          },
-        ],
-      },
-    ],
-  },
-  {
-    type: 'Emotional Regulation',
-    goals: [
-      {
-        id: 3,
-        name: 'Daily Journaling',
-        activities: [
-          {
-            day: 1,
-            instruction: 'Write about your emotions today and what triggered them.',
-            image: 'https://example.com/day1_image_journaling.jpg',
-            status: 'pending',
-          },
-          {
-            day: 2,
-            instruction: 'Reflect on a difficult situation and how you handled it.',
-            image: 'https://example.com/day2_image_journaling.jpg',
-            status: 'pending',
-          },
-          {
-            day: 3,
-            instruction: 'Write down a moment you felt proud of yourself recently.',
-            image: 'https://example.com/day3_image_journaling.jpg',
-            status: 'pending',
-          },
-        ],
-      },
-      {
-        id: 4,
-        name: 'Gratitude Practice',
-        activities: [
-          {
-            day: 1,
-            instruction: 'Write down 3 things you are grateful for today.',
-            image: 'https://example.com/day1_image_gratitude.jpg',
-            status: 'pending',
-          },
-          {
-            day: 2,
-            instruction: 'Send a message to someone you appreciate, expressing gratitude.',
-            image: 'https://example.com/day2_image_gratitude.jpg',
-            status: 'pending',
-          },
-          {
-            day: 3,
-            instruction: 'Reflect on a difficult time and how it made you stronger.',
-            image: 'https://example.com/day3_image_gratitude.jpg',
-            status: 'pending',
-          },
-        ],
-      },
-    ],
-  },
-];
-*/
+import axios from 'axios'; 
 
 const goalData = [
   {
@@ -232,28 +119,49 @@ const goalData = [
 
 export default function Suggestions() {
   const [userID, setUserID] = useState('');
-  const [userType, setUsertype] = useState('');
+  const [_id, set_id] = useState('');
+  const [userType, setUserType] = useState('');
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('loggedInUser');
         const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-        if (parsedUser && parsedUser.userID && parsedUser.type) {
+        if (parsedUser && parsedUser.userID && parsedUser._id) {
           setUserID(parsedUser.userID);
-          setUsertype(parsedUser.type);
+          set_id(parsedUser._id);
           console.log("user ID : ", userID);
-          console.log("User Type : ", userType);
+          console.log("User _id : ", _id);
         }
       } catch (error) {
         console.log('Error fetching user data', error);
       }
     };
 
+   
     
 
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    const fetchUserType = async () => {
+      if (_id) {
+        console.log("Id get");
+        try {
+          const response = await axios.get(`${apiUrl}/users/users/${_id}/type`);
+          setUserType(response.data.type); // Assuming the response has a 'type' field
+        } catch (error) {
+          console.error('Error fetching user type:', error);
+        }
+      }
+    };
+
+    fetchUserType();
+    console.log("User type : ",userType);
+  }, [_id]);
+  
   const navigation = useNavigation();
 
   // Function to handle goal selection
