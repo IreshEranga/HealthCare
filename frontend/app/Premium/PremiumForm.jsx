@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import NavBar from '../../components/NavBar';
 
 export default function PremiumForm() {
   const navigation = useNavigation();
@@ -10,6 +11,7 @@ export default function PremiumForm() {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
+  const [price, setprice] = useState('');
   const [name, setName] = useState('');
   const [_id, set_id] = useState('');
 
@@ -80,42 +82,56 @@ export default function PremiumForm() {
     <View style={styles.container}>
       <Text style={styles.title}>Enter Card Details</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Card Number"
-        keyboardType="numeric"
-        maxLength={16}
-        value={cardNumber}
-        onChangeText={setCardNumber}
-      />
+      <View style={styles.form}>
 
       <TextInput
-        style={styles.input}
-        placeholder="Expiry Date (MM/YY)"
-        keyboardType="numeric"
-        value={expiryDate}
-        onChangeText={setExpiryDate}
-      />
+          style={styles.input}
+          placeholder="Cardholder Name"
+          value={name}
+          onChangeText={setName}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="CVV"
-        keyboardType="numeric"
-        maxLength={3}
-        value={cvv}
-        onChangeText={setCvv}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Card Number"
+          keyboardType="numeric"
+          maxLength={16}
+          value={cardNumber}
+          onChangeText={setCardNumber}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Cardholder Name"
-        value={name}
-        onChangeText={setName}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Expiry Date (MM/YY)"
+          keyboardType="numeric"
+          value={expiryDate}
+          onChangeText={setExpiryDate}
+        />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="CVV"
+          keyboardType="numeric"
+          maxLength={3}
+          value={cvv}
+          onChangeText={setCvv}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="$49.99"
+          value={price}
+          onChangeText={setprice}
+          readOnly
+        />
+
+        
+
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      <NavBar/>
     </View>
   );
 }
@@ -123,7 +139,7 @@ export default function PremiumForm() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
   },
@@ -133,6 +149,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     color: '#00796b',
+    padding: 20,
+    paddingHorizontal:20,
   },
   input: {
     borderWidth: 1,
@@ -142,6 +160,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     backgroundColor: '#ffffff',
+    paddingHorizontal:20,
   },
   button: {
     backgroundColor: '#00796b',
@@ -154,4 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  form:{
+    padding:20,
+  }
 });
