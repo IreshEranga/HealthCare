@@ -253,7 +253,7 @@ export default function App() {
           component={RecipeSearch}
           options={{ title: 'RecipeSearch' }}
         />
-        <Stack.Screen  name="RecipeDetails"
+        <Stack.Screen  name="Nutritions/RecipeDetails"
           component={RecipeDetails}
           options={{ title: 'RecipeDetails' }}
         />

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, Image, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+//import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
-const RecipeDetails = ({ route }) => {
+const RecipeDetails = () => {
+    
+    const route = useRoute();
     console.log(route); // Check if route is undefined or contains params
 
     const { recipeId } = route.params || {}; // Get recipe ID from navigation
+    console.log(recipeId);
     const [recipeDetails, setRecipeDetails] = useState(null);
     const [loading, setLoading] = useState(true);
 
     console.log(recipeId);
+
+    const navigation = useNavigation();
 
     const fetchRecipeDetails = async () => {
         const apiUrl = `https://api.spoonacular.com/recipes/${recipeId}/information`;
@@ -38,6 +47,19 @@ const RecipeDetails = ({ route }) => {
 
     return (
         <View style={styles.container}>
+
+            <View style={styles.headerContainer}>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/RecipeSearch')}>
+                    <Icon name="arrow-left" size={24} color="#191952" />
+                </TouchableOpacity>
+
+                <Text style={styles.title}>SEARCH RECIPE</Text>
+
+                <TouchableOpacity>
+                    <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
+                </TouchableOpacity>
+            </View>
+            
             {recipeDetails ? (
                 <>
                     <Text style={styles.title}>{recipeDetails.title}</Text>
@@ -60,16 +82,61 @@ const RecipeDetails = ({ route }) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-    },
+        backgroundColor: '#fff',
+        flex: 1,
+      },
+      headerContainer: {
+        flexDirection: 'row',          // Align items in a row
+        justifyContent: 'space-between',  // Distribute items with space between them
+        alignItems: 'center',          // Align items vertically centered
+        paddingHorizontal: 20,         // Add some horizontal padding
+        paddingVertical: 10,           // Add some vertical padding
+        backgroundColor: '#FFFDE7',
+        marginBottom: 25,
+        backgroundColor: 'white',
+      },
+      title: {
+        fontSize: 28,
+        color: '#191952', // Your green color
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
     },
     image: {
-        width: 200,
+        width: '100%',
         height: 200,
-        marginVertical: 20,
+        borderRadius: 10,
+        marginBottom: 15,
+    },
+    detailsText: {
+        fontSize: 16,
+        marginVertical: 5,
+        color: '#555',
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 10,
+        color: '#333',
+    },
+    ingredientText: {
+        fontSize: 16,
+        paddingVertical: 5,
+        borderBottomWidth: 1,
+        borderColor: '#eee',
+        width: '100%',
+    },
+    instructionsText: {
+        fontSize: 16,
+        marginTop: 10,
+        lineHeight: 22,
+        textAlign: 'justify',
     },
 });
 
