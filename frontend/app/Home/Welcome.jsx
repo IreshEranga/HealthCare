@@ -91,7 +91,7 @@ export default function Welcome() {
           </TouchableOpacity>
 
           <Text style={styles.topic1}>Mental Fitness Goals 🎯</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('handleMentalGoalSetup')}>
+          <TouchableOpacity onPress={handleMentalGoalSetup}>
           <View style={styles.card}>
             <Image source={mental} style={styles.mental} />
             <Text style={styles.cardTitle}>Personalize your Goals..</Text>
