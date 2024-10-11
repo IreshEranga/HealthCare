@@ -38,6 +38,8 @@ import NutritionHome from './app/Nutritions/nutritionHome';
 import AddFood from './app/Nutritions/addFood';
 import DisplayFoodLog from './app/Nutritions/nutritionHome';
 import NutritionGoals from './app/Nutritions/nutritionGoals';
+import RecipeSearch from './app/Nutritions/RecipeSearch';
+import RecipeDetails from './app/Nutritions/RecipeDetails';
 
 
 
@@ -246,6 +248,14 @@ export default function App() {
         <Stack.Screen  name="PremiumForm"
           component={PremiumForm}
           options={{ title: 'PremiumForm' }}
+          />
+        <Stack.Screen  name="RecipeSearch"
+          component={RecipeSearch}
+          options={{ title: 'RecipeSearch' }}
+        />
+        <Stack.Screen  name="RecipeDetails"
+          component={RecipeDetails}
+          options={{ title: 'RecipeDetails' }}
         />
          
       </Stack.Navigator>
