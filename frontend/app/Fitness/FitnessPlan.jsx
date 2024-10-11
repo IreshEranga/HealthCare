@@ -1,16 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
-import FitNavBar from './FitNavBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import FitNavBar from './FitNavBar';
+import NavBar from '../../components/NavBar';
 
 const FitnessPlan = () => {
   const navigation = useNavigation();
+  const [userName, setUserName] = useState('');
+  const [greetingMessage, setGreetingMessage] = useState('');
+
+  useEffect(() => {
+    // Set greeting message based on current hour
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      setGreetingMessage('Good Morning');
+    } else if (currentHour < 18) {
+      setGreetingMessage('Good Afternoon');
+    } else {
+      setGreetingMessage('Good Evening');
+    }
+
+    // Fetch user data
+    const fetchUserData = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+
+        if (parsedUser && parsedUser.first_name) {
+          setUserName(parsedUser.first_name);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Welcome to Fitness! 💪</Text>
+      {/* Header with Back and Profile buttons */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
+          <MaterialIcons name="arrow-back" size={24} color="#301934" />
+        </TouchableOpacity>
+
+        <Text style={styles.greeting}>
+          {greetingMessage}, {userName ? userName : 'Guest'}
+        </Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
+          <MaterialIcons style={styles.userIcon} name="person" size={34} color="#301934" />
+        </TouchableOpacity>
       </View>
 
       {/* Today Workout Text with Check Button */}
@@ -41,7 +84,6 @@ const FitnessPlan = () => {
         </View>
       </TouchableOpacity>
 
-      {/* Small gap between Home Workout and Personalized Workout */}
       <View style={styles.spacer} />
 
       {/* Personalized Workout Button */}
@@ -63,7 +105,7 @@ const FitnessPlan = () => {
 
       {/* Fixed Navigation Bar */}
       <View style={styles.navbarContainer}>
-        <FitNavBar />
+        <NavBar />
       </View>
     </SafeAreaView>
   );
@@ -72,17 +114,26 @@ const FitnessPlan = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E6E6FA', // Light purple background color
+    backgroundColor: '#E6E6FA',
     paddingHorizontal: 16,
     paddingVertical: 20,
   },
-  header: {
+  headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
-  headerText: {
-    fontSize: 26,
+  backButton: {
+    paddingHorizontal: 8,
+  },
+  greeting: {
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#333',
+  },
+  userIcon: {
+    paddingHorizontal: 8,
   },
   todayWorkoutContainer: {
     flexDirection: 'row',
@@ -101,16 +152,17 @@ const styles = StyleSheet.create({
   },
   checkButton: {
     backgroundColor: '#FF6347',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   checkButtonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   imageButton: {
+    alignItems: 'center',
     borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 20,
@@ -138,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   spacer: {
-    height: 40, // Set this to a value that creates the desired gap
+    height: 40,
   },
   personalizedWorkoutButton: {
     borderRadius: 10,

@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import FitNavBar from "./FitNavBar";
+import NavBar from "../../components/NavBar";
 
 const RestScreen = () => {
   const route = useRoute();
@@ -57,7 +57,7 @@ const RestScreen = () => {
       </ScrollView>
       {/* Fixed Navigation Bar */}
       <View style={styles.navbarContainer}>
-        <FitNavBar />
+        <NavBar />
       </View>
     </SafeAreaView>
   );

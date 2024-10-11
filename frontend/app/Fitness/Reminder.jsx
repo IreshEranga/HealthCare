@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import FitNavBar from './FitNavBar';
+import NavBar from '../../components/NavBar';
 
 const ReminderPage = () => {
   const [todayWorkouts, setTodayWorkouts] = useState([]);
@@ -65,7 +65,7 @@ const ReminderPage = () => {
       </ScrollView>
       {/* Fixed Navigation Bar */}
       <View style={styles.navbarContainer}>
-        <FitNavBar />
+        <NavBar />
       </View>
     </SafeAreaView>
   );

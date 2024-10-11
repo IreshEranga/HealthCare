@@ -1,4 +1,3 @@
-// components/WorkoutLog.jsx
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -15,7 +14,8 @@ import axios from 'axios';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import FitNavBar from './FitNavBar';
+import Icon from 'react-native-vector-icons/Ionicons'; // Import Icon for back arrow
+import NavBar from '../../components/NavBar';
 
 const WorkoutLog = () => {
   const [date, setDate] = useState(new Date());
@@ -24,30 +24,28 @@ const WorkoutLog = () => {
   const [reps, setReps] = useState('');
   const [weight, setWeight] = useState('');
   const [category, setCategory] = useState('Arm');
-  const API_URL = process.env.EXPO_PUBLIC_API_URL; // Replace with your backend IP and port
+  const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
   const navigation = useNavigation();
 
   const addWorkoutLog = async () => {
-    // Validate input fields
     if (!exercise || !reps || !category) {
       Alert.alert('Error', 'Please provide exercise name, reps, and category.');
       return;
     }
 
-    // Prepare data to send to the backend
     const workoutData = {
-      date: date.toISOString().split('T')[0], // Format: YYYY-MM-DD
+      date: date.toISOString().split('T')[0],
       exercise,
       reps: Number(reps),
-      weight: weight ? Number(weight) : 0, // Default to 0 if not provided
+      weight: weight ? Number(weight) : 0,
       category,
     };
 
     try {
       const response = await axios.post(`${API_URL}/workoutlog/add`, workoutData);
       Alert.alert('Success', response.data.message);
-      navigation.navigate('Fitness/PersonalizedWorkout'); // Navigate directly to PersonalizedWorkout after adding
+      navigation.navigate('Fitness/PersonalizedWorkout');
     } catch (error) {
       console.error('Error adding workout log:', error.response ? error.response.data : error.message);
       Alert.alert('Error', `Failed to add workout: ${error.response ? error.response.data.error : error.message}`);
@@ -55,7 +53,7 @@ const WorkoutLog = () => {
   };
 
   const onChangeDate = (event, selectedDate) => {
-    setShowDatePicker(Platform.OS === 'ios'); // Keep the picker open on iOS
+    setShowDatePicker(Platform.OS === 'ios');
     if (selectedDate) {
       setDate(selectedDate);
     }
@@ -63,8 +61,18 @@ const WorkoutLog = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header with Back Arrow and Title */}
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.navigate('Fitness/PersonalizedWorkout')}
+        >
+          <Icon name="arrow-back" size={28} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Create Workout</Text>
+      </View>
+
       <ScrollView>
-        {/* Date Picker */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Date:</Text>
           <TouchableOpacity 
@@ -84,7 +92,6 @@ const WorkoutLog = () => {
           )}
         </View>
 
-        {/* Exercise Input */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Exercise:</Text>
           <TextInput
@@ -95,7 +102,6 @@ const WorkoutLog = () => {
           />
         </View>
 
-        {/* Reps Input */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Reps:</Text>
           <TextInput
@@ -107,7 +113,6 @@ const WorkoutLog = () => {
           />
         </View>
 
-        {/* Weight Input */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Weight (kg):</Text>
           <TextInput
@@ -119,7 +124,6 @@ const WorkoutLog = () => {
           />
         </View>
 
-        {/* Category Picker */}
         <View style={styles.fieldContainer}>
           <Text style={styles.label}>Category:</Text>
           <Picker
@@ -133,7 +137,6 @@ const WorkoutLog = () => {
           </Picker>
         </View>
 
-        {/* Add Workout Button */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.addButton} 
@@ -143,10 +146,8 @@ const WorkoutLog = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      {/* Fixed Navigation Bar */}
-      <View style={styles.navbarContainer}>
-        <FitNavBar />
-      </View>
+
+     
     </SafeAreaView>
   );
 };
@@ -155,7 +156,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f2f2f2', // Light background for better contrast
+    backgroundColor: '#f2f2f2',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 0,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
   },
   fieldContainer: {
     marginVertical: 10,
@@ -168,18 +184,18 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#007FFF', // Color matching the button
-    borderRadius: 25, // Make inputs rounded
+    borderColor: '#007FFF',
+    borderRadius: 25,
     padding: 10,
     fontSize: 16,
-    backgroundColor: '#fff', // White background for inputs
+    backgroundColor: '#fff',
   },
   picker: {
     height: 50,
     width: '100%',
     borderWidth: 1,
     borderColor: '#007FFF',
-    borderRadius: 25, // Make picker rounded
+    borderRadius: 25,
     backgroundColor: '#fff',
   },
   datePicker: {
@@ -191,19 +207,19 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   dateButton: {
-    backgroundColor: '#FF6347', // Tomato color
-    borderRadius: 25, // Make button rounded
+    backgroundColor: '#FF6347',
+    borderRadius: 25,
     paddingVertical: 15,
     alignItems: 'center',
   },
   addButton: {
-    backgroundColor: '#007FFF', // Button color
-    borderRadius: 25, // Make button rounded
+    backgroundColor: '#007FFF',
+    borderRadius: 25,
     paddingVertical: 15,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff', // White text color
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

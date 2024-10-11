@@ -5,6 +5,7 @@ export default [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrEM-6gDUO7g1cdrNhBaqk_0nwxy6ILlIqsQ&usqp=CAU",
       name: "FULL BODY",
       description: "7x4 CHALLENGE",
+      isPremium: true,
       excersises: [
         {
           id: "10",
@@ -51,6 +52,7 @@ export default [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRonpSjpGQ2-JD8-XFFD7LYsVSFCOiASj0wSOq1qxNvxGFHe7W6AU1LRAeJ2fOIzYICMGc&usqp=CAU",
       name: "ABS BEGINNER",
       description: "7x4 CHALLENGE",
+      isPremium: false,
       excersises : [
         {
           id:"90",
@@ -90,6 +92,7 @@ export default [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1NHvoutGn-Vr_uwVbOOtezhENvx9jhV6pfQ&usqp=CAU",
       name: "ARM BEGINNER",
       description: "7x4 CHALLENGE",
+      isPremium: false,
       excersises:[
         {
           id:"70",
@@ -142,6 +145,7 @@ export default [
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqCT0tewpNAZ6R9JUoMDHIHGnpE44U2Fl1Zw&usqp=CAU",
       name: "CHEST BEGINNER",
       description: "7x4 CHALLENGE",
+      isPremium: false,
       excersises: [
         {
           id:"20",
