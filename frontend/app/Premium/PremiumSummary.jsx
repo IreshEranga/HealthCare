@@ -16,6 +16,7 @@ export default function PremiumSummary() {
       <Text style={styles.summary}>
         Elevate your fitness journey with our Premium Membership. Enjoy exclusive access to personalized workout plans, expert advice, and a supportive community. With premium, you'll unlock all the tools you need to stay motivated and achieve your goals faster!
       </Text>
+      <Text style={styles.price}>$49.99 / month</Text>
       <Text style={styles.featuresTitle}>Features:</Text>
       <Text style={styles.features}>
         • Tailored fitness routines{'\n'}
@@ -30,7 +31,6 @@ export default function PremiumSummary() {
       </TouchableOpacity>
       <NavBar style={styles.nav}/>
     </View>
-    
   );
 }
 
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0f7fa',  // A soft blue background for premium experience
     justifyContent: 'center',
     alignItems: 'center',
+    
   },
   title: {
     fontSize: 24,
@@ -51,8 +52,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#004d40',  // Darker teal for text
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    paddingHorizontal: 20,
     padding: 20,
+  },
+  price: {
+    fontSize: 32,  // Large font for price
+    fontWeight: 'bold',
+    color: '#d32f2f',  // Red color for the price to make it stand out
+    marginBottom: 20,
   },
   featuresTitle: {
     fontSize: 18,
@@ -77,5 +85,5 @@ const styles = StyleSheet.create({
     color: '#ffffff',  // White text for the button
     fontSize: 18,
     fontWeight: 'bold',
-  }
+  },
 });
