@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     marginLeft:200
   },
   space : {
-    paddingTop:100,
+    paddingTop:150,
   },
   completeGif:{
     width: 40,
