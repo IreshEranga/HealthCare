@@ -36,30 +36,30 @@
 //     );
 // };
 
-// const styles = StyleSheet.create({
-//     navBar: {
-//         flexDirection: 'row',
-//         justifyContent: 'space-around',
-//         backgroundColor: 'rgba(71, 127, 73, 0.8)',
-//         paddingVertical: 5,
-//         paddingBottom: 15,
-//         position: 'absolute',
-//         bottom: 0,
-//         width: '100%',
-//         elevation: 5,
-//         borderTopWidth: 2,
-//         borderTopColor: '#477F49',
-//     },
-//     navButton: {
-//       alignItems: 'center',
-//       marginTop:2,
-//       top:10,
-//     },
-//     navText: {
-//       color: 'white',
-//       fontSize: 12,
-//       marginTop: 5,
-//     },
-//   });
-
+/*const styles = StyleSheet.create({
+    navBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: 'rgba(71, 127, 73, 0.8)',
+        paddingVertical: 5,
+        paddingBottom: 15,
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        elevation: 5,
+        borderTopWidth: 2,
+        borderTopColor: '#191952',
+    },
+    navButton: {
+      alignItems: 'center',
+      marginTop:2,
+      top:10,
+    },
+    navText: {
+      color: 'white',
+      fontSize: 12,
+      marginTop: 5,
+    },
+  });
+*/
 // export default NutriNavBar;

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, FlatList, Text, ActivityIndicator, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const RecipeSearch = () => {
     const [query, setQuery] = useState('');
@@ -42,13 +43,25 @@ const RecipeSearch = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.headerContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
+              <Icon name="arrow-left" size={24} color="#191952" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>SEARCH RECIPE</Text>
+
+          <TouchableOpacity>
+            <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
+          </TouchableOpacity>
+        </View>
             <TextInput
                 placeholder="Search for recipes"
                 value={query}
                 onChangeText={setQuery}
-                style={{ borderColor: 'gray', borderWidth: 1, padding: 10 }}
+                style={styles.searchContainer}
             />
-            <Button title="Search" onPress={fetchRecipes} />
+            <Button title="Search" onPress={fetchRecipes} style={styles.searchButton}/>
+            
             {loading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : recipes.length === 0 ? (
@@ -78,12 +91,44 @@ const RecipeSearch = () => {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: '#fff',
         flex: 1,
-        padding: 10,
-    },
+      },
+      headerContainer: {
+        flexDirection: 'row',          // Align items in a row
+        justifyContent: 'space-between',  // Distribute items with space between them
+        alignItems: 'center',          // Align items vertically centered
+        paddingHorizontal: 20,         // Add some horizontal padding
+        paddingVertical: 10,           // Add some vertical padding
+        backgroundColor: '#FFFDE7',
+        marginBottom: 25,
+        backgroundColor: 'white',
+      },
+      title: {
+        fontSize: 28,
+        color: '#191952', // Your green color
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      searchContainer: {
+        paddingTop: 5,
+        padding: 30,
+      },
+        searchButton: {
+          backgroundColor: 'transparent',
+          borderColor: '#191952', 
+          borderWidth: 5, 
+          borderRadius: 20, 
+          color: '#3B3B3B', 
+          width: '35%',
+          minHeight: 40,
+          padding: 7,
+          cursor: 'pointer', 
+        },
     recipeItem: {
         padding: 10,
-        marginVertical: 10,
+        margin: 'auto',
+        marginBottom: 20,
         borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 5,
