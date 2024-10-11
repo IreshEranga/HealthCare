@@ -86,7 +86,7 @@ export default function JourneyPage() {
                 <Image source={rightArrow} style={styles.buttonIcon} />
               </TouchableOpacity>
             ) : (
-              <Text style={styles.premiumText}>Upgrade to Premium to explore suggestions.</Text> 
+              <Text style={styles.premiumText} onPress={() => navigation.navigate('Premium/PremiumSummary')}>Upgrade to Premium to explore suggestions.</Text> 
             )}
           </View>
 
