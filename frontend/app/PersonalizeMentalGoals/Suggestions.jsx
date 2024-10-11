@@ -424,8 +424,8 @@ const styles = StyleSheet.create({
     marginLeft: 10, // Add some space between the text and the icon
   },
   premiumImage: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
+    width: 30,
+    height: 30,
+    //marginBottom: 10,
   },
 });

@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import NutriNavBar from '../../components/NutriNavBar';
 import axios from 'axios';
+import NavBar from '../../components/NavBar';
+
 
 const DisplayFoodLog = () => {
   const [foodLogs, setFoodLogs] = useState([]);
@@ -38,7 +40,7 @@ const DisplayFoodLog = () => {
   useEffect(() => {
     const fetchFoodLogs = async () => {
       try {
-        const response = await axios.get('http://192.168.8.147:8000/food-log/today'); // Ensure the correct port is used
+        const response = await axios.get('http://192.168.65.63:8000/food-log/today'); // Ensure the correct port is used
         console.log('Fetched Food Logs:', JSON.stringify(response.data, null, 2));
         setFoodLogs(response.data);
         setLoading(false);
@@ -180,7 +182,8 @@ const DisplayFoodLog = () => {
       </TouchableOpacity>
       {!collapsedSections.snacks && renderFoodItems('Snack')}
     </ScrollView>
-    <NutriNavBar style={styles.navigation} />
+    {/*<NutriNavBar style={styles.navigation} />*/}
+    <NavBar/>
     </View>
     
   );

@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker'; // Import Picker
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NutriNavBar from '../../components/NutriNavBar';
 import { useNavigation } from '@react-navigation/native';
+import NavBar from '../../components/NavBar';
+
 
 export default function NutritionGoals() {
   const [weight, setWeight] = useState('');
@@ -161,7 +163,8 @@ export default function NutritionGoals() {
           )}
         </View>
       </ScrollView>
-      <NutriNavBar style={styles.navigation} />
+      {/*<NutriNavBar style={styles.navigation} />*/}
+      <NavBar />
     </View>
   );
 }
@@ -256,5 +259,5 @@ const styles = StyleSheet.create({
     marginTop: 13,
     width: 180,
     alignSelf: 'center',
-  },
+  }
 });

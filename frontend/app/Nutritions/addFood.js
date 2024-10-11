@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import NutriNavBar from '../../components/NutriNavBar';
 import axios from 'axios';
-
+import NavBar from '../../components/NavBar';
 
 export default function AddFood() {
   const [query, setQuery] = useState('');
@@ -49,7 +49,7 @@ export default function AddFood() {
         return; // Exit the function if meal type is not selected
       }
 
-      const response = await axios.post('http://192.168.8.147:8000/food-log/add', foodData); // Your backend URL
+      const response = await axios.post('http://192.168.65.63:8000/food-log/add', foodData); // Your backend URL
       Alert.alert(response.data.message);
     } catch (error) {
       console.error(error);
@@ -129,7 +129,8 @@ export default function AddFood() {
       />
 
       </View>
-      <NutriNavBar style={styles.navigation} />
+      {/*<NutriNavBar style={styles.navigation} />*/}
+      <NavBar/>
     </View>
   );
 }

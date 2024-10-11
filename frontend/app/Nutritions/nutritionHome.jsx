@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NutriNavBar from '../../components/NutriNavBar';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import NavBar from '../../components/NavBar';
 
 export default function NutritionHome() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function NutritionHome() {
   const fetchFoodLogs = async () => {
     try {
       //const response = await axios.get('http://192.168.8.147:8000/api/foodlogs/today');
-      const response = await axios.get('http://192.168.8.147:8000/food-log/today');
+      const response = await axios.get('http://192.168.65.63:8000/food-log/today');
       const foodLogs = response.data;
   
       let totalCaloriesForDay = 0;
@@ -161,7 +162,8 @@ export default function NutritionHome() {
 
         </View>
 
-        <NutriNavBar style={styles.navigation} />
+        {/*<NutriNavBar style={styles.navigation} />*/}
+        <NavBar/>
 
     </SafeAreaView>
   );
