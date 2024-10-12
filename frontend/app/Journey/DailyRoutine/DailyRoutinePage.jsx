@@ -268,7 +268,7 @@ const DailyRoutinePage = () => {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#f9c8e6' 
+    backgroundColor: 'white' 
   },
   header: { 
     flexDirection: 'row', 
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     padding: 20, 
     marginTop: -50, 
-    backgroundColor: '#f49fb6'
+    backgroundColor: '#ffc1cb'
   },
   headerText: { 
     fontSize: 24, 
@@ -294,9 +294,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', 
     borderRadius: 10, 
     height: 38, 
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   todayDateButton: { 
-    backgroundColor: '#c0392b' 
+    backgroundColor: '#db8694' 
   },
   selectedDateButton: { 
     backgroundColor: '#2980b9' 
@@ -350,9 +354,13 @@ const styles = StyleSheet.create({
   },
   allContainer: { 
     padding: 20, 
-    backgroundColor: '#8e44ad', 
+    backgroundColor: '#e3e3e3', 
     marginHorizontal: 15, 
-    borderRadius: 10, 
+    borderRadius: 10,   
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     marginTop: 0
   },
   iconsContainer: { 
@@ -366,7 +374,7 @@ const styles = StyleSheet.create({
   routineDate: { 
     fontSize: 18, 
     fontWeight: 'bold', 
-    color: '#fff', 
+    color: 'black', 
     textAlign: 'center' 
   },
   section: { 
@@ -379,7 +387,7 @@ const styles = StyleSheet.create({
     fontSize: 18, 
     fontWeight: 'bold', 
     marginBottom: 10, 
-    color: '#8e44ad' 
+    color: '#db8694' 
   },
   sectionContent: { 
     fontSize: 16, 
@@ -420,7 +428,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 20,
-    backgroundColor: '#c0392b',
+    backgroundColor: '#db8694',
     borderRadius: 50,
     width: 55,
     height: 55,

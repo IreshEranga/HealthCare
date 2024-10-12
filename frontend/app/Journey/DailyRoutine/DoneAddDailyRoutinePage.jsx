@@ -46,13 +46,13 @@ const DoneAddDailyRoutinePage = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#f9c8e6' },
+  safeArea: { flex: 1, backgroundColor: 'white' },
   container1: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f9c8e6',
+    backgroundColor: 'white',
   },
   successText: {
     fontSize: 24,

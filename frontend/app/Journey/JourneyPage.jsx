@@ -9,7 +9,8 @@ import journalingImage from '../../assets/images/journaling.png';
 import vector from '../../assets/images/Vector.png';
 import rightArrow from '../../assets/images/rightArrow.png';
 import Premium from '../../assets/images/prem.png';
-import { LinearGradient } from 'expo-linear-gradient';
+//import { LinearGradient } from 'expo-linear-gradient';
+
 
 export default function JourneyPage() {
   const [greetingMessage, setGreetingMessage] = useState('');
@@ -62,10 +63,6 @@ export default function JourneyPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient 
-        colors={['#D16297','#C384A8', '#BCBCBC']}
-        style={styles.background}
-      >
         <View style={styles.header}>
           <Text style={styles.greeting}>Hi 👋 {greetingMessage}, {userName || 'Guest'}</Text>
           <Icon name="user" size={30} color="black" style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage')} />
@@ -86,7 +83,7 @@ export default function JourneyPage() {
           </View>
 
           {/* Mental Health Suggestions Card */}
-          <View style={styles.card}>
+          <View style={styles.card1}>
             <Text style={styles.cardTitle}>Mental Health Suggestions
               <Image source={Premium} style={styles.premiumImage} />
             </Text>
@@ -106,7 +103,7 @@ export default function JourneyPage() {
 
           {/* Routine Plan */}
           <Text style={styles.sectionTitle}>Daily Reflections</Text>
-          <View style={styles.card}>
+          <View style={styles.card1}>
             <Image source={vector} style={styles.vector} />
             <Text style={styles.cardTitle}>Personalize Your Routines</Text>
             <Text style={styles.cardDetails}>Look back on your journey and reflect on your mental health progress..</Text>
@@ -121,7 +118,6 @@ export default function JourneyPage() {
         <View style={styles.navbarContainer}>
           <NavBar />
         </View>
-      </LinearGradient>
     </SafeAreaView>
   );
 }
@@ -132,13 +128,14 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    color:'white',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#BCBCBC',
+    backgroundColor: '#ffc1cb',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
@@ -170,12 +167,12 @@ const styles = StyleSheet.create({
   },
   favoriteCard: {
     width: '48%',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 3,
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Times New Roman',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#ffdae0',
     borderRadius: 10,
     padding: 20,
     marginVertical: 20,
@@ -204,12 +201,24 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 2,
   },
+  card1: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 2,
+    borderColor:''
+  },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-    marginTop: 15,
     marginBottom: 10,
     fontFamily: 'Times New Roman',
   },
@@ -230,14 +239,14 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3A63F4',
+    backgroundColor: '#db8694',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 20,
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: 'black',
     fontSize: 15,
     fontWeight: 'bold',
     marginRight: 10,
@@ -248,8 +257,8 @@ const styles = StyleSheet.create({
     height: 15,
   },
   vector: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     marginBottom: 20,
   },
   navbarContainer: {

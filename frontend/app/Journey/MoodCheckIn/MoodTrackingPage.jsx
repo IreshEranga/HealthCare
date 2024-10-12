@@ -141,14 +141,14 @@ const MoodTrackingPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9c8e6',
+    backgroundColor: 'white',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#f49fb6',
+    backgroundColor: '#ffc1cb',
     marginTop:-50,
   },
   headerText: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 80,
     right: 20,
-    backgroundColor: '#c0392b',
+    backgroundColor: '#db8694',
     borderRadius: 50,
     width: 60,
     height: 60,

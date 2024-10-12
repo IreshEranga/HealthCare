@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import NavBar from '../../../components/NavBar';
 //import moment from 'moment';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -90,6 +91,11 @@ const AddJournalPage = () => {
           onChangeText={(text) => setNote(text)}
         />
       </View>
+
+      {/* Fixed Navigation Bar */}
+      <View style={styles.navbarContainer}>
+          <NavBar />
+      </View>
     </SafeAreaView>
   );
 };
@@ -97,14 +103,15 @@ const AddJournalPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f49fb6',
+    backgroundColor: '#ffdae0',
     padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop:-30,
   },
   title: {
     fontSize: 28,
@@ -125,6 +132,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     marginTop:20,
+    marginBottom:30,
   },
   noteInput: {
     flex: 1,
@@ -133,7 +141,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   saveButton: {
-    backgroundColor: '#8e44ad',
+    backgroundColor: '#db8694',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
@@ -145,6 +153,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  navbarContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 
