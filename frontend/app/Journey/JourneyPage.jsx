@@ -11,15 +11,15 @@ import rightArrow from '../../assets/images/rightArrow.png';
 import Premium from '../../assets/images/prem.png';
 import { LinearGradient } from 'expo-linear-gradient';
 
-
 export default function JourneyPage() {
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
   const [userType, setUserType] = useState('');
   const navigation = useNavigation();
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-    // Modify the useEffect to fetch and set userType
-    useEffect(() => {
+  // Fetch user data and type from the backend
+  useEffect(() => {
     const fetchUserData = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('loggedInUser');
@@ -27,7 +27,16 @@ export default function JourneyPage() {
 
         if (parsedUser && parsedUser.first_name) {
           setUserName(parsedUser.first_name);
-          setUserType(parsedUser.type); 
+        }
+
+        if (parsedUser && parsedUser._id) {
+          // Fetch the user type from the backend
+          const response = await fetch(`${apiUrl}/users/users/${parsedUser._id}/type`);
+          const data = await response.json();
+          
+          if (data.type) {
+            setUserType(data.type);
+          }
         }
       } catch (error) {
         console.log('Error fetching user data', error);
@@ -36,6 +45,7 @@ export default function JourneyPage() {
 
     fetchUserData();
 
+    // Set greeting message based on time of day
     const currentHour = new Date().getHours();
     let message = '';
 
@@ -58,7 +68,7 @@ export default function JourneyPage() {
       >
         <View style={styles.header}>
           <Text style={styles.greeting}>Hi 👋 {greetingMessage}, {userName || 'Guest'}</Text>
-          <Icon name="user" size={30} color="black" style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage')}/>
+          <Icon name="user" size={30} color="black" style={styles.profileIcon} onPress={() => navigation.navigate('ProfilePage')} />
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -77,16 +87,20 @@ export default function JourneyPage() {
 
           {/* Mental Health Suggestions Card */}
           <View style={styles.card}>
-            <Text style={styles.cardTitle}>Mental Health Suggestions<Image source={Premium} style={styles.premiumImage}/></Text>
+            <Text style={styles.cardTitle}>Mental Health Suggestions
+              <Image source={Premium} style={styles.premiumImage} />
+            </Text>
             <Text style={styles.cardDetails}>Explore tips, quotes, vlogs, and audios to uplift your mental health.</Text>
-            
-            {userType === 'premium' ? (  
+
+            {userType === 'premium' ? (
               <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Journey/Suggestions/HealthSuggestions')}>
                 <Text style={styles.buttonText}>Explore Suggestions</Text>
                 <Image source={rightArrow} style={styles.buttonIcon} />
               </TouchableOpacity>
             ) : (
-              <Text style={styles.premiumText} onPress={() => navigation.navigate('Premium/PremiumSummary')}>Upgrade to Premium to explore suggestions.</Text> 
+              <Text style={styles.premiumText} onPress={() => navigation.navigate('Premium/PremiumSummary')}>
+                Upgrade to Premium to explore suggestions.
+              </Text>
             )}
           </View>
 
@@ -111,7 +125,6 @@ export default function JourneyPage() {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -146,14 +159,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginTop: 20,
-    marginBottom:10,
-    alignSelf:'center',
+    marginBottom: 10,
+    alignSelf: 'center',
   },
   favoritesContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
-    height:200,
+    height: 200,
   },
   favoriteCard: {
     width: '48%',
@@ -176,7 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
-    padding:10,
+    padding: 10,
     fontFamily: 'Times New Roman',
   },
   card: {
@@ -196,8 +209,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     textAlign: 'center',
-    marginTop:15,
-    marginBottom:10,
+    marginTop: 15,
+    marginBottom: 10,
     fontFamily: 'Times New Roman',
   },
   cardDetails: {
@@ -209,7 +222,7 @@ const styles = StyleSheet.create({
   premiumImage: {
     width: 50,
     height: 50,
-    marginBottom:-20,
+    marginBottom: -20,
   },
   premiumText: {
     color: 'red',
@@ -233,6 +246,11 @@ const styles = StyleSheet.create({
   buttonIcon: {
     width: 8,
     height: 15,
+  },
+  vector: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
   navbarContainer: {
     position: 'absolute',
