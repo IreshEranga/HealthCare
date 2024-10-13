@@ -135,9 +135,9 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9c8e6',
+    backgroundColor: 'white',
   },
-  container: { flex: 1, backgroundColor: '#f9c8e6' },
+  container: { flex: 1, backgroundColor: 'white' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   datePickerButton: {
     padding: 15,
-    backgroundColor: '#6a1b9a',
+    backgroundColor: '#db8694',
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 15,
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#b39ddb',
-    backgroundColor: '#ce93d8',
+    borderColor: '#db8694',
+    backgroundColor: '#ffc1cb',
     padding: 15,
     borderRadius: 10,
     marginRight: 10,
@@ -203,10 +203,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#4a148c',
+    color: 'black',
   },
   saveButton: {
-    backgroundColor: '#8e44ad',
+    backgroundColor: '#db8694',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,

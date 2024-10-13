@@ -143,28 +143,28 @@ const styles = StyleSheet.create({
   container1: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9c8e6',
+    backgroundColor: 'white',
   },
-  container: { flex: 1, backgroundColor: '#f9c8e6' },
+  container: { flex: 1, backgroundColor: 'white' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft:15,
+    marginRight:15,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    flex: 1,
-    marginLeft: -20,
+    flex: 1, 
+    marginLeft:-20,
   },
   datePickerButton: {
     padding: 15,
-    backgroundColor: '#6a1b9a',
+    backgroundColor: '#db8694',
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 15,
@@ -175,8 +175,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   scrollContainer: {
-    paddingBottom: 300,
-    marginTop: 10,
+    //paddingHorizontal: 30,
+    paddingBottom: 300,  // Adjust for navbar
+    marginTop:10,
   },
   planContainer: {
     flexDirection: 'row',
@@ -186,27 +187,40 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#b39ddb',
-    backgroundColor: '#ce93d8',
+    borderColor: '#db8694',
+    backgroundColor: '#ffc1cb',
     padding: 15,
     borderRadius: 10,
     marginRight: 10,
-    height: 100,
+    height:100,
   },
+  /*addButton: {
+    backgroundColor: '#4a148c',
+    borderRadius: 50,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },*/
   label: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#4a148c',
+    color: 'black',
   },
   saveButton: {
-    backgroundColor: '#8e44ad',
+    backgroundColor: '#db8694',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
     position: 'absolute',
     right: 0,
-    marginTop: 20,
+    marginTop:20,
   },
   saveButtonText: {
     color: 'white',
@@ -219,6 +233,23 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+/*
+  container1: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f9c8e6',
+  },
+  container: { flex: 1, backgroundColor: '#f9c8e6' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15 },
+  title: { fontSize: 24, fontWeight: 'bold', color: 'black' },
+  saveButton: { padding: 10, backgroundColor: '#e67e22', borderRadius: 5 },
+  saveButtonText: { fontSize: 18, color: 'white' },
+  scrollContainer: { paddingBottom: 20 },
+  datePickerButton: { backgroundColor: '#fff', borderRadius: 10, padding: 10, marginVertical: 15 },
+  datePickerText: { fontSize: 18, textAlign: 'center', color: '#333' },
+  label: { fontSize: 18, marginVertical: 10 },
+  planContainer: { backgroundColor: '#fff', padding: 10, borderRadius: 10 },
+  input: { fontSize: 16 },*/
 });
 
 export default EditDailyRoutinePage;

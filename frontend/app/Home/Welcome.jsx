@@ -163,7 +163,7 @@ export default function Welcome() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0e1138',
+    backgroundColor: 'white',
     flex: 1,
   },
   scrollContainer: {
@@ -174,14 +174,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 30,
     marginLeft: 25,
-    color: 'white',
+    color: '#0e1138',
   },
   usericon: {
     marginLeft: 320,
     marginTop: -30,
+    color:'#0e1138',
   },
   topic1: {
-    color: 'white',
+    color: '#0e1138',
     fontWeight: 'bold',
     fontSize: 20,
     marginTop: 15,
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
     marginBottom:0,
   },
   date: {
-    color: 'white',
+    color: '#0e1138',
     fontSize: 18,
     marginTop: -5,
     marginLeft:25,
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     margin: 20,
-    shadowColor: '#000',
+    shadowColor: '##0e1138',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -261,9 +262,9 @@ const styles = StyleSheet.create({
   },
   premImg : {
     width:100,
-    height:100,
+    height:110,
     left:5,
-    borderWidth:10,
+    borderWidth:50,
     borderColor:'#0000'
   },
   imgborder:{
@@ -272,6 +273,5 @@ const styles = StyleSheet.create({
     width:150,
     left:80,
     borderRadius:100,
-  }
-  
+  }  
 });

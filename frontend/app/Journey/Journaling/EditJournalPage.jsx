@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import moment from 'moment';
+import NavBar from '../../../components/NavBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -70,6 +71,11 @@ const EditJournalPage = () => {
           onChangeText={(text) => setNote(text)}
         />
       </View>
+
+      {/* Fixed Navigation Bar */}
+      <View style={styles.navbarContainer}>
+          <NavBar />
+      </View>
     </SafeAreaView>
   );
 };
@@ -77,21 +83,23 @@ const EditJournalPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f49fb6',
+    backgroundColor: '#ffdae0',
     padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop:-30,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    flex: 1,
+    flex: 1, 
+    marginLeft:-20,
   },
   noteContainer: {
     flex: 1,
@@ -103,7 +111,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
-    marginTop: 20,
+    marginTop:20,
+    marginBottom:30,
   },
   noteInput: {
     flex: 1,
@@ -112,15 +121,24 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   saveButton: {
-    backgroundColor: '#8e44ad',
+    backgroundColor: '#db8694',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 10,
+    position: 'absolute',
+    right: 0,
+    marginTop:20,
   },
   saveButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  navbarContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 
