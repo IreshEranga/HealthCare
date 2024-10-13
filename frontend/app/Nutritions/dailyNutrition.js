@@ -38,9 +38,11 @@ const DisplayFoodLog = () => {
   }, []);
 
   useEffect(() => {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
     const fetchFoodLogs = async () => {
       try {
-        const response = await axios.get('http://192.168.65.63:8000/food-log/today'); // Ensure the correct port is used
+        const response = await axios.get(`${apiUrl}/food-log/today`); // Ensure the correct port is used
         console.log('Fetched Food Logs:', JSON.stringify(response.data, null, 2));
         setFoodLogs(response.data);
         setLoading(false);
@@ -141,14 +143,14 @@ const DisplayFoodLog = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
-              <Icon name="arrow-left" size={24} color="#8BC34A" />
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Nutritions/nutritionHome')}>
+              <Icon name="arrow-left" size={24} color="#191952" />
           </TouchableOpacity>
 
           <Text style={styles.title}>FOOD DIARY</Text>
 
           <TouchableOpacity>
-            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+            <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
           </TouchableOpacity>
         </View> 
 
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    color: '#8BC34A', // Your green color
+    color: '#191952', // Your green color
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between', // Align heading and arrow at opposite ends
     alignItems: 'center',
-    backgroundColor: 'rgba(71, 127, 73, 0.35)', // Optional: Add a background to the header to make it stand out
+    backgroundColor: 'rgba(128, 128, 235, 0.50)', // Optional: Add a background to the header to make it stand out
     padding: 20,
     marginVertical: 30,
     borderRadius: 5,

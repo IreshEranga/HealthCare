@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Button, ActivityIndicator, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { View, Text, Modal, Button, ActivityIndicator, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Image  } from 'react-native';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,14 +14,12 @@ export default function NutritionHome() {
   const [totalCalories, setTotalCalories] = useState(0);
   const [loading, setLoading] = useState(true);
   const [calorieGoal, setCalorieGoal] = useState(2000);
-  const [error, setError] = useState(null);
+  const [newCalorieGoal, setNewCalorieGoal] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);  // Modal state
   const [greetingMessage, setGreetingMessage] = useState('');
   const [userName, setUserName] = useState('');
-  //const [age, setAge] = useState('');
-  //const [gender, setGender] = useState('male'); // Default gender
-  //const [activityLevel, setActivityLevel] = useState('sedentary'); // Default activity level
-  //const [bmi, setBmi] = useState(0);
-  //const [calorieGoal, setCalorieGoal] = useState(null);
+  const [_id, set_id] = useState('');
+  const [userType, setUserType] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -30,8 +28,9 @@ export default function NutritionHome() {
         const storedUser = await AsyncStorage.getItem('loggedInUser');
         const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-        if (parsedUser && parsedUser.first_name) {
+        if (parsedUser && parsedUser.first_name && parsedUser._id) {
           setUserName(parsedUser.first_name);
+          set_id(parsedUser._id);
         }
       } catch (error) {
         console.log('Error fetching user data', error);
@@ -54,11 +53,31 @@ export default function NutritionHome() {
     setGreetingMessage(message);
   }, []);
 
+  useEffect(() => {
+    const fetchUserType = async () => {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+      if (_id) {
+        console.log("Id get", _id);
+        try {
+          const response = await axios.get(`${apiUrl}/users/users/${_id}/type`);
+          setUserType(response.data.type); 
+        } catch (error) {
+          console.error('Error fetching user type:', error);
+        }
+      }
+    };
+
+    fetchUserType();
+    console.log("User type : ",userType);
+  }, [_id]);
+
   // Function to fetch today's food logs
   const fetchFoodLogs = async () => {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
     try {
       //const response = await axios.get('http://192.168.8.147:8000/api/foodlogs/today');
-      const response = await axios.get('http://192.168.65.63:8000/food-log/today');
+      const response = await axios.get(`${apiUrl}/food-log/today`);
       const foodLogs = response.data;
   
       let totalCaloriesForDay = 0;
@@ -84,19 +103,29 @@ export default function NutritionHome() {
 
   const fillPercentage = (totalCalories / calorieGoal) * 100;
 
+  // Function to handle saving the new calorie goal
+  const handleSaveGoal = async () => {
+    if (!isNaN(newCalorieGoal) && newCalorieGoal > 0) {
+      setCalorieGoal(parseInt(newCalorieGoal));
+      await AsyncStorage.setItem('calorieGoal', newCalorieGoal);  // Save new goal in AsyncStorage
+      setModalVisible(false);  // Close the modal
+      setNewCalorieGoal('');   // Clear the input field
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home/Welcome')}>
-              <Icon name="arrow-left" size={24} color="#8BC34A" />
+              <Icon name="arrow-left" size={24} color="#191952" />
           </TouchableOpacity>
 
           <Text style={styles.greeting}>
             {greetingMessage}, {userName ? userName : 'Guest'}
           </Text>
           <TouchableOpacity>
-            <Icon style={styles.usericon} name="user" size={34} color="#8BC34A" onPress={() => navigation.navigate('ProfilePage')}/>
+            <Icon style={styles.usericon} name="user" size={34} color="#191952" onPress={() => navigation.navigate('ProfilePage')}/>
           </TouchableOpacity>
         </View>
 
@@ -114,9 +143,14 @@ export default function NutritionHome() {
 
           {/* Gauge (Circular Dial) for calories */}
           <View style={styles.gaugeContainer}>
-            <Text style={styles.gaugeTitleText}>
-              Your Goal
-            </Text>
+
+            <View style={styles.goalHeader}>
+              <Text style={styles.gaugeTitleText}>Your Goal</Text>
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Icon name="pencil" size={20} color="#191952" style={styles.editIcon} />
+              </TouchableOpacity>
+            </View>
+
             <AnimatedCircularProgress
               size={200}
               width={15}
@@ -158,12 +192,54 @@ export default function NutritionHome() {
             </TouchableOpacity>
           </View>
 
+          <View style={styles.card}>
+          <Image
+            source={require('../../assets/images/prem.png')}  // Path to your image in assets
+            style={{ width: 60, height: 60 }}  // Set the size of the image
+          />
+            <Text style={styles.cardTitle}>Personalized Meal Planner</Text>
+            {userType === 'premium' ? (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/Nutritions/RecipeSearch')}
+        >
+          <Text style={styles.buttonText}>View</Text>
+        </TouchableOpacity>
+      ) : (
+        <Text style={styles.infoText}>This feature is available for premium users only.</Text>
+      )}
+          </View>
+
           </ScrollView>
 
         </View>
 
         {/*<NutriNavBar style={styles.navigation} />*/}
         <NavBar/>
+
+        {/* Modal for editing calorie goal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Calorie Goal</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter new calorie goal"
+              keyboardType="numeric"
+              value={newCalorieGoal}
+              onChangeText={setNewCalorieGoal}
+            />
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveGoal}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
     </SafeAreaView>
   );
@@ -189,17 +265,17 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 24,
-    color: '#8BC34A',
+    color: '#191952',
   },
   usericon: {
-    color:'#8BC34A'
+    color:'#191952'
   },
   scrollContainer: {
     paddingBottom: 200,
   },
   title: {
     fontSize: 32,
-    color: '#8BC34A', // Your green color
+    color: '#191952', // Your green color
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
@@ -210,25 +286,33 @@ const styles = StyleSheet.create({
     textShadowRadius: 4, // Blur radius
   },
   gaugeContainer: {
-    backgroundColor: 'rgba(71, 127, 73, 0.35)',
+    backgroundColor: 'rgba(128, 128, 235, 0.50)',
     borderRadius: 10,
     alignItems: 'center',
     width: '85%',
     padding: 20,
     margin:'auto',
     borderCurve: 5,
-    
+  },
+  goalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingBottom: 10,
   },
   gaugeTitleText: {
     fontSize: 24,
     paddingBottom: 15,
     fontWeight: 'bold',
-
+  },
+  editIcon: {
+    marginLeft: 10,
   },
   gaugeText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#477F49',
+    color: '#191952',
   },
   goalContainer: {
     marginTop: 20,
@@ -261,7 +345,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   calculateButton: {
-    backgroundColor: '#8BC34A',
+    backgroundColor: '#191952',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -295,13 +379,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   buttonText: {
-    color: '#477F49',
+    color: '#191952',
     fontSize: 16,
     textAlign: 'center',
     fontWeight: 'bold',
   },
   card: {
-    backgroundColor: '#477F49',
+    backgroundColor: '#191952',
     borderRadius: 10,
     padding: 20,
     marginLeft: 60,
@@ -325,5 +409,47 @@ const styles = StyleSheet.create({
   },
   navigation : {
     marginTop:-100,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+    width: '100%',
+  },
+  saveButton: {
+    backgroundColor: '#191952',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  infoText: {
+    // Styling for non-premium user message
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#E2E2FA',
   },
 });
